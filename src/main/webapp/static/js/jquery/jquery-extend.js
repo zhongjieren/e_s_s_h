@@ -159,14 +159,14 @@ $.objToStr = function(o) {
 			for ( var i in o) {
 				r[r.length] = "@" + i + "@";
 				r[r.length] = ":";
-				r[r.length] = obj2str(o[i]);
+				r[r.length] = $.objToStr(o[i]);
 				r[r.length] = ",";
 			}
 			r[r.length - 1] = "}";
 		} else {
 			r[0] = "[";
 			for ( var i = 0; i < o.length; i++) {
-				r[r.length] = obj2str(o[i]);
+				r[r.length] = $.objToStr(o[i]);
 				r[r.length] = ",";
 			}
 			r[r.length - 1] = "]";
@@ -196,14 +196,14 @@ $.jsonToString = function(o) {
 	if (typeof o == "object") {
 		if (!o.sort) {
 			for ( var i in o)
-				r.push(i + ":" + obj2str(o[i]));
+				r.push(i + ":" + $.objToStr(o[i]));
 			if (!!document.all && !/^\n?function\s*toString\(\)\s*\{\n?\s*\[native code\]\n?\s*\}\n?\s*$/.test(o.toString)) {
 				r.push("toString:" + o.toString.toString());
 			}
 			r = "{" + r.join() + "}";
 		} else {
 			for ( var i = 0; i < o.length; i++)
-				r.push(obj2str(o[i]));
+				r.push($.objToStr(o[i]));
 			r = "[" + r.join() + "]";
 		}
 		return r;
