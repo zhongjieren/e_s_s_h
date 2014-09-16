@@ -528,6 +528,35 @@ public class UserController extends BaseController<User,Long> {
 
 
     /**
+     *
+     * @param page
+     * @param rows
+     * @param sort
+     * @param order
+     * @param q 查询关键字
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = {"autoComplete"})
+    @ResponseBody
+    public List<String> autoComplete(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+    @RequestParam(value = "rows", required = false, defaultValue = Page.DEFAULT_PAGESIZE + "") int rows,
+    String sort, String order,String q) throws Exception {
+        List<String> cList = Lists.newArrayList();
+        List<PropertyFilter> filters = Lists.newArrayList();
+        System.out.println(q);
+        PropertyFilter propertyFilter = new PropertyFilter("LIKES_name",q);
+        filters.add(propertyFilter);
+
+        Page<User> users = userManager.find(page,rows,sort,order,filters);
+        for (User user:users.getResult()) {
+            cList.add(user.getName());
+        }
+        return cList;
+    }
+
+
+    /**
      * 多Sheet Excel导出，获取的数据格式是List<Object[]>
      * @return
      * @throws Exception

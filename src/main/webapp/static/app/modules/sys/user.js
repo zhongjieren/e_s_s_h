@@ -219,6 +219,16 @@ $(function () {
             edit(rowIndex, rowData);
         }
     }).datagrid('showTooltip');
+
+    $loginNameOrName = $("#loginNameOrName").autocomplete(ctx+'/sys/user/autoComplete', {
+        remoteDataType:'json',
+        minChars: 0,
+        maxItemsToShow: 20
+    });
+    var ac = $loginNameOrName.data('autocompleter');
+    //添加查询属性
+    ac.setExtraParam("rows",ac.options.maxItemsToShow);
+
 });
 function formInit() {
     user_form = $('#user_form').form({

@@ -5,7 +5,7 @@
  */
 package com.eryansky.webservice.soap.server.result;
 
-import com.eryansky.modules.sys.entity.User;
+import com.eryansky.core.security.SessionInfo;
 import com.eryansky.webservice.soap.server.WsConstants;
 
 import javax.xml.bind.annotation.XmlType;
@@ -20,13 +20,13 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "GetUserResult", namespace = WsConstants.NS)
 public class GetUserResult extends WSResult {
 
-	private User user;
+	private SessionInfo user;
 
-	public User getUser() {
+	public SessionInfo getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(SessionInfo user) {
 		this.user = user;
 	}
 }

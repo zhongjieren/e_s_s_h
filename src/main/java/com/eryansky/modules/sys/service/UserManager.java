@@ -381,4 +381,14 @@ public class UserManager extends EntityManager<User, Long> {
         List<User> users = organ.getUsers();
         return users;
     }
+
+    public SessionInfo getUser(String loginName){
+        Assert.notNull(loginName, "参数[loginName]为空!");
+        User user = findUniqueBy("loginName",loginName);
+        if(user == null){
+            throw new ServiceException("用户["+loginName+"]不存在.");
+        }
+
+        return SecurityUtils.userToSessionInfo(user);
+    }
 }

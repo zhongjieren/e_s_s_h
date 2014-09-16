@@ -17,6 +17,7 @@ import com.eryansky.common.utils.StringUtils;
 import com.eryansky.common.utils.encode.Encrypt;
 import com.eryansky.common.web.springmvc.SimpleController;
 import com.eryansky.common.web.springmvc.SpringMVCHolder;
+import com.eryansky.common.web.utils.WebUtils;
 import com.eryansky.core.security.SecurityConstants;
 import com.eryansky.core.security.SecurityUtils;
 import com.eryansky.core.security.SessionInfo;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Iterator;
 import java.util.List;
 
@@ -138,7 +140,8 @@ public class LoginController extends SimpleController {
      */
     @ResponseBody
     @RequestMapping(value = {"navTree"})
-    public List<TreeNode> navTree() throws Exception {
+    public List<TreeNode> navTree(HttpServletResponse response) {
+        WebUtils.setNoCacheHeader(response);
         List<TreeNode> treeNodes = Lists.newArrayList();
         SessionInfo sessionInfo = SecurityUtils.getCurrentSessionInfo();
         if (sessionInfo != null) {

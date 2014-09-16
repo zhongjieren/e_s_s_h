@@ -6,20 +6,19 @@
 package com.eryansky.webservice.soap.server.impl;
 
 
-import javax.jws.WebService;
-
-import com.eryansky.modules.sys.entity.User;
+import com.eryansky.common.spring.SpringContextHolder;
+import com.eryansky.core.security.SessionInfo;
 import com.eryansky.modules.sys.service.UserManager;
-import org.hibernate.ObjectNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
-
 import com.eryansky.webservice.soap.server.UserWebService;
 import com.eryansky.webservice.soap.server.WsConstants;
 import com.eryansky.webservice.soap.server.result.GetUserResult;
 import com.eryansky.webservice.soap.server.result.WSResult;
+import org.hibernate.ObjectNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
+
+import javax.jws.WebService;
 
 /**
  * UserWebService服务端实现类.
@@ -28,13 +27,12 @@ import com.eryansky.webservice.soap.server.result.WSResult;
  *
  */
 //serviceName与portName属性指明WSDL中的名称, endpointInterface属性指向Interface定义类.
-@WebService(serviceName = "UserService", portName = "UserServicePort", endpointInterface = "com.eryansky.webservice.ws.server.UserWebService", targetNamespace = WsConstants.NS)
+@WebService(serviceName = "UserService", portName = "UserServicePort", endpointInterface = "com.eryansky.webservice.soap.server.UserWebService", targetNamespace = WsConstants.NS)
 public class UserWebServiceImpl implements UserWebService {
 
 	private static Logger logger = LoggerFactory.getLogger(UserWebServiceImpl.class);
 
-	@Autowired
-	private UserManager userManager;
+	private static UserManager userManager = SpringContextHolder.getBean(UserManager.class);
 
 	/**
      */
@@ -50,17 +48,17 @@ public class UserWebServiceImpl implements UserWebService {
 		//获取用户
 		try {
 
-			User entity = userManager.findUniqueBy("loginName", loginName);
+			SessionInfo sessionInfo = userManager.getUser(loginName);
 
 			GetUserResult result = new GetUserResult();
-			result.setUser(entity);
+			result.setUser(sessionInfo);
 
 			return result;
 		} catch (ObjectNotFoundException e) {
 			String message = "用户不存在(loginName:" + loginName + ")";
 			logger.error(message, e);
 			return WSResult.buildResult(GetUserResult.class, WSResult.PARAMETER_ERROR, message);
-		} catch (RuntimeException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return WSResult.buildDefaultErrorResult(GetUserResult.class);
 		}

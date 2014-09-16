@@ -81,4 +81,12 @@ public class AppConstants {
     public static String getConfig(String key) {
         return SysConstants.getAppConfig().getProperty(key);
     }
+
+    /**
+     * webserice发布地址
+     * @return
+     */
+    public static String getWebServiceUrl() {
+        return getConfig().getProperty("webservice.url");
+    }
 }

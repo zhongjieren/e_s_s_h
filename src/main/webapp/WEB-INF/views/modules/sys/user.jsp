@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ include file="/common/taglibs.jsp"%>
 <%@ include file="/common/meta.jsp"%>
+<%@ include file="/common/autocomplete.jsp"%>
 <%--<%@ include file="/common/zTree.jsp"%>--%>
 <script type="text/javascript">
     var sessionInfoUserId = "${sessionInfo.userId}";//当前的登录用户ID
