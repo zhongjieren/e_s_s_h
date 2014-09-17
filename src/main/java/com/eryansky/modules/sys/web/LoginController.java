@@ -167,7 +167,7 @@ public class LoginController extends SimpleController {
      */
     @RequestMapping(value = {"startMenu"})
     @ResponseBody
-    public List<Menu> startMenu() throws Exception {
+    public List<Menu> startMenu() {
         List<Menu> menus = Lists.newArrayList();
         SessionInfo sessionInfo = SecurityUtils.getCurrentSessionInfo();
         if (sessionInfo != null) {
@@ -202,7 +202,7 @@ public class LoginController extends SimpleController {
      */
     @RequestMapping(value = {"apps"})
     @ResponseBody
-    public List<Menu> apps() throws Exception {
+    public List<Menu> apps() {
         HttpServletRequest request = SpringMVCHolder.getRequest();
         List<Menu> menus = Lists.newArrayList();
         String head = this.getHeadFromUrl(request.getRequestURL().toString());

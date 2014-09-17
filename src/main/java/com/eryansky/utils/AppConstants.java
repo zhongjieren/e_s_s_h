@@ -14,7 +14,7 @@ import com.eryansky.common.utils.io.PropertiesLoader;
  * @author 尔演&Eryan eryanwcp@gmail.com
  * @date 2013-03-17 上午8:25:36
  */
-public class AppConstants {
+public class AppConstants extends SysConstants {
 	/**
 	 * 修改用户密码 个人(需要输入原始密码)
 	 */
