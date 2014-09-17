@@ -22,6 +22,7 @@ import com.eryansky.modules.sys.entity.Organ;
 import com.eryansky.modules.sys.entity.Role;
 import com.eryansky.modules.sys.entity.User;
 import com.eryansky.utils.CacheConstants;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -292,6 +293,24 @@ public class UserManager extends EntityManager<User, Long> {
         Page<User> p = new Page<User>(rows);
         p.setPageNo(page);
         p = userDao.findPage(p,hql.toString(),parameter);
+
+        //重新计算总数 特殊处理 hql包含distinct语句导致总数出错问题
+        String fromHql = hql.toString();
+        // select子句与order by子句会影响count查询,进行简单的排除.
+        fromHql = "from " + StringUtils.substringAfter(fromHql, "from");
+        fromHql = StringUtils.substringBefore(fromHql, "order by");
+
+        String countHql = "select count(distinct u.id) " + fromHql;
+        Query query = getEntityDao().createQuery(countHql, parameter);
+        List<Object> list = query.list();
+        Long count = 0L;
+        if (list.size() > 0) {
+            count = (Long)list.get(0);
+        } else {
+            count = Long.valueOf(list.size());
+        }
+        p.setTotalCount(count);
+
         return p;
     }
 
