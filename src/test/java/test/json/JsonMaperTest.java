@@ -17,9 +17,13 @@ import java.util.List;
  */
 public class JsonMaperTest {
     public static void main(String[] args) {
+        new JsonMaperTest().time();
+    }
+
+    public void test(){
         JsonMapper jsonMapper = JsonMapper.getInstance();
-        Javabean javabean = new Javabean("name1",100,new Date());
         List<Javabean> list = Lists.newArrayList();
+        Javabean javabean = new Javabean("name1",100,new Date());
         list.add(javabean);
 //        传统模式 转换所有属性  需要在bean上加上注解 @JsonFilter(" ")
         System.out.println(jsonMapper.toJson(javabean));
@@ -32,5 +36,19 @@ public class JsonMaperTest {
 
         //集合属性过滤
         System.out.println(jsonMapper.toJson(list, Javabean.class,new String[]{"name"}));
+    }
+
+    public void time(){
+        JsonMapper jsonMapper = JsonMapper.getInstance();
+        List<Javabean> list = Lists.newArrayList();
+        for(int i=0;i<10000;i++){
+            Javabean javabean = new Javabean("name1",100,new Date());
+            list.add(javabean);
+        }
+
+        Date d1 = new Date();
+        System.out.println(jsonMapper.toJson(list));
+        Date d2 = new Date();
+        System.out.println(d2.getTime() - d1.getTime());
     }
 }
