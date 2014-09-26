@@ -10,6 +10,7 @@
             url:'${ctx}/sys/dictionary-type/group_combobox?selectType=select',
             multiple:false,//是否可多选
             editable:false,//是否可编辑
+            height:28,
             width:120,
             valueField:'value',
             textField:'text',
@@ -48,7 +49,7 @@
 		<div>
 			<label>排序:</label>
 			<input type="text" id="orderNo" name="orderNo" class="easyui-numberspinner" style="width: 120px;"
-                   data-options="min:1,max:99999999,size:9,maxlength:9" />
+                   data-options="min:1,max:99999999,size:9,maxlength:9,height:28" />
 		</div>
         <div>
             <label style="vertical-align: top;">备注:</label>

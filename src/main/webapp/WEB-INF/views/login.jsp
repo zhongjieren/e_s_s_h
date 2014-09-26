@@ -124,7 +124,7 @@
                     <label class="login_label">密&nbsp;&nbsp;码 ：</label>
                     <input id="password" name="password" class="easyui-textbox" type="password"
                            value="${cookie.password.value}"
-                           onkeydown="if(event.keyCode==13)login()" style="width:210px;height:40px;padding:12px"
+                           onkeydown="javascript:if(event.keyCode==13){login();}" style="width:210px;height:40px;padding:12px"
                            data-options="prompt:'请输入密码...',iconCls:'easyui-icon-lock',iconWidth:38,required:true,validType:'minLength[1]',missingMessage:'请输入密码!'"/>
 
                 </div>

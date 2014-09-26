@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -399,6 +400,26 @@ public class UserManager extends EntityManager<User, Long> {
         }
         List<User> users = organ.getUsers();
         return users;
+    }
+
+    /**
+     * 得到排序字段的最大值.
+     *
+     * @return 返回排序字段的最大值
+     */
+    public Integer getMaxSort() throws DaoException, SystemException,
+            ServiceException {
+        Iterator<?> iterator = getEntityDao().createQuery(
+                "select max(u.orderNo)from User u ").iterate();
+        Integer max = 0;
+        while (iterator.hasNext()) {
+            // Object[] row = (Object[]) iterator.next();
+            max = (Integer) iterator.next();
+            if (max == null) {
+                max = 0;
+            }
+        }
+        return max;
     }
 
     public SessionInfo getUser(String loginName){

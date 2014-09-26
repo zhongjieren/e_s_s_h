@@ -83,6 +83,7 @@
 	<!--<mvc:default-servlet-handler/>-->
 
     <mvc:resources mapping="/static/**" location="/static/" cache-period="31556926"/>
+    <mvc:resources mapping="/attached/**" location="/attached/" cache-period="31556926"/>
 
 	<!-- 定义无Controller的path<->view直接映射 -->
 	<mvc:view-controller path="/" view-name="redirect:${web.view.index}"/>

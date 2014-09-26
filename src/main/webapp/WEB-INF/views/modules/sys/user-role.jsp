@@ -8,6 +8,7 @@
 	function loadUserRole() {
 	    $('#user_role_form-roleIds').combobox({
 	        multiple: true,
+            height:28,
 	        width: 260,
 	        editable:false,
 	        url: '${ctx}/sys/role/combobox'

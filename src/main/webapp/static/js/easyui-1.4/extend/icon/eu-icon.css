@@ -12,7 +12,9 @@
 .eu-icon-essh{
     background:url('icons/icon_essh.png') no-repeat center center;
 }
-
+.eu-icon-setting{
+    background:url('icons/setting.png') no-repeat center center;
+}
 .ext-icon-cross {	background: url('icons/extjs_icons/arrow/cross.png') no-repeat ; }
 .ext-icon-zoom {	background: url('icons/extjs_icons/zoom/zoom.png') no-repeat ; }
 .ext-icon-zoom_in {	background: url('icons/extjs_icons/zoom/zoom_in.png') no-repeat ; }

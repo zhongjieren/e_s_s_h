@@ -41,7 +41,7 @@
         <input type="hidden" id="version" name="version" />
         <div>
             <label style="vertical-align: top;">关联资源:</label>
-            <input id="resourceIds" name="resourceIds"  style="width:260px;height:200px" />
+            <input id="resourceIds" name="resourceIds"  style="width:246px;height:200px" />
             级联模式<input id="changeMode" type="checkbox" />
         </div>
     </form>

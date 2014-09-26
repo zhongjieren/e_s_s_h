@@ -7,13 +7,21 @@ package com.eryansky.common.model;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.io.Serializable;
+
 /**
  * easyui动态列column模型.
  * 
  * @author 尔演&Eryan eryanwcp@gmail.com
  * @date 2012-11-23 下午2:11:50
  */
-public class Column {
+public class Column implements Serializable{
+
+    //对齐方式
+    public static final String ALIGN_LEFT = "left";
+    public static final String ALIGN_CENTER = "center";
+    public static final String ALIGN_RIGHT = "right";
+
 	/**
 	 * 字段名称
 	 */
@@ -44,10 +52,6 @@ public class Column {
 	 */
 	private Integer index;
 
-    //对齐方式
-    private static final String ALIGN_LEFT = "left";
-    private static final String ALIGN_CENTER = "center";
-    private static final String ALIGN_RIGHT = "right";
 	/**
 	 * 对齐方式(默认：'left',可选值：'left'，'right'，'center' 默认左对齐)
 	 */

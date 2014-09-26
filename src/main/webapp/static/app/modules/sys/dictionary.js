@@ -229,6 +229,7 @@ $(function() {
         url:ctx+'/sys/dictionary-type/combobox?selectType=all',
         multiple:false,//是否可多选
         editable:false,//是否可编辑
+        height:28,
         width:120,
         groupField:'group'
     });

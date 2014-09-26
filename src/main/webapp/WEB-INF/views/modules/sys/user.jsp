@@ -8,6 +8,9 @@
     var sessionInfoLoginOrganSysCode = "${sessionInfo.loginOrganSysCode}";//当前的登录机构系统编码
 </script>
 <script type="text/javascript" src="${ctxStatic}/app/modules/sys/user.js" charset="utf-8"></script>
+<script type="text/javascript" src="${ctxStatic}/js/uploadify/scripts/jquery.uploadify.mine.js"></script>
+<link href="${ctxStatic}/js/uploadify/css/uploadify.css" rel="stylesheet" type="text/css"/>
+<link href="${ctxStatic}/js/bootstrap/2.3.2/custom/bootstrap-img.css" rel="stylesheet" type="text/css"/>
 <%-- 列表右键 --%>
 <div id="user_datagrid_menu" class="easyui-menu" style="width:120px;display: none;">
     <div onclick="showDialog();" data-options="iconCls:'easyui-icon-add'">新增</div>

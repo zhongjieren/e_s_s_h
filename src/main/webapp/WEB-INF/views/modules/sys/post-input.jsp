@@ -21,7 +21,7 @@
         <input type="hidden" id="version" name="version" />
         <div>
             <label>机构:</label>
-            <input id="organId" name="organId" validType="combotreeRequired['#organId']" style="width: 260px;">
+            <input id="organId" name="organId" validType="combotreeRequired['#organId']" style="width: 260px;height: 28px;">
         </div>
         <div>
             <label>岗位名称:</label>

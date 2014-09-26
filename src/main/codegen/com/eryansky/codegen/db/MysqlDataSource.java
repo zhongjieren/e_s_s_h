@@ -1,16 +1,15 @@
 package com.eryansky.codegen.db;
 
-import java.sql.Connection;
+import com.eryansky.codegen.util.DBType;
+import com.eryansky.codegen.vo.Column;
+import com.eryansky.codegen.vo.DbConfig;
+import com.eryansky.codegen.vo.Table;
+
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.eryansky.codegen.util.DBType;
-import com.eryansky.codegen.vo.Column;
-import com.eryansky.codegen.vo.DbConfig;
-import com.eryansky.codegen.vo.Table;
 
 /**
  * Mysql Metadata读取
@@ -59,6 +58,18 @@ public class MysqlDataSource extends DataSource {
 				col.setDigits(rs.getInt("DECIMAL_DIGITS"));
 				col.setDefaultValue(rs.getString("COLUMN_DEF"));
 				col.setComment(rs.getString("REMARKS"));
+                /**
+                 * 指示此列是否是自动递增
+                 * YES -- 该列是自动递增的
+                 * NO -- 该列不是自动递增
+                 * 空字串--- 不能确定该列是否自动递增
+                 */
+                String autoIncrement = rs.getString("IS_AUTOINCREMENT");
+                if ("YES".equalsIgnoreCase(autoIncrement)) {
+                    col.setAutoIncrement(true);
+                } else if ("NO".equalsIgnoreCase(autoIncrement)) {
+                    col.setAutoIncrement(false);
+                }
 				columns.add(col);
 			}
 		} catch (SQLException e) {

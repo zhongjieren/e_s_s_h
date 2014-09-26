@@ -27,6 +27,7 @@ import com.eryansky.core.security.SessionInfo;
 import com.eryansky.modules.sys._enum.SexType;
 import com.eryansky.modules.sys.entity.*;
 import com.eryansky.modules.sys.service.*;
+import com.eryansky.modules.sys.utils.FileUploadUtils;
 import com.eryansky.utils.AppConstants;
 import com.eryansky.utils.SelectType;
 import com.google.common.collect.Lists;
@@ -47,6 +48,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户User管理 Controller层.
@@ -228,6 +230,15 @@ public class UserController extends BaseController<User,Long> {
         return dg;
     }
 
+
+    /**
+     * 文件上传
+     */
+    @RequestMapping(value = {"upload"})
+    @ResponseBody
+    public Map<String, Object> upload(HttpServletRequest request,HttpServletResponse response) {
+        return FileUploadUtils.upload(request, response);
+    }
     /**
      * 保存.
      */
@@ -554,6 +565,19 @@ public class UserController extends BaseController<User,Long> {
         }
         return cList;
     }
+
+    /**
+     * 排序最大值.
+     */
+    @RequestMapping(value = {"maxSort"})
+    @ResponseBody
+    public Result maxSort(){
+        Result result;
+        Integer maxSort = userManager.getMaxSort();
+        result = new Result(Result.SUCCESS, null, maxSort);
+        return result;
+    }
+
 
 
     /**

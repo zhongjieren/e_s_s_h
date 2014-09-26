@@ -22,7 +22,7 @@
         <input type="hidden" id="version" name="version" />
         <div>
             <label>岗位:</label>
-            <input type="select" id="postIds" name="postIds" style="width: 260px;"/>
+            <input type="select" id="postIds" name="postIds" style="width: 260px;height:28px;"/>
         </div>
     </form>
 </div>

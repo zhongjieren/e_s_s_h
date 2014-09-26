@@ -5,7 +5,7 @@
         <div>
             <label>保留时间（天）:</label>
             <input name="keepTime" value="${keepTime}" class="easyui-numberspinner"
-                   data-options="required:true,missingMessage:'请输入保留时间.', min: 0,max: 999999999,">
+                   data-options="required:true,missingMessage:'请输入保留时间.', min: 0,max: 999999999,height:28">
         </div>
     </form>
 </div>

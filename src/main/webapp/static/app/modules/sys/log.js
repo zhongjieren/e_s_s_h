@@ -80,6 +80,7 @@ $(function () {
     $('#filter_EQI_type').combobox({
         url:ctx+'/sys/log/logTypeCombobox?selectType=all',
         editable:false,//是否可编辑
+        height:28,
         width:120
     });
 });

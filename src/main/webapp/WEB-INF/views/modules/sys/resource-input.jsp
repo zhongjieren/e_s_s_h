@@ -19,6 +19,7 @@
 	        url:'${ctx}/sys/resource/parentResource?selectType=select',
 		    multiple:false,//是否可多选
 		    editable:false,//是否可编辑
+            height:28,
 		    width:260,
 	        valueField:'id',
             onBeforeLoad:function(node,param){
@@ -41,6 +42,7 @@
 			url:'${ctxStatic}/js/json/resource.json',
 		    multiple:false,//是否可多选
 		    editable:false,//是否可编辑
+            height:28,
 		    width:120,
 	        formatter:function(row){    
 	        	return $.formatString('<span class="tree-icon tree-file {0}"></span>{1}', row.value, row.text);
@@ -53,6 +55,7 @@
             url:typeUrl+'?parentType=${parentType}',
             multiple:false,//是否可多选
             editable:false,//是否可编辑
+            height:28,
             width:120,
             value:'0'//默认值 ‘0’即菜单
         });
@@ -122,7 +125,7 @@
         <div>
             <label>排序:</label>
             <input type="text" id="orderNo" name="orderNo" class="easyui-numberspinner" style="width:120px;"
-                   data-options="min:1,max:99999999,size:9,maxlength:9" />
+                   data-options="min:1,max:99999999,size:9,maxlength:9,height:28" />
         </div>
         <div>
             <label>状态:</label>

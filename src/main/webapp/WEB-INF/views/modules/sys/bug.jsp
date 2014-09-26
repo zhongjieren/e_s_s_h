@@ -20,7 +20,7 @@
     <div data-options="region:'north',title:'过滤条件',collapsed:false,split:false,border:false"
          style="padding: 0px; height: 70px;width:100%; overflow-y: hidden;">
         <form id="bug_search_form" style="padding: 5px;">
-            &nbsp;类型:<e:dictionary id="type" code="<%=DictionaryUtils.DIC_BUG%>" type="combobox" name="type" selectType="all"></e:dictionary>
+            &nbsp;类型:<e:dictionary id="type" code="<%=DictionaryUtils.DIC_BUG%>" type="combobox" name="type" selectType="all" height="28"></e:dictionary>
             &nbsp;标题:<input type="text" name="filter_LIKES_title" maxLength="25"
                       class="easyui-validatebox textbox eu-input" placeholder="请输入标题..."
                       onkeydown="if(event.keyCode==13)search()" style="width: 160px" />

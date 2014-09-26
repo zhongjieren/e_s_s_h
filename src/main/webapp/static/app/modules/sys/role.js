@@ -241,7 +241,7 @@ function editRoleResource() {
             title: '角色资源信息',
             top: 20,
             width: 500,
-            height: 200,
+            height: 360,
             modal: true,
             maximizable: true,
             href: ctx + '/sys/role/resource',

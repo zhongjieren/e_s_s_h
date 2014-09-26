@@ -18,6 +18,7 @@ public class Column {
     private String defaultValue = null;// 默认值
     private int digits;// 精度
     private String comment = null;// 备注
+    private Boolean autoIncrement = false;// 是否自增长
 
     /**
      * ******* Java *************
@@ -108,6 +109,14 @@ public class Column {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public Boolean getAutoIncrement() {
+        return autoIncrement;
+    }
+
+    public void setAutoIncrement(Boolean autoIncrement) {
+        this.autoIncrement = autoIncrement;
     }
 
     public String getJavaType() {

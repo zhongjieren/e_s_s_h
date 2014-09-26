@@ -37,6 +37,10 @@ public class DictionaryTag extends TagSupport {
      */
     private Integer width;
     /**
+     * 高度
+     */
+    private Integer height;
+    /**
      * 字典类别编码
      */
     private String code;
@@ -126,6 +130,9 @@ public class DictionaryTag extends TagSupport {
         if(this.width != null){
             buffer.append(",width:'").append(this.width).append("'");
         }
+        if(this.height != null){
+            buffer.append(",height:'").append(this.height).append("'");
+        }
         if(StringUtils.isNotBlank(this.value)){
             buffer.append(",value:'").append(this.value).append("'");
         }
@@ -148,10 +155,6 @@ public class DictionaryTag extends TagSupport {
         this.id = id;
     }
 
-    public Integer getWidth() {
-        return width;
-    }
-
     public String getName() {
         return name;
     }
@@ -160,16 +163,20 @@ public class DictionaryTag extends TagSupport {
         this.name = name;
     }
 
+    public Integer getWidth() {
+        return width;
+    }
+
     public void setWidth(Integer width) {
         this.width = width;
     }
 
-    public String getType() {
-        return type;
+    public Integer getHeight() {
+        return height;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setHeight(Integer height) {
+        this.height = height;
     }
 
     public String getCode() {
@@ -178,6 +185,14 @@ public class DictionaryTag extends TagSupport {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getSelectType() {

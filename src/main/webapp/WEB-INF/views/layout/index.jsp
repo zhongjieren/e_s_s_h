@@ -25,8 +25,8 @@
 	</div>
 
 	<%-- west菜单栏 --%>
-	<div data-options="region:'west',title:'导航菜单',split:false,href:'${ctx}/common/layout/west'"
-		style="width: 160px;overflow: hidden;">
+	<div data-options="region:'west',title:'导航菜单',split:false,href:'${ctx}/index/west'"
+		style="width: 180px;overflow: hidden;">
 	</div>
 
 	<%-- center主面板 --%>

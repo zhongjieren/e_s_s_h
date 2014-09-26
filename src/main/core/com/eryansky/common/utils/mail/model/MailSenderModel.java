@@ -5,17 +5,15 @@
  */
 package com.eryansky.common.utils.mail.model;
 
+import com.eryansky.common.utils.io.FileUtil;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+
 import java.io.File;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-
-import com.eryansky.common.utils.io.FileUtil;
-
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 
 /**
  * 发送邮件需要使用的基本信息entity.
@@ -160,7 +158,6 @@ public class MailSenderModel {
   		String path = FileUtil.getAppPath(MailSenderModel.class);
   		path = path + File.separator +"mailtemplate"+File.separator;
 		path = path.replace("\\", "/");
-		System.out.println(path);
 		return path;
 	}
 	

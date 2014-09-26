@@ -13,6 +13,7 @@ import com.eryansky.common.utils.collections.Collections3;
 import com.eryansky.core.security.SecurityConstants;
 import com.eryansky.modules.sys._enum.SexType;
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.collect.Lists;
 import org.hibernate.annotations.*;
@@ -24,6 +25,7 @@ import javax.persistence.Entity;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -64,6 +66,16 @@ public class User
      * 性别 女(0) 男(1) 保密(2) 默认：保密
      */
     private Integer sex = SexType.secrecy.getValue();
+    /**
+     * 用户出生日期
+     */
+    private Date birthday;
+
+    /**
+     * 头像
+     */
+    private String photo;
+
 
     /**
      * 邮件 以 ","分割
@@ -127,6 +139,14 @@ public class User
      * 用户岗位信息
      */
     private List<Post> posts = Lists.newArrayList();
+    /**
+     * 排序
+     */
+    private Integer orderNo;
+    /**
+     * 备注
+     */
+    private String remark;
 
     public User() {
 
@@ -197,6 +217,29 @@ public class User
     	}
         return str;
     }
+
+    @JsonFormat(pattern = DATE_FORMAT, timezone = TIMEZONE)
+    @Column(name = "BIRTHDAY")
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
+
+    @Column(name = "PHOTO",length = 1000)
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+
     @Column(name = "EMAIL",length = 64)
     public String getEmail() {
         return email;
@@ -384,4 +427,24 @@ public class User
         }
         return Lists.newArrayList();
     }
+
+    @Column(name = "ORDER_NO")
+    public Integer getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(Integer orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    @Column(name = "REMARK", length = 1000)
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+
 }

@@ -75,7 +75,7 @@ public class AuthorityInterceptor extends HandlerInterceptorAdapter {
             try {
                 handler = (HandlerMethod) o;
             } catch (ClassCastException e) {
-                logger.error(e.getMessage(),e);
+//                logger.error(e.getMessage(),e);
             }
 
 //            if(o instanceof HandlerMethod){

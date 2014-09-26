@@ -59,11 +59,11 @@
         <input type="hidden" id="version" name="version" />
         <div>
             <label>所属组织机构:</label>
-            <input type="select" id="organIds" name="organIds"  style="width: 260px;"/>
+            <input type="select" id="organIds" name="organIds"  style="width: 260px;height:28px;"/>
         </div>
         <div>
             <label>默认组织机构:</label>
-            <input type="select" id="defaultOrganId" name="defaultOrganId" style="width: 260px;"/>
+            <input type="select" id="defaultOrganId" name="defaultOrganId" style="width: 260px;height:28px;"/>
         </div>
     </form>
 </div>

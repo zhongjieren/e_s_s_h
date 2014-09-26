@@ -29,6 +29,7 @@ function loadColor(){
         url:'${ctxStatic}/js/json/color.json',
         multiple:false,//是否可多选
         editable:false,//是否可编辑
+        height:28,
         width:60,
         value:'black',//默认值 黑色：black
         formatter: function(row){
@@ -53,7 +54,7 @@ function loadColor(){
         <input type="hidden" id="version" name="version"/>
         <div>
 			<label>类型:</label>
-            <e:dictionary id="_type" code="<%=DictionaryUtils.DIC_BUG%>" type="combobox" name="type" selectType="select" validType="'comboboxRequired[\\'#_type\\']'"></e:dictionary>
+            <e:dictionary id="_type" code="<%=DictionaryUtils.DIC_BUG%>" type="combobox" name="type" selectType="select" validType="'comboboxRequired[\\'#_type\\']'" height="28" ></e:dictionary>
 		</div>
 		<div>
 			<label>标题:</label>

@@ -18,6 +18,7 @@
             url:'${ctx}/sys/organ/parentOrgan?selectType=select',
             multiple:false,//是否可多选
             editable:false,//是否可编辑
+            height:28,
             width:120,
             valueField:'id',
             onHidePanel:function(){
@@ -47,6 +48,7 @@
             url:organTypeUrl+"&parentOrganType=${parentOrganType}",
             multiple:false,//是否可多选
             editable:false,//是否可编辑
+            height:28,
             width:120,
             <%--disabled:${hasChild},--%>
             validType:['comboboxRequired[\'#type\']']
@@ -116,7 +118,7 @@
         <div>
             <label>排序:</label>
             <input type="text" id="orderNo" name="orderNo" class="easyui-numberspinner" STYLE="width: 120px;"
-                   data-options="min:1,max:99999999,size:9,maxlength:9" />
+                   data-options="min:1,max:99999999,size:9,maxlength:9,height:28" />
         </div>
         <div>
             <label>状态:</label>

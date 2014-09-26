@@ -78,7 +78,7 @@ public abstract class BaseController<T, PK extends Serializable> extends SimpleC
      */
     @RequestMapping(value = {"save"})
     @ResponseBody
-    public Result save(T model) {
+    public Result save(@ModelAttribute("model")T model) {
         getEntityManager().saveEntity(model);
         return Result.successResult();
     }

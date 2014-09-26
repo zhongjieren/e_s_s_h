@@ -42,7 +42,7 @@ public class DB2DataSource extends DataSource {
             preparedStatement = conn.prepareStatement("select current schema from sysibm.sysdummy1");
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                return rs.getString(1);
+                return rs.getString(1).trim();
             }
 
         } catch (SQLException e){
@@ -79,6 +79,19 @@ public class DB2DataSource extends DataSource {
                 }
                 col.setDefaultValue(defaultValue);
                 col.setComment(rs.getString("REMARKS"));
+
+                /**
+                 * 指示此列是否是自动递增
+                 * YES -- 该列是自动递增的
+                 * NO -- 该列不是自动递增
+                 * 空字串--- 不能确定该列是否自动递增
+                 */
+                String autoIncrement = rs.getString("IS_AUTOINCREMENT");
+                if ("YES".equalsIgnoreCase(autoIncrement)) {
+                    col.setAutoIncrement(true);
+                } else if ("NO".equalsIgnoreCase(autoIncrement)) {
+                    col.setAutoIncrement(false);
+                }
 
                 //判断是否是主键
                 for(Column primaryKey:primaryKeys) {
