@@ -89,24 +89,38 @@ public class PostManager extends
 
     /**
      * 用户可选岗位列表
-     * @param userId 用户ID 如果用户为null 则返回所有
+     * 如果organId不为null，则忽略参数userId；
+     * 如果userId、organId都为空，则返回所有.
+     * @param userId 用户ID
+     * @param organId 机构ID
      * @return
      */
-    public List<Post> getSelectablePostsByUserId(Long userId) {
+    public List<Post> getSelectablePosts(Long userId,Long organId) {
+        if(userId ==null && organId == null){
+            logger.warn("参数[userId，organId]至少有一个不为null.");
+        }
+
         List<Post> list = null;
-        Parameter parameter = new Parameter();
         StringBuffer hql = new StringBuffer();
+        Parameter parameter = new Parameter();
         hql.append("from Post p where p.status = :status ");
         parameter.put("status",StatusState.normal.getValue());
-        if (userId != null) {
-            User user = userManager.loadById(userId);
-            List<Long> userOrganIds = user.getOrganIds();
-            if(Collections3.isNotEmpty(userOrganIds)){
-                hql.append(" and  p.organ.id in (:userOrganIds)");
-                parameter.put("userOrganIds",userOrganIds);
-            }else{
-                logger.warn("用户[{}]未设置部门.",new Object[]{user.getLoginName()});
+        if(organId != null){
+            hql.append(" and  p.organ.id = :organId");
+            parameter.put("organId",organId);
+        }else{
+            if (userId != null) {
+                User user = userManager.loadById(userId);
+                List<Long> userOrganIds = user.getOrganIds();
+                if(Collections3.isNotEmpty(userOrganIds)){
+                    hql.append(" and  p.organ.id in (:userOrganIds)");
+                    parameter.put("userOrganIds",userOrganIds);
+                }else{
+                    logger.warn("用户[{}]未设置部门.",new Object[]{user.getLoginName()});
+                }
+
             }
+
         }
         list = getEntityDao().find(hql.toString(),parameter);
         return list;

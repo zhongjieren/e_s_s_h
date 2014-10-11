@@ -38,6 +38,10 @@
                             }
                         });
                     });
+                    //默认机构 默认值：第一个机构
+                    if(defaultOrganTempValues.length ==0 && selectionsNodes !=null && selectionsNodes.length >0){
+                        defaultOrganTempValues.push(selectionsNodes[0].id);
+                    }
                     defaultOrgan_combobox.combobox("setValues",defaultOrganTempValues);
                     defaultOrgan_combobox.combobox("loadData",defaultOrganData);
                 }

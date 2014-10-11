@@ -501,20 +501,20 @@ var createGridHeaderContextMenu = function(e, field) {
 				title = "全选";		
 			}
 			if (!fildOption.hidden) {
-				$('<div iconCls="icon-ok" field="' + fields[i] + '"/>').html(title).appendTo(tmenu);
+				$('<div iconCls="easyui-icon-ok" field="' + fields[i] + '"/>').html(title).appendTo(tmenu);
 			} else {
-				$('<div iconCls="icon-empty" field="' + fields[i] + '"/>').html(title).appendTo(tmenu);
+				$('<div iconCls="" field="' + fields[i] + '"/>').html(title).appendTo(tmenu);
 			}
 		}
 		headerContextMenu = this.headerContextMenu = tmenu.menu({
 			onClick : function(item) {
 				var field = $(item.target).attr('field');
-				if (item.iconCls == 'icon-ok') {
+				if (item.iconCls == 'easyui-icon-ok') {
 					if(fields.length>1){
 						grid.datagrid('hideColumn', field);
 						$(this).menu('setIcon', {
 							target : item.target,
-							iconCls : 'icon-empty'
+							iconCls : ''
 						});
 					}
 					
@@ -522,7 +522,7 @@ var createGridHeaderContextMenu = function(e, field) {
 					grid.datagrid('showColumn', field);
 					$(this).menu('setIcon', {
 						target : item.target,
-						iconCls : 'icon-ok'
+						iconCls : 'easyui-icon-ok'
 					});
 				}
 			}

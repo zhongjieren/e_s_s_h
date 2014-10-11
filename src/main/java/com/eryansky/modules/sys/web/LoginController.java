@@ -76,7 +76,7 @@ public class LoginController extends SimpleController {
         Result result = null;
         String msg = null;
         // 获取用户信息
-        User user = userManager.getUserByLP(loginName, Encrypt.e(password));
+        User user = userManager.getUserByLNP(loginName, Encrypt.e(password));
         if (user == null) {
             msg = "用户名或密码不正确!";
         } else if (user.getStatus().intValue() == StatusState.lock.getValue()) {

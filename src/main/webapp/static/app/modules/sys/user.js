@@ -95,11 +95,12 @@ $(function () {
         striped: true,//显示条纹
         pageSize: 20,//每页记录数
         remoteSort: false,//是否通过远程服务器对数据排序
-        sortName: 'id',//默认排序字段
-        sortOrder: 'asc',//默认排序方式 'desc' 'asc'
+        sortName: 'defaultOrganId,orderNo',//默认排序字段
+        sortOrder: 'asc,asc',//默认排序方式 'desc' 'asc'
         idField: 'id',
         frozen: true,
         collapsible: true,
+        pageList:[10,20,50,100,1000,99999],
         frozenColumns: [
             [
                 {field: 'ck', checkbox: true},
@@ -111,18 +112,20 @@ $(function () {
                         return value;
                     }
                 },
-                {field: 'name', title: '姓名', width: 100, sortable: true},
-                {field: 'tel', title: '电话', width: 120},
-                {field: 'mobilephone', title: '手机号', width: 120}
+                {field: 'name', title: '姓名', width: 60, sortable: true},
+                {field: 'tel', title: '电话', width: 100},
+                {field: 'mobilephone', title: '手机号', width: 100},
+                {field: 'orderNo', title: '排序', width: 60, sortable: true}
             ]
         ],
         columns: [
             [
                 {field: 'id', title: '主键', hidden: true, sortable: true, align: 'right', width: 80} ,
+                {field: 'defaultOrganId', title: '默认机构ID', width: 80,hidden: true},
                 {field: 'defaultOrganName', title: '默认机构', width: 160},
                 {field: 'organNames', title: '所属组织机构', width: 200},
                 {field: 'postNames', title: '岗位', width: 160},
-                {field: 'roleNames', title: '关联角色', width: 200,
+                {field: 'roleNames', title: '角色', width: 200,
                     formatter: function (value, rowData, rowIndex) {
                         if (isSuperOwner(rowData.id)) {
                             return $.formatString('<span  style="color:red">{0}</span>', '超级管理员(无需设置角色)');
@@ -130,10 +133,17 @@ $(function () {
                         return value;
                     }
                 },
+                {field: 'resourceNames', title: '资源', width: 200,hidden: true},
                 {field: 'sexView', title: '性别', width: 60, align: 'center'},
                 {field: 'email', title: '邮箱', width: 120},
                 {field: 'address', title: '地址', width: 200},
-                {field: 'statusView', title: '状态', align: 'center', width: 60}
+                {field: 'statusView', title: '状态', align: 'center', width: 60,
+                    formatter: function (value, rowData, rowIndex) {
+                    if (rowData.status != 0) {
+                        return $.formatString('<span  style="color:red">{0}</span>', value);
+                    }
+                    return value;
+                }}
             ]
         ],
         toolbar: [
@@ -199,6 +209,38 @@ $(function () {
                 handler: function () {
                     editUserResource()
                 }
+            },
+            '-',
+            {
+                text: '上移',
+                iconCls: 'eu-icon-up',
+                handler: function () {
+                    move(true);
+                }
+            },
+            '-',
+            {
+                text: '下移',
+                iconCls: 'eu-icon-down',
+                handler: function () {
+                    move();
+                }
+            },
+            '-',
+            {
+                text: '启用',
+                iconCls: 'eu-icon-user',
+                handler: function () {
+                    lock(false);
+                }
+            },
+            '-',
+            {
+                text: '停用',
+                iconCls: 'eu-icon-lock',
+                handler: function () {
+                    lock(true);
+                }
             }
         ],
         queryParams: {organSysCode: sessionInfoLoginOrganSysCode},
@@ -228,8 +270,118 @@ $(function () {
     var ac = $loginNameOrName.data('autocompleter');
     //添加查询属性
     ac.setExtraParam("rows",ac.options.maxItemsToShow);
+    ac.setExtraParam("sort","orderNo");
+    ac.setExtraParam("order","asc");
 
 });
+
+
+/**
+ * 移动
+ * @param up 是否上移 是：true 否：false
+ */
+function move(up){
+    //选中的所有行
+    var rows = user_datagrid.datagrid('getSelections');
+    //选中的行（第一次选择的行）
+    var row = user_datagrid.datagrid('getSelected');
+    if (row) {
+        if (rows.length > 1) {
+            row = rows[rows.length - 1];
+            eu.showMsg("您选择了多个操作对象，请选择一行数据！");
+            return;
+        }
+        var rowIndex = user_datagrid.datagrid("getRowIndex",row);
+        var upUserId,downUserId;
+        $.messager.progress({
+            title: '提示信息！',
+            text: '数据处理中，请稍后....'
+        });
+        var datagridData = user_datagrid.datagrid("getData").rows;
+        var moveUp;//是否上移动 是：true 否（下移）：false
+        if(up){
+            moveUp = true;
+            upUserId = row.id;
+            if(rowIndex == 0){//最上一行
+//                $.messager.progress('close');
+//                return;
+            }else{
+                if(datagridData.length>=(rowIndex+1)){
+                    downUserId = datagridData[rowIndex-1].id;
+                }
+            }
+        }else{
+            moveUp = false;
+            downUserId = row.id;
+            if (datagridData.length == (rowIndex + 1)) {//最后一行
+//                $.messager.progress('close');
+//                return;
+            } else {
+                if (datagridData.length > (rowIndex + 1)) {
+                    upUserId = datagridData[rowIndex + 1].id;
+                }
+            }
+
+        }
+        $.ajax({
+            url: ctx+'/sys/user/changeOrderNo',
+            type: 'post',
+            data: {upUserId: upUserId,downUserId:downUserId,moveUp:moveUp},
+            dataType: 'json',
+            traditional: true,
+            success: function (data) {
+                $.messager.progress('close');
+                if (data.code == 1) {
+                    user_datagrid.datagrid('reload');	// reload the user data
+//                        eu.showMsg(data.msg);//操作结果提示
+                } else {
+                    eu.showAlertMsg(data.msg, 'error');
+                }
+            }
+        });
+
+    }else{
+        eu.showMsg("您未选择任何操作对象，请选择一行数据！");
+    }
+}
+
+function lock(lock){
+//选中的所有行
+    var rows = user_datagrid.datagrid('getSelections');
+    //选中的行（第一次选择的行）
+    var row = user_datagrid.datagrid('getSelected');
+    if (row) {
+        var userIds = new Array();
+        $.each(rows,function(i,r){
+            userIds.push(r.id);
+        })
+        var status = 3;//锁定状态位
+        if(!lock){//启用
+            status = 0;
+        }
+
+        $.ajax({
+            url: ctx+'/sys/user/lock',
+            type: 'post',
+            data: {userIds: userIds,status:status},
+            dataType: 'json',
+            traditional: true,
+            success: function (data) {
+                $.messager.progress('close');
+                if (data.code == 1) {
+                    user_datagrid.datagrid('reload');	// reload the user data
+//                        eu.showMsg(data.msg);//操作结果提示
+                } else {
+                    eu.showAlertMsg(data.msg, 'error');
+                }
+            }
+        });
+
+    }else{
+        eu.showMsg("您未选择任何操作对象，请选择一行数据！");
+    }
+}
+
 function formInit() {
     user_form = $('#user_form').form({
         url: ctx + '/sys/user/save',
@@ -338,7 +490,7 @@ function edit(rowIndex, rowData) {
     if (row) {
         if (rows.length > 1) {
             row = rows[rows.length - 1];
-            eu.showMsg("您选择了多个操作对象，默认操作最后一次被选中的记录！");
+            eu.showMsg("您选择了多个操作对象，默认操作第一次被选中的记录！");
         }
         //判断是否允许操作
         if (isOpeated(row.id) == false) {
@@ -348,13 +500,13 @@ function edit(rowIndex, rowData) {
 
         showDialog(row);
     } else {
-        eu.showMsg("请选择要操作的对象！");
+        eu.showMsg("您未选择任何操作对象，请选择一行数据！");
     }
 }
 //初始化修改密码表单
 function initPasswordForm() {
     user_password_form = $('#user_password_form').form({
-        url: ctx + '/sys/user/updateUserPassword',
+        url: ctx + '/sys/user/_updateUserPassword',
         onSubmit: function (param) {
             param.upateOperate = '0';
             $.messager.progress({
@@ -364,6 +516,13 @@ function initPasswordForm() {
             var isValid = $(this).form('validate');
             if (!isValid) {
                 $.messager.progress('close');
+            }else{
+                var rows = user_datagrid.datagrid('getSelections');
+                var userIds = new Array();
+                $.each(rows,function(i,row){
+                    userIds.push(row.id);
+                })
+                param.userIds = userIds;
             }
             return isValid;
         },
@@ -389,9 +548,6 @@ function editPassword() {
     //选中的行（第一条）
     var row = user_datagrid.datagrid('getSelected');
     if (row) {
-        if (rows.length > 1) {
-            eu.showMsg("您选择了多个操作对象，默认操作最后一次被选中的记录！");
-        }
         //判断是否允许操作
         if (isOpeated(row.id) == false) {
             eu.showMsg("超级管理员用户信息不允许被其他人修改！");
@@ -427,12 +583,15 @@ function editPassword() {
             },
             onLoad: function () {
                 initPasswordForm();
-                $('#user_password_form_id').val(row.id);
+                if(rows.length ==1) {//选中1个
+                    $('#user_password_form_id').val(row.id);
+                }
+
             }
         });
 
     } else {
-        eu.showMsg("请选择要操作的对象！");
+        eu.showMsg("您未选择任何操作对象，请选择一行数据！");
     }
 }
 
@@ -448,6 +607,13 @@ function initUserRoleForm() {
             var isValid = $(this).form('validate');
             if (!isValid) {
                 $.messager.progress('close');
+            }else{
+                var rows = user_datagrid.datagrid('getSelections');
+                var userIds = new Array();
+                $.each(rows,function(i,row){
+                    userIds.push(row.id);
+                })
+                param.userIds = userIds;
             }
             return isValid;
         },
@@ -473,9 +639,6 @@ function editUserRole() {
     //选中的行（第一条）
     var row = user_datagrid.datagrid('getSelected');
     if (row) {
-        if (rows.length > 1) {
-            eu.showMsg("您选择了多个操作对象，默认操作最后一次被选中的记录！");
-        }
         //判断是否允许操作
         if (isOpeated(row.id) == false) {
             eu.showMsg("超级管理员用户信息不允许被其他人修改！");
@@ -487,8 +650,8 @@ function editUserRole() {
             return;
         }
 
-        var inputUrl = ctx + '/sys/user/role';
-        if (row != undefined && row.id) {
+        var inputUrl = ctx+'/sys/user/role';
+        if (row != undefined && row.id && rows.length ==1) {
             inputUrl = inputUrl + "?id=" + row.id;
         }
         //弹出对话窗口
@@ -521,12 +684,14 @@ function editUserRole() {
             },
             onLoad: function () {
                 initUserRoleForm();
-                user_role_form.form('load', row);
+                if(rows.length ==1) {//选中1个
+                    user_role_form.form('load', row);
+                }
             }
         });
 
     } else {
-        eu.showMsg("请选择要操作的对象！");
+        eu.showMsg("您未选择任何操作对象，请选择一行数据！");
     }
 }
 
@@ -543,6 +708,13 @@ function initUserResourceForm() {
             var isValid = $(this).form('validate');
             if (!isValid) {
                 $.messager.progress('close');
+            }else{
+                var rows = user_datagrid.datagrid('getSelections');
+                var userIds = new Array();
+                $.each(rows,function(i,row){
+                    userIds.push(row.id);
+                })
+                param.userIds = userIds;
             }
             return isValid;
         },
@@ -567,9 +739,6 @@ function editUserResource() {
     //选中的行（第一条）
     var row = user_datagrid.datagrid('getSelected');
     if (row) {
-        if (rows.length > 1) {
-            eu.showMsg("您选择了多个操作对象，默认操作最后一次被选中的记录！");
-        }
         //判断是否允许操作
         if (isOpeated(row.id) == false) {
             eu.showMsg("超级管理员用户信息不允许被其他人修改！");
@@ -610,12 +779,14 @@ function editUserResource() {
             },
             onLoad: function () {
                 initUserResourceForm();
-                user_resource_form.form('load', row);
+                if(rows.length ==1) {//选中1个
+                    user_resource_form.form('load', row);
+                }
             }
         });
 
     } else {
-        eu.showMsg("请选择要操作的对象！");
+        eu.showMsg("您未选择任何操作对象，请选择一行数据！");
     }
 }
 
@@ -631,6 +802,13 @@ function initUserOrganForm() {
             var isValid = $(this).form('validate');
             if (!isValid) {
                 $.messager.progress('close');
+            }else{
+                var rows = user_datagrid.datagrid('getSelections');
+                var userIds = new Array();
+                $.each(rows,function(i,row){
+                    userIds.push(row.id);
+                })
+                param.userIds = userIds;
             }
             return isValid;
         },
@@ -656,17 +834,14 @@ function editUserOrgan() {
     //选中的行（第一条）
     var row = user_datagrid.datagrid('getSelected');
     if (row) {
-        if (rows.length > 1) {
-            eu.showMsg("您选择了多个操作对象，默认操作最后一次被选中的记录！");
-        }
         //判断是否允许操作
         if (isOpeated(row.id) == false) {
             eu.showMsg("超级管理员用户信息不允许被其他人修改！");
             return;
         }
 
-        var inputUrl = ctx + '/sys/user/organ';
-        if (row != undefined && row.id) {
+        var inputUrl = ctx+'/sys/user/organ';
+        if (row != undefined && row.id && rows.length ==1) {
             inputUrl = inputUrl + "?id=" + row.id;
         }
         //弹出对话窗口
@@ -699,12 +874,14 @@ function editUserOrgan() {
             },
             onLoad: function () {
                 initUserOrganForm();
-                user_organ_form.form('load', row);
+                if(rows.length ==1){//选中1个
+                    user_organ_form.form('load', row);
+                }
             }
         });
 
     } else {
-        eu.showMsg("请选择要操作的对象！");
+        eu.showMsg("您未选择任何操作对象，请选择一行数据！");
     }
 }
 
@@ -720,6 +897,13 @@ function initUserPostForm() {
             var isValid = $(this).form('validate');
             if (!isValid) {
                 $.messager.progress('close');
+            }else{
+                var rows = user_datagrid.datagrid('getSelections');
+                var userIds = new Array();
+                $.each(rows,function(i,row){
+                    userIds.push(row.id);
+                })
+                param.userIds = userIds;
             }
             return isValid;
         },
@@ -743,12 +927,22 @@ function editUserPost() {
     //选中的行（第一条）
     var row = user_datagrid.datagrid('getSelected');
     if (row) {
-        if (rows.length > 1) {
-            eu.showMsg("您选择了多个操作对象，默认操作最后一次被选中的记录！");
+        var node = organ_tree.tree('getSelected');
+
+        if (rows.length > 1 && node == null) {
+            eu.showMsg("批量设置岗位，请选中左侧机构树中的一个机构！");
+            return;
         }
-        var userUrl = ctx + "/sys/user/post";
+        var organParamUrl = "";
+        if(node != null){
+            organParamUrl = "organId="+node.id;
+        }
+
+        var userUrl = ctx+"/sys/user/post";
         if (row != undefined && row.id) {
-            userUrl = userUrl + "?id=" + row.id;
+            userUrl = userUrl + "?id=" + row.id+"&"+organParamUrl;
+        }else{
+            userUrl += "?"+organParamUrl;
         }
         //弹出对话窗口
         $user_post_dialog = $('<div/>').dialog({
@@ -780,12 +974,14 @@ function editUserPost() {
             },
             onLoad: function () {
                 initUserPostForm();
-                $user_post_form.form('load', row);
+                if(rows.length ==1) {//选中1个
+                    $user_post_form.form('load', row);
+                }
             }
         });
 
     } else {
-        eu.showMsg("请选择要操作的对象！");
+        eu.showMsg("您未选择任何操作对象，请选择一行数据！");
     }
 }
 
@@ -818,7 +1014,7 @@ function del() {
             }
         });
     } else {
-        eu.showMsg("请选择要操作的对象！");
+        eu.showMsg("您未选择任何操作对象，请选择一行数据！");
     }
 }
 

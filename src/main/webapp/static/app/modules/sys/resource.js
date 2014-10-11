@@ -162,7 +162,7 @@ function edit(row) {
     if (row != undefined) {
         showDialog(row);
     } else {
-        eu.showMsg("请选择要操作的对象！");
+        eu.showMsg("您未选择任何操作对象，请选择一行数据！");
     }
 }
 
@@ -188,6 +188,6 @@ function del(rowIndex){
             }
         });
     } else {
-        eu.showMsg("请选择要操作的对象！");
+        eu.showMsg("您未选择任何操作对象，请选择一行数据！");
     }
 }

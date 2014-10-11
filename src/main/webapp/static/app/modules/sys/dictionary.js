@@ -289,7 +289,7 @@ function edit() {
     if (row){
         if(rows.length>1){
             row = rows[rows.length-1];
-            eu.showMsg("您选择了多个操作对象，默认操作最后一次被选中的记录！");
+            eu.showMsg("您选择了多个操作对象，默认操作第一次被选中的记录！");
         }
         if (editRow != undefined) {
             eu.showMsg("请先保存正在编辑的数据！");
@@ -305,7 +305,7 @@ function edit() {
         if(editRow != undefined){
             eu.showMsg("请先保存正在编辑的数据！");
         } else{
-            eu.showMsg("请选择要操作的对象！");
+            eu.showMsg("您未选择任何操作对象，请选择一行数据！");
         }
     }
 }
@@ -315,7 +315,7 @@ function save(rowData) {
     if (editRow != undefined) {
         dictionary_datagrid.datagrid('endEdit', editRow);
     } else {
-        eu.showMsg("请选择要操作的对象！");
+        eu.showMsg("您未选择任何操作对象，请选择一行数据！");
     }
 }
 
@@ -365,7 +365,7 @@ function del() {
             }
         });
     } else {
-        eu.showMsg("请选择要操作的对象！");
+        eu.showMsg("您未选择任何操作对象，请选择一行数据！");
     }
 }
 

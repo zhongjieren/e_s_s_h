@@ -157,8 +157,8 @@ public class PostController
      */
     @RequestMapping(value = {"combobox"})
     @ResponseBody
-    public List<Combobox> combobox(String selectType,Long userId){
-        List<Post> list = postManager.getSelectablePostsByUserId(userId);
+    public List<Combobox> combobox(String selectType,Long userId,Long organId){
+        List<Post> list = postManager.getSelectablePosts(userId,organId);
         List<Combobox> cList = Lists.newArrayList();
 
         //为combobox添加  "---全部---"、"---请选择---"

@@ -1,3 +1,4 @@
+<%@ page import="com.eryansky.common.web.utils.WebUtils" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ include file="/common/taglibs.jsp" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -9,6 +10,13 @@
         .login_label {display: inline-block;text-align: right;width: 76px;font-size: 14px;}
         body{width:100%; height:100%; margin:0; padding:0;}
     </style>
+    <%
+        Cookie cookie = WebUtils.getCookie(request, "loginName");
+        if(cookie!=null){
+            String loginNameOrName = WebUtils.getCookie(request, "loginName").getValue();
+            request.setAttribute("loginNameOrName",loginNameOrName);
+        }
+    %>
     <script type="text/javascript">
         var loginForm;
         var login_linkbutton;
@@ -64,6 +72,15 @@
                     });
                 }
             });
+
+            $loginName = $("#loginName").next().children(".textbox-text").autocomplete('${ctx}/sys/user/autoComplete', {
+                remoteDataType:'json',
+                minChars: 0,
+                maxItemsToShow: 10
+            });
+            var ac = $loginName.data('autocompleter');
+            //添加查询属性
+            ac.setExtraParam("rows",ac.options.maxItemsToShow);
         });
         function cover(){
             var win_width=$(window).width();
@@ -116,7 +133,7 @@
                 <div style="padding: 5px;">
                     <label class="login_label">用户名：</label>
                     <input id="loginName" name="loginName" class="easyui-textbox" style="width: 210px;height:40px;padding:12px"
-                           value="${cookie.loginName.value}"
+                           value="${fns:urlDecode(loginNameOrName)}"
                            data-options="prompt:'请输入登录名...',iconCls:'easyui-icon-man',iconWidth:38,required:true,validType:'minLength[1]',missingMessage:'请输入用户名!'"/>
 
                 </div>

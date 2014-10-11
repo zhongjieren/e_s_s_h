@@ -154,3 +154,15 @@ function screenToggle(flag){
         layout_center_tabs.tabs("select",selectedTab_Title);
     }
 }
+
+/**
+ * 更多 右键菜单显示
+ * @param el
+ */
+function showLayoutTabmenu(el){
+    var pos = $(el).offset();
+    $('#layout_center_tabs_menu').menu('show',{
+        left:pos.left+$(el).outerWidth()-$('#layout_center_tabs_menu').outerWidth(),
+        top:pos.top+$(el).outerHeight()
+    });
+}

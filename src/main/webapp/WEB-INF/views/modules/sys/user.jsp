@@ -21,6 +21,10 @@
     <div onclick="editUserPost();" data-options="iconCls:'eu-icon-group'">设置岗位</div>
     <div onclick="editUserRole();" data-options="iconCls:'eu-icon-group'">设置角色</div>
     <div onclick="editUserResource();" data-options="iconCls:'eu-icon-folder'">设置资源</div>
+    <div onclick="move(true);" data-options="iconCls:'eu-icon-up'">上移</div>
+    <div onclick="move();" data-options="iconCls:'eu-icon-down'">下移</div>
+    <div onclick="lock(false);" data-options="iconCls:'eu-icon-user'">启用</div>
+    <div onclick="lock(true);" data-options="iconCls:'eu-icon-lock'">停用</div>
 </div>
 <%-- easyui-layout布局 --%>
 <div class="easyui-layout" fit="true" style="margin: 0px;border: 0px;overflow: hidden;width:100%;height:100%;">

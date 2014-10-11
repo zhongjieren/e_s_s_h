@@ -42,7 +42,7 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 //jackson标记不生成json对象的属性 
 @JsonIgnoreProperties (value = { "hibernateLazyInitializer" , "handler","fieldHandler",
-        "resources","roles","defaultOrgan","organs"})
+        "resources","roles","defaultOrgan","organs","posts"})
 //逻辑删除注解标记 propertyName:字段名 value:删除标记的值（使用默认值"1"） type:属性类型
 @Delete(propertyName = "status",type = PropertyType.I)
 @JsonFilter(" ")

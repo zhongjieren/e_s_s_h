@@ -9,7 +9,7 @@
     //加载用户
     function loadPost(){
         post_combobox = $("#postIds").combobox({
-            url: '${ctx}/sys/post/combobox?userId=${model.id}',
+            url: '${ctx}/sys/post/combobox?userId=${model.id}&organId=${organId}',
             multiple: true,
             editable:false
         });

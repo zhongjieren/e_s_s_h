@@ -12,7 +12,7 @@
 	<div type="closeOther">关闭其他</div>
 	<div type="closeAll">关闭所有</div>
 </div>
-<div id="layout_center_tabs_menu" style="width: 120px; display: none;">
+<div id="layout_center_tabs_menu" class="easyui-menu" style="width: 120px; display: none;">
     <div data-options="iconCls:'eu-icon-user_red'">
         <span>更换皮肤</span>
         <div style="width:120px;">
@@ -45,9 +45,11 @@
        onclick="javascript:screenToggle(true);"></a>
     <a href="#" class="easyui-linkbutton easyui-tooltip" title="刷新" data-options="iconCls:'easyui-icon-reload',plain:true"
        onclick="javascript:refresh();"></a>
-    <a href="#" class="easyui-linkbutton easyui-tooltip" title="关闭" data-options="iconCls:'easyui-icon-cancel',plain:true"
-       onclick="javascript:cancel();"></a>
-    <a href="javascript:void(0);" class="easyui-menubutton" menu="#layout_center_tabs_menu" iconCls="eu-icon-setting"></a>
+    <%--<a href="#" class="easyui-linkbutton easyui-tooltip" title="关闭" data-options="iconCls:'easyui-icon-cancel',plain:true"--%>
+       <%--onclick="javascript:cancel();"></a>--%>
+    <a href="javascript:void(0);" class="easyui-linkbutton" onmousemove="showLayoutTabmenu(this)" onclick="showLayoutTabmenu(this)"
+       data-options="iconCls:'eu-icon-more',plain:true"></a>
+    <span style="width: 20px;">&nbsp;</span>
 
 </div>
 <%--退出全屏工具栏--%>
@@ -56,7 +58,9 @@
        onclick="javascript:screenToggle(false);"></a>
     <a href="#" class="easyui-linkbutton easyui-tooltip" title="刷新" data-options="iconCls:'easyui-icon-reload',plain:true"
        onclick="javascript:refresh();"></a>
-    <a href="#" class="easyui-linkbutton easyui-tooltip" title="关闭" data-options="iconCls:'easyui-icon-cancel',plain:true"
-       onclick="javascript:cancel();"></a>
-    <a href="javascript:void(0);" class="easyui-menubutton" menu="#layout_center_tabs_menu" iconCls="eu-icon-setting"></a>
+    <%--<a href="#" class="easyui-linkbutton easyui-tooltip" title="关闭" data-options="iconCls:'easyui-icon-cancel',plain:true"--%>
+       <%--onclick="javascript:cancel();"></a>--%>
+    <a href="javascript:void(0);" class="easyui-linkbutton" onmousemove="showLayoutTabmenu(this)" onclick="showLayoutTabmenu(this)"
+       data-options="iconCls:'eu-icon-more',plain:true,height:32,width:32"></a>
+    <span style="width: 20px;">&nbsp;</span>
 </div>

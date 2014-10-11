@@ -174,7 +174,7 @@ function del() {
             }
         });
     } else {
-        eu.showMsg("请选择要操作的对象！");
+        eu.showMsg("您未选择任何操作对象，请选择一行数据！");
     }
 }
 

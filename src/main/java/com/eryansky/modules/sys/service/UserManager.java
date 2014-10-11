@@ -18,10 +18,10 @@ import com.eryansky.common.utils.StringUtils;
 import com.eryansky.common.utils.collections.Collections3;
 import com.eryansky.core.security.SecurityUtils;
 import com.eryansky.core.security.SessionInfo;
-import com.eryansky.modules.sys.entity.Organ;
-import com.eryansky.modules.sys.entity.Role;
-import com.eryansky.modules.sys.entity.User;
+import com.eryansky.modules.sys.entity.*;
 import com.eryansky.utils.CacheConstants;
+import com.google.common.collect.Lists;
+import org.apache.commons.lang3.Validate;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +48,12 @@ public class UserManager extends EntityManager<User, Long> {
     private OrganManager organManager;
     @Autowired
     private RoleManager roleManager;
+    @Autowired
+    private PostManager postManager;
+    @Autowired
+    private ResourceManager resourceManager;
 
-	@Autowired
+    @Autowired
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		userDao = new HibernateDao<User, Long>(sessionFactory, User.class);
 	}
@@ -263,7 +267,8 @@ public class UserManager extends EntityManager<User, Long> {
     public Page<User> getUsersByQuery(Long organId,String organSysCode, String loginNameOrName, Integer userType,int page, int rows, String sort, String order) {
         //条件都为空的时候能够查询出所有数据
         if(organId == null && StringUtils.isBlank(organSysCode) && StringUtils.isBlank(loginNameOrName) && userType == null){
-            return super.find(page,rows,null,null,new ArrayList<PropertyFilter>());
+//            return super.find(page,rows,sort,order,new ArrayList<PropertyFilter>());
+            return super.find(page,rows,"defaultOrgan.id,orderNo","asc,asc",new ArrayList<PropertyFilter>());
         }
         Parameter parameter = new Parameter();
         StringBuilder hql = new StringBuilder();
@@ -403,6 +408,30 @@ public class UserManager extends EntityManager<User, Long> {
     }
 
     /**
+     * 根据登录名或姓名、密码查找用户.
+     * <br/>排除已删除的用户
+     * @param loginNameOrName
+     *            登录名或姓名
+     * @param password
+     *            密码
+     * @return
+     * @throws DaoException
+     * @throws SystemException
+     * @throws ServiceException
+     */
+    @SuppressWarnings("unchecked")
+    public User getUserByLNP(String loginNameOrName, String password)
+            throws DaoException,SystemException,ServiceException {
+        Assert.notNull(loginNameOrName, "参数[loginNameOrName]为空!");
+        Assert.notNull(password, "参数[password]为空!");
+        Parameter parameter = new Parameter(loginNameOrName, loginNameOrName, password, StatusState.delete.getValue());
+        List<User> list = getEntityDao().find(
+                "from User u where (u.loginName = :p1 or u.name = :p2) and u.password = :p3 and u.status <> :p4",
+                parameter);
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    /**
      * 得到排序字段的最大值.
      *
      * @return 返回排序字段的最大值
@@ -422,6 +451,47 @@ public class UserManager extends EntityManager<User, Long> {
         return max;
     }
 
+
+    /**
+     * 排序号交换
+     * @param upUserId 需要上位的用户ID
+     * @param downUserId 需要下位的用户ID
+     * @param moveUp 是否上移 是；true 否（下移）：false
+     */
+    public void changeOrderNo(Long upUserId, Long downUserId, boolean moveUp) {
+        Validate.notNull(upUserId, "参数[upUserId]不能为null!");
+        Validate.notNull(downUserId, "参数[downUserId]不能为null!");
+        User upUser = this.loadById(upUserId);
+        User downUser = this.loadById(downUserId);
+        if (upUser == null) {
+            throw new ServiceException("用户[" + upUserId + "]不存在.");
+        }
+        Integer upUserOrderNo = upUser.getOrderNo();
+        Integer downUserOrderNo = downUser.getOrderNo();
+        if (upUser.getOrderNo() == null) {
+            upUserOrderNo = 1;
+        }
+        if (downUser == null) {
+            throw new ServiceException("用户[" + downUserId + "]不存在.");
+        }
+        if (downUser.getOrderNo() == null) {
+            downUserOrderNo = 1;
+        }
+        if (upUserOrderNo == downUserOrderNo) {
+            if (moveUp) {
+                upUser.setOrderNo(upUserOrderNo - 1);
+            } else {
+                downUser.setOrderNo(downUserOrderNo + 1);
+            }
+        } else {
+            upUser.setOrderNo(downUserOrderNo);
+            downUser.setOrderNo(upUserOrderNo);
+        }
+
+        this.saveOrUpdate(upUser);
+        this.saveOrUpdate(downUser);
+    }
+
     public SessionInfo getUser(String loginName){
         Assert.notNull(loginName, "参数[loginName]为空!");
         User user = findUniqueBy("loginName",loginName);
@@ -430,5 +500,217 @@ public class UserManager extends EntityManager<User, Long> {
         }
 
         return SecurityUtils.userToSessionInfo(user);
+    }
+
+    /**
+     * 批量更新用户 机构信息
+     * @param userIds 用户Id集合
+     * @param organIds 所所机构ID集合
+     * @param defaultOrganId 默认机构
+     */
+    public void updateUserOrgan(List<Long> userIds,List<Long> organIds, Long defaultOrganId){
+        if(Collections3.isNotEmpty(userIds)){
+            for(Long userId:userIds){
+                User model = this.loadById(userId);
+                if(model == null){
+                    throw new ServiceException("用户["+userId+"]不存在.");
+                }
+                List<Organ> oldOrgans = model.getOrgans();
+                //绑定组织机构
+                model.setOrgans(null);
+                List<Organ> organs = Lists.newArrayList();
+                if (Collections3.isNotEmpty(organIds)) {
+                    for (Long organId : organIds) {
+                        Organ organ = organManager.loadById(organId);
+                        organs.add(organ);
+                        if (Collections3.isNotEmpty(oldOrgans)) {
+                            Iterator<Organ> iterator = oldOrgans.iterator();
+                            while (iterator.hasNext()) {
+                                Organ oldOrgan = iterator.next();
+                                if (oldOrgan.getId().equals(organ.getId())) {
+                                    iterator.remove();
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+
+                //去除用户已删除机构下的岗位信息
+                List<Post> userPosts = model.getPosts();
+                if (Collections3.isNotEmpty(oldOrgans)) {//已删除的机构
+                    Iterator<Organ> iterator = oldOrgans.iterator();
+                    while (iterator.hasNext()) {
+                        Organ oldOrgan = iterator.next();
+                        List<Post> organPosts = oldOrgan.getPosts();
+                        for (Post organPost : organPosts) {
+                            if (Collections3.isNotEmpty(userPosts)) {
+                                Iterator<Post> iteratorPost = userPosts.iterator();
+                                while (iteratorPost.hasNext()) {
+                                    Post userPost = iteratorPost.next();
+                                    if (userPost.getId().equals(organPost.getId())) {
+                                        iteratorPost.remove();
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+
+                model.setOrgans(organs);
+
+                //绑定默认组织机构
+                model.setDefaultOrgan(null);
+                Organ defaultOrgan = null;
+                if (defaultOrganId != null) {
+                    defaultOrgan = organManager.loadById(defaultOrganId);
+                }
+                model.setDefaultOrgan(defaultOrgan);
+
+                this.saveOrUpdate(model);
+            }
+        }
+    }
+
+
+    /**
+     * 设置用户岗位 批量
+     * @param userIds 用户ID集合
+     * @param roleIds 角色ID集合
+     */
+    public void updateUserRole(List<Long> userIds,List<Long> roleIds){
+        if(Collections3.isNotEmpty(userIds)){
+            for(Long userId:userIds){
+                User model = this.loadById(userId);
+                if(model == null){
+                    throw new ServiceException("用户["+userId+"]不存在.");
+                }
+                List<Role> rs = Lists.newArrayList();
+                if (Collections3.isNotEmpty(roleIds)) {
+                    for (Long id : roleIds) {
+                        Role role = roleManager.loadById(id);
+                        rs.add(role);
+                    }
+                }
+
+                model.setRoles(rs);
+                this.saveOrUpdate(model);
+            }
+        }else{
+            logger.warn("参数[userIds]为空.");
+        }
+    }
+
+    /**
+     * 设置用户岗位 批量
+     * @param userIds 用户ID集合
+     * @param postIds 岗位ID集合
+     */
+    public void updateUserPost(List<Long> userIds,List<Long> postIds) throws ServiceException{
+        if(Collections3.isNotEmpty(userIds)){
+            for(Long userId:userIds){
+                User model = this.loadById(userId);
+                if(model == null){
+                    throw new ServiceException("用户["+userId+"]不存在.");
+                }
+                List<Post> ps = Lists.newArrayList();
+                if (Collections3.isNotEmpty(postIds)) {
+                    for (Long id : postIds) {
+                        Post post = postManager.loadById(id);
+                        if(!this.checkPostForUser(model,post)){
+                            throw new ServiceException("用户["+model.getName()+"]不允许设置为岗位["+post.getName()+"],用户所属机构不存在此岗位.");
+                        }
+                        ps.add(post);
+                    }
+                }
+
+                model.setPosts(ps);
+
+                this.saveOrUpdate(model);
+            }
+        }else{
+            logger.warn("参数[userIds]为空.");
+        }
+    }
+
+    /**
+     * 设置用户岗位 批量
+     * @param userIds 用户ID集合
+     * @param resourceIds 资源ID集合
+     */
+    public void updateUserResource(List<Long> userIds,List<Long> resourceIds) throws ServiceException{
+        if(Collections3.isNotEmpty(userIds)){
+            for(Long userId:userIds){
+                User model = this.loadById(userId);
+                if(model == null){
+                    throw new ServiceException("用户["+userId+"]不存在.");
+                }
+                List<Resource> rs = Lists.newArrayList();
+                if(Collections3.isNotEmpty(resourceIds)){
+                    for (Long id : resourceIds) {
+                        Resource resource = resourceManager.loadById(id);
+                        rs.add(resource);
+                    }
+                }
+
+                model.setResources(rs);
+                this.saveOrUpdate(model);
+            }
+        }else{
+            logger.warn("参数[userIds]为空.");
+        }
+    }
+
+    /**
+     * 设置用户岗位 批量
+     * @param userIds 用户ID集合
+     * @param password 密码(md5加密)
+     */
+    public void updateUserPassword(List<Long> userIds,String password) throws ServiceException{
+        if(Collections3.isNotEmpty(userIds)){
+            for(Long userId:userIds){
+                User model = this.loadById(userId);
+                if(model == null){
+                    throw new ServiceException("用户["+userId+"]不存在或已被删除.");
+                }
+                model.setPassword(password);
+                this.saveOrUpdate(model);
+            }
+        }else{
+            logger.warn("参数[userIds]为空.");
+        }
+    }
+
+    public boolean checkPostForUser(User user,Post post){
+        Validate.notNull(user, "参数[user]为空!");
+        Validate.notNull(post, "参数[post]为空!");
+        boolean flag = false;
+        List<Long> userOrganIds = user.getOrganIds();
+        if(Collections3.isNotEmpty(userOrganIds) && userOrganIds.contains(post.getOrganId())){
+            flag = true;
+        }
+        return flag;
+    }
+
+    /**
+     * 锁定用户 批量
+     * @param userIds 用户ID集合
+     */
+    public void lockUsers(List<Long> userIds,int status){
+        if(Collections3.isNotEmpty(userIds)){
+            for(Long userId:userIds){
+                User user = this.loadById(userId);
+                if(user == null){
+                    throw new ServiceException("用户["+userId+"]不存在.");
+                }
+                user.setStatus(status);
+                this.saveOrUpdate(user);
+            }
+        }else{
+            logger.warn("参数[userIds]为空.");
+        }
     }
 }

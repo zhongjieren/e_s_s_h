@@ -260,7 +260,7 @@ public class UserController extends BaseController<User,Long> {
         } else {// 修改
             User superUser = userManager.getSuperUser();
             User sessionUser = userManager.getCurrentUser();
-            if (!sessionUser.getId().equals(superUser.getId())) {
+            if (nameCheckUser != null && !sessionUser.getId().equals(superUser.getId())) {
                 result = new Result(Result.ERROR, "超级用户信息仅允许自己修改!",null);
                 logger.debug(result.toString());
                 return result;
@@ -323,6 +323,21 @@ public class UserController extends BaseController<User,Long> {
         return result;
     }
 
+    /**
+     * 修改用户密码 批量、无需输入原密码.
+     * @param userIds 用户ID集合
+     * @param newPassword 新密码
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = {"_updateUserPassword"})
+    @ResponseBody
+    public Result updateUserPassword(@RequestParam(value = "userIds", required = false) List<Long> userIds,
+                                     @RequestParam(value = "newPassword", required = true)String newPassword) throws Exception {
+        userManager.updateUserPassword(userIds,Encrypt.e(newPassword));
+        return Result.successResult();
+    }
+
 
     /**
      * 修改用户角色页面.
@@ -337,19 +352,10 @@ public class UserController extends BaseController<User,Long> {
      */
     @RequestMapping(value = {"updateUserRole"})
     @ResponseBody
-    public Result updateUserRole(@ModelAttribute("model") User user, @RequestParam(value = "roleIds", required = false)List<Long> roleIds) throws Exception {
-        getEntityManager().evict(user);
+    public Result updateUserRole(@RequestParam(value = "userIds", required = false) List<Long> userIds,
+                                 @RequestParam(value = "roleIds", required = false) List<Long> roleIds) throws Exception {
         Result result = null;
-        List<Role> rs = Lists.newArrayList();
-        if(Collections3.isNotEmpty(roleIds)){
-            for (Long id : roleIds) {
-                Role role = roleManager.loadById(id);
-                rs.add(role);
-            }
-        }
-
-        user.setRoles(rs);
-        userManager.saveEntity(user);
+        userManager.updateUserRole(userIds,roleIds);
         result = Result.successResult();
         return result;
     }
@@ -378,100 +384,48 @@ public class UserController extends BaseController<User,Long> {
     }
 
     /**
-     * 设置用户组织机构.
+     * 设置用户机构 批量更新用户 机构信息
+     * @param userIds 用户Id集合
+     * @param organIds 所所机构ID集合
+     * @param defaultOrganId 默认机构
+     * @return
+     * @throws Exception
      */
     @RequestMapping(value = {"updateUserOrgan"})
     @ResponseBody
-    public Result updateUserOrgan(@ModelAttribute("model") User model, @RequestParam(value = "organIds", required = false)List<Long> organIds, String defaultOrganId) throws Exception {
-        getEntityManager().evict(model);
+    public Result updateUserOrgan(@RequestParam(value = "userIds", required = false) List<Long> userIds,
+                                  @RequestParam(value = "organIds", required = false) List<Long> organIds, Long defaultOrganId) throws Exception {
         Result result = null;
-        List<Organ> oldOrgans = model.getOrgans();
-        //绑定组织机构
-        model.setOrgans(null);
-        List<Organ> organs = Lists.newArrayList();
-        if(Collections3.isNotEmpty(organIds)){
-            for (Long organId : organIds) {
-                Organ organ = organManager.loadById(organId);
-                organs.add(organ);
-                if(Collections3.isNotEmpty(oldOrgans)){
-                    Iterator<Organ> iterator = oldOrgans.iterator();
-                    while (iterator.hasNext()){
-                        Organ oldOrgan = iterator.next();
-                        if(oldOrgan.getId().equals(organ.getId())){
-                            iterator.remove();
-                        }
-                    }
-
-                }
-            }
-        }
-
-
-        //去除用户已删除机构下的岗位信息
-        List<Post> userPosts = model.getPosts();
-        if(Collections3.isNotEmpty(oldOrgans)){//已删除的机构
-            Iterator<Organ> iterator = oldOrgans.iterator();
-            while (iterator.hasNext()){
-                Organ oldOrgan = iterator.next();
-                List<Post> organPosts = oldOrgan.getPosts();
-                for(Post organPost:organPosts){
-                    if(Collections3.isNotEmpty(userPosts)){
-                        Iterator<Post> iteratorPost = userPosts.iterator();
-                        while (iteratorPost.hasNext()){
-                            Post userPost = iteratorPost.next();
-                            if(userPost.getId().equals(organPost.getId())){
-                                iteratorPost.remove();
-                            }
-                        }
-                    }
-                }
-            }
-
-        }
-
-
-        model.setOrgans(organs);
-
-        //绑定默认组织机构
-        model.setDefaultOrgan(null);
-        Organ defaultOrgan = null;
-        if (defaultOrganId != null) {
-            defaultOrgan = organManager.loadById(model.getDefaultOrganId());
-        }
-        model.setDefaultOrgan(defaultOrgan);
-
-        userManager.saveEntity(model);
+        userManager.updateUserOrgan(userIds, organIds, defaultOrganId);
         result = Result.successResult();
         return result;
+
     }
 
     /**
      * 设置用户岗位页面.
+     * @param organId 机构ID
+     * @param uiModel
+     * @return
+     * @throws Exception
      */
     @RequestMapping(value = {"post"})
-    public String post() throws Exception {
+    public String post(Long organId,Model uiModel) throws Exception {
+        uiModel.addAttribute("organId",organId);
         return "modules/sys/user-post";
     }
 
     /**
      * 修改用户岗位.
+     * @param userIds 用户Id集合
+     * @param postIds 岗位ID集合
      */
     @RequestMapping(value = {"updateUserPost"})
     @ResponseBody
-    public Result updateUserPost(@ModelAttribute("model") User model, @RequestParam(value = "postIds", required = false)List<Long> postIds) throws Exception {
-        getEntityManager().evict(model);
+    public Result updateUserPost(@RequestParam(value = "userIds", required = false)List<Long> userIds,
+                                 @RequestParam(value = "postIds", required = false) List<Long> postIds) {
         Result result = null;
-        List<Post> ps = Lists.newArrayList();
-        if(Collections3.isNotEmpty(postIds)){
-            for (Long id : postIds) {
-                Post post = postManager.loadById(id);
-                ps.add(post);
-            }
-        }
-
-        model.setPosts(ps);
-
-        getEntityManager().saveEntity(model);
+        userManager.updateUserPost(userIds,postIds);
         result = Result.successResult();
         return result;
     }
@@ -480,32 +434,27 @@ public class UserController extends BaseController<User,Long> {
      * 修改用户资源页面.
      */
     @RequestMapping(value = {"resource"})
-    public String resource(Model model) throws Exception {
+    public String resource(@ModelAttribute("model") User model,Model uiModel) throws Exception {
         List<TreeNode> treeNodes = resourceManager.getResourceTree(null, true);
         String resourceComboboxData = JsonMapper.nonDefaultMapper().toJson(treeNodes);
         logger.debug(resourceComboboxData);
-        model.addAttribute("resourceComboboxData", resourceComboboxData);
+        uiModel.addAttribute("resourceComboboxData", resourceComboboxData);
         return "modules/sys/user-resource";
     }
 
     /**
      * 修改用户资源.
+     * @param userIds 用户ID集合
+     * @param resourceIds 资源ID集合
+     * @return
+     * @throws Exception
      */
     @RequestMapping(value = {"updateUserResource"})
     @ResponseBody
-    public Result updateUserResource(@ModelAttribute("model") User user, @RequestParam(value = "resourceIds", required = false)List<Long> resourceIds) throws Exception {
-        getEntityManager().evict(user);
+    public Result updateUserResource(@RequestParam(value = "userIds", required = false) List<Long> userIds,
+                                     @RequestParam(value = "resourceIds", required = false)List<Long> resourceIds) throws Exception {
         Result result = null;
-        List<Resource> rs = Lists.newArrayList();
-        if(Collections3.isNotEmpty(resourceIds)){
-            for (Long id : resourceIds) {
-                Resource resource = resourceManager.loadById(id);
-                rs.add(resource);
-            }
-        }
-
-        user.setResources(rs);
-        userManager.saveEntity(user);
+        userManager.updateUserResource(userIds,resourceIds);
         result = Result.successResult();
         return result;
 
@@ -578,7 +527,34 @@ public class UserController extends BaseController<User,Long> {
         return result;
     }
 
+    /**
+     * 排序调整
+     * @param upUserId 需要上位的用户ID
+     * @param downUserId 需要下位的用户ID
+     * @param moveUp 是否上移动 否则下移
+     * @return
+     */
+    @RequestMapping(value = {"changeOrderNo"})
+    @ResponseBody
+    public Result changeOrderNo(@RequestParam(required = true) Long upUserId,
+                                @RequestParam(required = true)Long downUserId,boolean moveUp){
+        userManager.changeOrderNo(upUserId,downUserId,moveUp);
+        return Result.successResult();
+    }
 
+    /**
+     * 锁定用户 批量
+     * @param userIds 用户ID集合
+     * @param status {@link com.eryansky.common.orm.entity.StatusState}
+     * @return
+     */
+    @RequestMapping(value = {"lock"})
+    @ResponseBody
+    public Result lock(@RequestParam(value = "userIds", required = false) List<Long> userIds,
+                       @RequestParam(required = true,defaultValue = "1")Integer status){
+        userManager.lockUsers(userIds,status);
+        return Result.successResult();
+    }
 
     /**
      * 多Sheet Excel导出，获取的数据格式是List<Object[]>

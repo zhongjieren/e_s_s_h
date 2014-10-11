@@ -119,3 +119,13 @@
 .eu-icon-chart_pie{
     background:url('icons/extjs_icons/chart/chart_pie.png') no-repeat center center;
 }
+
+.eu-icon-more{
+    background:url('icons/more.png') no-repeat center center;
+}
+.eu-icon-up{
+    background:url('icons/icon_up.png') no-repeat center center;
+}
+.eu-icon-down{
+    background:url('icons/icon_down.png') no-repeat center center;
+}
