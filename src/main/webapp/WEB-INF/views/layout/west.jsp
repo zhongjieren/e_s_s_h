@@ -4,7 +4,7 @@
 <script type="text/javascript">
     var _ctx = "${_ctx}";
 </script>
-<script type="text/javascript" src="${ctxStatic}/app/layout/west.js" charset="utf-8"></script>
+<script type="text/javascript" src="${ctxStatic}/app/layout/west.js?_=${sysInitTime}" charset="utf-8"></script>
 <!-- 导航菜单 -->
 <!-- 导航菜单 -->
 <%--<div class="easyui-accordion" data-options="animate:false,fit:true,border:true" style="overflow: auto">--%>

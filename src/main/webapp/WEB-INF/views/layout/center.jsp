@@ -1,7 +1,7 @@
 <%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ include file="/common/taglibs.jsp"%>
-<script type="text/javascript" src="${ctxStatic}/app/layout/center.js" charset="utf-8"></script>
-<script type="text/javascript" src="${ctxStatic}/app/layout/north.js" charset="utf-8"></script>
+<script type="text/javascript" src="${ctxStatic}/app/layout/center.js?_=${sysInitTime}" charset="utf-8"></script>
+<script type="text/javascript" src="${ctxStatic}/app/layout/north.js?_=${sysInitTime}" charset="utf-8"></script>
 <div id="layout_center_tabs" fit="true" style="overflow: hidden;">
 	<%--<div id="layout_center_tabs_index" title="首页" data-options="href:'${ctx}/common/layout/portal',iconCls:'icon-application'"></div>--%>
 </div>

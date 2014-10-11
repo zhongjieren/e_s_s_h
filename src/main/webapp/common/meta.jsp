@@ -3,6 +3,7 @@
 <%
     String ctx = request.getContextPath();
     BrowserType browserType = BrowserUtils.getBrowserType(request);
+    long _sysInitTime = AppConstants.SYSY_INIT_TIME;
 %>
 <c:set var="ev" value="1.4" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE;chrome=1" />
@@ -16,8 +17,8 @@
     var ctx = "${ctx}";
     var ctxStatic = "${ctxStatic}";
 </script>
-<link rel="stylesheet" type="text/css" href="${ctxStatic}/css/default.css" />
-<link rel="stylesheet" type="text/css" href="${ctxStatic}/css/form_style.css" />
+<link rel="stylesheet" type="text/css" href="${ctxStatic}/css/default.css?_=${sysInitTime}" />
+<link rel="stylesheet" type="text/css" href="${ctxStatic}/css/form_style.css?_=${sysInitTime}" />
 <%-- 引入jQuery --%>
 <%
     if (browserType != null
@@ -50,16 +51,16 @@
 <link rel="stylesheet" type="text/css" href="${ctxStatic}/js/easyui-${ev}/portal/portal.css">
 <script type="text/javascript" src="${ctxStatic}/js/easyui-${ev}/portal/jquery.portal-min.js" charset="utf-8"></script>
 
-<link rel="stylesheet" type="text/css" href="${ctxStatic}/js/easyui-${ev}/extend/icon/eu-icon.css" />
+<link rel="stylesheet" type="text/css" href="${ctxStatic}/js/easyui-${ev}/extend/icon/eu-icon.css?_=${sysInitTime}" />
 <%-- jQuery方法扩展 --%>
-<script type="text/javascript" src="${ctxStatic}/js/jquery/jquery-extend.js" charset="utf-8"></script>
+<script type="text/javascript" src="${ctxStatic}/js/jquery/jquery-extend.js?_=${sysInitTime}" charset="utf-8"></script>
 <%-- easyui扩展 --%>
-<script type="text/javascript" src="${ctxStatic}/js/easyui-${ev}/extend/js/easyui-extend.js" charset="utf-8"></script>
+<script type="text/javascript" src="${ctxStatic}/js/easyui-${ev}/extend/js/easyui-extend.js?_=${sysInitTime}" charset="utf-8"></script>
 <!-- 屏蔽键盘等事件 -->
 <%-- 
 <script type="text/javascript" src="${ctxStatic}/js/prohibit.js" charset="utf-8"></script>
 --%>
 <%-- easyui自定义表单校验扩展 --%>
-<script type="text/javascript" src="${ctxStatic}/js/easyui-${ev}/extend/js/validatebox-extend.js" charset="utf-8"></script>
+<script type="text/javascript" src="${ctxStatic}/js/easyui-${ev}/extend/js/validatebox-extend.js?_=${sysInitTime}" charset="utf-8"></script>
 <%-- easyui后台异步校验 --%>
-<script type="text/javascript" src="${ctxStatic}/js/easyui-${ev}/extend/js/validatebox-ajax.js" charset="utf-8"></script>
+<script type="text/javascript" src="${ctxStatic}/js/easyui-${ev}/extend/js/validatebox-ajax.js?_=${sysInitTime}" charset="utf-8"></script>

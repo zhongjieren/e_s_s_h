@@ -6,9 +6,9 @@
 <title>essh桌面版</title>
 <%@ include file="/common/meta.jsp"%>
     <link rel="stylesheet" type="text/css" href="${ctxStatic}/js/easyui-${ev}/extend/app/app.css" />
-    <script type="text/javascript" src="${ctxStatic}/js/easyui-${ev}/extend/app/jquery.app.js" charset="utf-8"></script>
-    <script type="text/javascript" src="${ctxStatic}/js/session-keep.js" charset="utf-8"></script>
-    <script type="text/javascript" src="${ctxStatic}/js/easyui-${ev}/extend/app/initApp.js" charset="utf-8"></script>
+    <script type="text/javascript" src="${ctxStatic}/js/easyui-${ev}/extend/app/jquery.app.js?_=${sysInitTime}" charset="utf-8"></script>
+    <script type="text/javascript" src="${ctxStatic}/js/session-keep.js?_=${sysInitTime}" charset="utf-8"></script>
+    <script type="text/javascript" src="${ctxStatic}/js/easyui-${ev}/extend/app/initApp.js?_=${sysInitTime}" charset="utf-8"></script>
     <%--<script type="text/javascript">--%>
         <%--$(function(){--%>
             <%--$.parser.parse();--%>

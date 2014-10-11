@@ -5,7 +5,7 @@
 <link href="${ctxStatic}/js/kendoui/styles/kendo.default.min.css" rel="stylesheet">
 <script src="${ctxStatic}/js/kendoui/js/kendo.all.min.js"></script>
 <script src="${ctxStatic}/js/easyui-${ev}/datagridview/datagrid-bufferview-min.js"></script>
-<script type="text/javascript" src="${ctxStatic}/app/modules/sys/role.js" charset="utf-8"></script>
+<script type="text/javascript" src="${ctxStatic}/app/modules/sys/role.js?_=${sysInitTime}" charset="utf-8"></script>
 <%-- 列表右键 --%>
 <div id="role_datagrid_menu" class="easyui-menu" style="width:120px;display: none;">
 	<div onclick="showDialog();" data-options="iconCls:'easyui-icon-add'">新增</div>

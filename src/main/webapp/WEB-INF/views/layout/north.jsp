@@ -1,6 +1,6 @@
 <%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ include file="/common/taglibs.jsp"%>
-<%--<script type="text/javascript" src="${ctxStatic}/app/layout/north.js" charset="utf-8"></script>--%>
+<%--<script type="text/javascript" src="${ctxStatic}/app/layout/north.js?_=${sysInitTime}" charset="utf-8"></script>--%>
 <div style="height: 100%;background-image: url(${ctxStatic}/img/top_bg.png); background-repeat: repeat-x;">
     <div style="float: left;">
 	    <img alt="essh" title="永远的小女儿" class="easyui-tooltip" data-options="position:'right'" src="${ctxStatic}/img/essh_logo.png">

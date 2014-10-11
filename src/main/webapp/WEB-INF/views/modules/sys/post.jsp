@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ include file="/common/taglibs.jsp"%>
 <%@ include file="/common/meta.jsp"%>
-<script type="text/javascript" src="${ctxStatic}/app/modules/sys/post.js" charset="utf-8"></script>
+<script type="text/javascript" src="${ctxStatic}/app/modules/sys/post.js?_=${sysInitTime}" charset="utf-8"></script>
 <%-- 列表右键 --%>
 <div id="post_datagrid_menu" class="easyui-menu" style="width:120px;display: none;">
     <div onclick="showDialog();" data-options="iconCls:'easyui-icon-add'">新增</div>

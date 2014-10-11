@@ -5,7 +5,7 @@
 <%-- 引入kindEditor插件 --%>
 <link rel="stylesheet" href="${ctxStatic}/js/kindeditor-4.1.10/themes/default/default.css">
 <script type="text/javascript" src="${ctxStatic}/js/kindeditor-4.1.10/kindeditor-all-min.js" charset="utf-8"></script>
-<script type="text/javascript" src="${ctxStatic}/app/modules/sys/bug.js" charset="utf-8"></script>
+<script type="text/javascript" src="${ctxStatic}/app/modules/sys/bug.js?_=${sysInitTime}" charset="utf-8"></script>
 <%-- 隐藏iframe --%>
 <iframe id="bug_temp_iframe" style="display: none;"></iframe>
 <%-- 列表右键 --%>

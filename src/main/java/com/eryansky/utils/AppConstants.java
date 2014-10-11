@@ -8,6 +8,8 @@ package com.eryansky.utils;
 import com.eryansky.common.utils.SysConstants;
 import com.eryansky.common.utils.io.PropertiesLoader;
 
+import java.util.Date;
+
 /**
  * 系统使用的静态变量.
  * 
@@ -15,6 +17,11 @@ import com.eryansky.common.utils.io.PropertiesLoader;
  * @date 2013-03-17 上午8:25:36
  */
 public class AppConstants extends SysConstants {
+
+    /**
+     * 系统初始化时间
+     */
+    public static long SYSY_INIT_TIME = new Date().getTime();
 	/**
 	 * 修改用户密码 个人(需要输入原始密码)
 	 */

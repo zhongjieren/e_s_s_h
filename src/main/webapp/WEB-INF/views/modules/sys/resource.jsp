@@ -1,7 +1,7 @@
 <%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ include file="/common/taglibs.jsp"%>
 <%@ include file="/common/meta.jsp"%>
-<script type="text/javascript" src="${ctxStatic}/app/modules/sys/resource.js" charset="utf-8"></script>
+<script type="text/javascript" src="${ctxStatic}/app/modules/sys/resource.js?_=${sysInitTime}" charset="utf-8"></script>
 <div class="easyui-layout" fit="true" style="margin: 0px;border: 0px;overflow: hidden;width:100%;height:100%;">
 
     <%-- 列表右键 --%>

@@ -7,7 +7,7 @@
     var sessionInfoUserId = "${sessionInfo.userId}";//当前的登录用户ID
     var sessionInfoLoginOrganSysCode = "${sessionInfo.loginOrganSysCode}";//当前的登录机构系统编码
 </script>
-<script type="text/javascript" src="${ctxStatic}/app/modules/sys/user.js" charset="utf-8"></script>
+<script type="text/javascript" src="${ctxStatic}/app/modules/sys/user.js?_=${sysInitTime}" charset="utf-8"></script>
 <script type="text/javascript" src="${ctxStatic}/js/uploadify/scripts/jquery.uploadify.mine.js"></script>
 <link href="${ctxStatic}/js/uploadify/css/uploadify.css" rel="stylesheet" type="text/css"/>
 <link href="${ctxStatic}/js/bootstrap/2.3.2/custom/bootstrap-img.css" rel="stylesheet" type="text/css"/>
