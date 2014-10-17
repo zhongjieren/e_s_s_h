@@ -233,7 +233,7 @@ public class DictionaryManager extends EntityManager<Dictionary, Long> {
         Assert.notNull(dictionaryCode, "参数[dictionaryCode]为空!");
         Parameter parameter = new Parameter(dictionaryTypeCode,dictionaryCode);
         List<Dictionary> list = getEntityDao().find(
-                "from Dictionary d where d.dictionaryType.code = :p1 and d.dictionaryCode = :p2 ",parameter);
+                "from Dictionary d where d.dictionaryType.code = :p1 and d.code = :p2 ",parameter);
         return list.isEmpty() ? null:list.get(0);
     }
 
