@@ -277,7 +277,8 @@ public class UserManager extends EntityManager<User, Long> {
         parameter.put("status",StatusState.delete.getValue());
         if(StringUtils.isNotBlank(organSysCode)){
             Organ organ = organManager.findUniqueBy("sysCode",organSysCode);
-            hql.append("and uo.sysCode like :sysCode ");
+//            hql.append("and uo.sysCode like :sysCode ");
+            hql.append("and (uo.sysCode like :sysCode or uo.sysCode is null) ");
             parameter.put("sysCode",organ.getSysCode()+"%");
         }else {
             if(organId !=null){

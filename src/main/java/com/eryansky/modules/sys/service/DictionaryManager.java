@@ -155,7 +155,7 @@ public class DictionaryManager extends EntityManager<Dictionary, Long> {
 		}
 		StringBuilder hql = new StringBuilder();
         Parameter parameter = new Parameter(StatusState.normal.getValue(),dictionaryTypeCode);
-		hql.append("from Dictionary d where d.status = :p1 and d.dictionaryType.code = :p2  and d.parentDictionary is null order by d.id asc");
+		hql.append("from Dictionary d where d.status = :p1 and d.dictionaryType.code = :p2  and d.parentDictionary is null order by d.orderNo");
 		logger.debug(hql.toString());
 		list = getEntityDao().find(hql.toString(), parameter);
         for (Dictionary d : list) {
@@ -272,7 +272,7 @@ public class DictionaryManager extends EntityManager<Dictionary, Long> {
         Assert.notNull(dictionaryTypeCode, "参数[dictionaryTypeCode]为空!");
         Parameter parameter = new Parameter(dictionaryTypeCode);
         List<Dictionary> list = getEntityDao().find(
-				"from Dictionary d where d.dictionaryType.code = :p1 ",parameter);
+				"from Dictionary d where d.dictionaryType.code = :p1 order by d.orderNo",parameter);
         logger.debug("缓存:{}", CacheConstants.DICTIONARYS_BY_TYPE_CACHE+" 参数：dictionaryTypeCode="+dictionaryTypeCode);
         return list;
 	}
@@ -324,7 +324,7 @@ public class DictionaryManager extends EntityManager<Dictionary, Long> {
 			sb.append(" and d.parentDictionary.code  = :parentCode ");
             parameter.put("parentCode",parentCode);
 		}
-		sb.append(" order by d.id asc");
+		sb.append(" order by d.orderNo");
 		List<Dictionary> list = getEntityDao().find(sb.toString(), parameter);
 		return list;
 	}

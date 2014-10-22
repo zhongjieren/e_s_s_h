@@ -696,7 +696,7 @@ function editUserRole() {
 }
 
 
-//初始化用户角色表单
+//初始化用户资源表单
 function initUserResourceForm() {
     user_resource_form = $('#user_resource_form').form({
         url: ctx + '/sys/user/updateUserResource',
@@ -732,7 +732,7 @@ function initUserResourceForm() {
         }
     });
 }
-//修改用户角色
+//修改用户资源
 function editUserResource() {
     //选中的所有行
     var rows = user_datagrid.datagrid('getSelections');
