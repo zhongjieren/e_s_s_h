@@ -280,7 +280,7 @@ $.random4 = function() {
 	return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 };
 $.UUID = function() {
-	return (eu.random4() + eu.random4() + "-" + eu.random4() + "-" + eu.random4() + "-" + eu.random4() + "-" + eu.random4() + eu.random4() + eu.random4());
+	return ($.random4() + $.random4() + "-" + $.random4() + "-" + $.random4() + "-" + $.random4() + "-" + $.random4() + $.random4() + $.random4());
 };
 
 /**
