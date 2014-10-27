@@ -888,6 +888,8 @@ var gridTooltipOptions = {
 			if(!params){
 				params = {};
 			}
+            var defaultParams = {onlyShowNowrap:true};
+            params = $.extend(params,defaultParams);
 	        function showTip(showParams, td, e, dg) {   
 	            //无文本，不提示。   
 	            if ($(td).text() == "") return;   
