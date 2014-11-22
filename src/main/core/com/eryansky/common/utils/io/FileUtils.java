@@ -6,18 +6,18 @@
 package com.eryansky.common.utils.io;
 
 import com.eryansky.common.exception.ServiceException;
+import com.eryansky.common.utils.Identities;
 import org.apache.commons.codec.binary.Base64;
 
 import java.io.*;
 import java.net.URLEncoder;
-import java.util.UUID;
 
 /**
  * 文件工具类.
  * @author     : 尔演&Eryan eryanwcp@gmail.com
  * @date       : 2013-1-19 下午4:41:56
  */
-public class FileUtil {
+public class FileUtils extends org.apache.commons.io.FileUtils {
 
 	/**
 	 * 生成随机的文件名 将原始文件名去掉,改为一个UUID的文件名,后缀名以原文件名的后缀为准
@@ -27,11 +27,9 @@ public class FileUtil {
 	 * @return
 	 */
 	public static String generateUUIDFileName(String fileName) {
-
-		UUID uuid = UUID.randomUUID();
+		String uuid = Identities.uuid();
 		String str = fileName;
-		System.out.println(str);
-		str = uuid.toString() + "." + str.substring(str.lastIndexOf(".") + 1);
+		str = uuid + "." + str.substring(str.lastIndexOf(".") + 1);
 		return str;
 	}
 
@@ -43,7 +41,6 @@ public class FileUtil {
 	 * @return 文件名
 	 */
 	public static String getFileName(String filePath) {
-
 		filePath = filePath.replace("\\", "/");
 		if (filePath.indexOf("/") != -1) {
 			return filePath.substring(filePath.lastIndexOf("/") + 1);

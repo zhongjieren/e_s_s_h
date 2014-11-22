@@ -5,7 +5,7 @@
  */
 package com.eryansky.common.utils.mail.model;
 
-import com.eryansky.common.utils.io.FileUtil;
+import com.eryansky.common.utils.io.FileUtils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
@@ -143,7 +143,7 @@ public class MailSenderModel {
 			freeMarkerConfig = new Configuration();
 			freeMarkerConfig.setDirectoryForTemplateLoading(new File(templatePath));
 			// 获取模板
-			template = freeMarkerConfig.getTemplate(FileUtil.getFileName(templatePath),
+			template = freeMarkerConfig.getTemplate(FileUtils.getFileName(templatePath),
 					new Locale("Zh_cn"), "UTF-8");
 			// 模板内容转换为string
 			htmlText = FreeMarkerTemplateUtils
@@ -155,7 +155,7 @@ public class MailSenderModel {
 	}
 	
 	private static String getFilePath() {
-  		String path = FileUtil.getAppPath(MailSenderModel.class);
+  		String path = FileUtils.getAppPath(MailSenderModel.class);
   		path = path + File.separator +"mailtemplate"+File.separator;
 		path = path.replace("\\", "/");
 		return path;
