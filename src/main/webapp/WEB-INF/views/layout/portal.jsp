@@ -23,7 +23,7 @@
 		</div>	
 	</div>
 	<div  style="height: 100%;width:200px;overflow: hidden;"
-          data-options="region:'east',title:'日历',href:'${ctx}/common/layout/portal-east'">
+          data-options="region:'east',title:'日历',href:'${ctxAdmin}/common/layout/portal-east'">
 	</div>
 </div>
 

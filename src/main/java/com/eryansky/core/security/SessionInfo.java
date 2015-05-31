@@ -282,6 +282,17 @@ public class SessionInfo implements Serializable {
         this.postNames = postNames;
     }
 
+    /**
+     * 是否是超级管理员
+     * @return
+     */
+    public boolean isSuperUser(){
+        if(this.getUserId() != null &&  this.getUserId().equals(1L)) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);

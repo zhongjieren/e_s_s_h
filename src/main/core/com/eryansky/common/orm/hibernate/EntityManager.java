@@ -5,25 +5,23 @@
  */
 package com.eryansky.common.orm.hibernate;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-
-import com.eryansky.common.utils.StringUtils;
-import org.hibernate.criterion.Criterion;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
-
 import com.eryansky.common.exception.DaoException;
 import com.eryansky.common.exception.ServiceException;
 import com.eryansky.common.exception.SystemException;
 import com.eryansky.common.orm.Page;
 import com.eryansky.common.orm.PropertyFilter;
 import com.eryansky.common.orm.PropertyFilter.MatchType;
-import com.eryansky.common.utils.collections.Collections3;
 import com.eryansky.common.orm.entity.StatusState;
+import com.eryansky.common.utils.collections.Collections3;
+import org.hibernate.criterion.Criterion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Service层领域对象业务管理类基类.
@@ -311,7 +309,7 @@ public abstract class EntityManager<T, PK extends Serializable> {
 	 * @throws ServiceException
 	 */
 	@Transactional(readOnly = true)
-	public Page<T> getAll(final Page<T> page) throws DaoException,
+	public Page<T> findPage(final Page<T> page) throws DaoException,
 			SystemException, ServiceException {
 		return getEntityDao().getAll(page);
 	}
@@ -347,23 +345,6 @@ public abstract class EntityManager<T, PK extends Serializable> {
 		return getEntityDao().getAll(orderBy, order);
 	}
 
-	/**
-	 * 过滤器分页查询.
-	 * 
-	 * @param page
-	 *            分页对象
-	 * @param filters
-	 *            属性过滤器
-	 * @return
-	 * @throws DaoException
-	 * @throws SystemException
-	 * @throws ServiceException
-	 */
-	@Transactional(readOnly = true)
-	public Page<T> find(final Page<T> page, final List<PropertyFilter> filters)
-			throws DaoException, SystemException, ServiceException {
-		return getEntityDao().findPage(page, filters);
-	}
 
 	/**
 	 * 过滤器查询.
@@ -414,112 +395,73 @@ public abstract class EntityManager<T, PK extends Serializable> {
 	 * @throws ServiceException
 	 */
 	@Transactional(readOnly = true)
-	public Page<T> find(final Page<T> page, final String hql,
+	public Page<T> findPage(final Page<T> page, final String hql,
 			final Object... values) throws DaoException, SystemException,
 			ServiceException {
 		return getEntityDao().findPage(page, hql, values);
 	}
 
-	/**
-	 * 过滤器分页查询. <br>
-	 * 自动过滤逻辑删除的数据.
-	 * 
-	 * @param page
-	 *            第几页
-	 * @param rows
-	 *            页大小
-	 * @param sort
-	 *            排序字段
-	 * @param order
-	 *            排序方式 增序:'asc',降序:'desc'
-	 * @param filters
-	 *            属性过滤器
-	 * @return
-	 * @throws DaoException
-	 * @throws SystemException
-	 * @throws ServiceException
-	 */
-	@Transactional(readOnly = true)
-	public Page<T> find(int page, int rows, String sort, String order,
-			List<PropertyFilter> filters) throws DaoException, SystemException,
-			ServiceException {
-		return find(page, rows, sort, order, filters, true);
-	}
+    /**
+     * 自定义hql分页查询.
+     *
+     * @param page 分页对象
+     * @param hql HQL语句
+     * @param parameter 参数
+     * @return
+     * @throws DaoException
+     * @throws SystemException
+     * @throws ServiceException
+     */
+    @Transactional(readOnly = true)
+    public Page<T> findPage(final Page<T> page, final String hql,
+                        final Parameter parameter) throws DaoException, SystemException,
+            ServiceException {
+        return getEntityDao().findPage(page, hql, parameter);
+    }
 
-	/**
-	 * 过滤器分页查询.
-	 * <br/>默认根据ID升序排列
-	 * @param page
-	 *            第几页
-	 * @param rows
-	 *            页大小
-	 * @param sort
-	 *            排序字段 可为null或""
-	 * @param order
-	 *            排序方式 增序:'asc',降序:'desc' 可为null或""
-	 * @param filters
-	 *            属性过滤器
-	 * @param isFilterDelete
-	 *            是否过滤逻辑删除的数据
-	 * @return
-	 * @throws DaoException
-	 * @throws SystemException
-	 * @throws ServiceException
-	 */
-	@Transactional(readOnly = true)
-	private Page<T> find(Integer page, Integer rows, String sort, String order,
-			List<PropertyFilter> filters, boolean isFilterDelete)
-			throws DaoException, SystemException, ServiceException {
-		Assert.notNull(page, "参数[page]为空!");
-		Assert.notNull(rows, "参数[rows]为空!");
-		Assert.notNull(filters, "参数[filters]为空!");
-		Page<T> p = new Page<T>(rows);
-		p.setPageNo(page);
-		// 过滤逻辑删除的数据
-		if (isFilterDelete) {
-			PropertyFilter normal = new PropertyFilter("NEI_status",
-					StatusState.delete.getValue() + "");
-			filters.add(normal);
-		}
-		if (!StringUtils.isEmpty(sort) && !StringUtils.isEmpty(order)) {
-			p.setOrder(order);
-			p.setOrderBy(sort);
-		} else {
-			p.setOrder(Page.ASC);
-			p.setOrderBy("id");
-		}
-		return getEntityDao().findPage(p, filters);
-	}
+    /**
+     * 过滤器分页查询.
+     *
+     * @param page
+     *            分页对象
+     * @param filters
+     *            属性过滤器
+     * @return
+     * @throws DaoException
+     * @throws SystemException
+     * @throws ServiceException
+     */
+    @Transactional(readOnly = true)
+    public Page<T> findPage(final Page<T> page, final List<PropertyFilter> filters)
+            throws DaoException, SystemException, ServiceException {
+        return this.findPage(page, filters,false);
+    }
 
-	/**
-	 * 自定义Criterion分页查询.
-	 * 
-	 * @param page
-	 *            第几页
-	 * @param rows
-	 *            页大小
-	 * @param sort
-	 *            排序字段
-	 * @param order
-	 *            排序方式 增序:'asc',降序:'desc'
-	 * @param criterions
-	 * @return
-	 * @throws DaoException
-	 * @throws SystemException
-	 * @throws ServiceException
-	 */
-	@Transactional(readOnly = true)
-	public Page<T> findByCriteria(int page, int rows, String sort,
-			String order, Criterion... criterions) throws DaoException,
-			SystemException, ServiceException {
-		Assert.notNull(page, "参数[page]为空!");
-		Assert.notNull(rows, "参数[rows]为空!");
-		Page<T> p = new Page<T>(rows);
-		p.setPageNo(page);
-		p.setOrder(order);
-		p.setOrderBy(sort);
-		return getEntityDao().findPage(p, criterions);
-	}
+    /**
+     * 过滤器分页查询.
+     * @param p 分页对象
+     * @param filters
+     *            属性过滤器
+     * @param isFilterDelete
+     *            是否过滤逻辑删除的数据
+     * @return
+     * @throws DaoException
+     * @throws SystemException
+     * @throws ServiceException
+     */
+    @Transactional(readOnly = true)
+    public Page<T> findPage(Page<T> p,
+                         List<PropertyFilter> filters, boolean isFilterDelete)
+            throws DaoException, SystemException, ServiceException {
+        // 过滤逻辑删除的数据
+        if (isFilterDelete) {
+            PropertyFilter normal = new PropertyFilter("NEI_status",
+                    StatusState.delete.getValue() + "");
+            filters.add(normal);
+        }
+        return getEntityDao().findPage(p, filters);
+    }
+
 
 	/**
 	 * 自定义Criterion分页查询.
@@ -533,7 +475,7 @@ public abstract class EntityManager<T, PK extends Serializable> {
 	 * @throws ServiceException
 	 */
 	@Transactional(readOnly = true)
-	public Page<T> findByCriteria(Page<T> page, Criterion... criterions)
+	public Page<T> findPageByCriteria(Page<T> page, Criterion... criterions)
 			throws DaoException, SystemException, ServiceException {
 		Assert.notNull(page, "参数[page]为空!");
 		Assert.notNull(criterions, "参数[criterions]为空!");

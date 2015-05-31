@@ -6,7 +6,7 @@ var resource_Id;
 $(function() {
     //数据列表
     resource_treegrid = $('#resource_treegrid').treegrid({
-        url:ctx+'/sys/resource/treegrid',
+        url:ctxAdmin+'/sys/resource/treegrid',
         fit:true,
         fitColumns:false,//自适应列宽
         striped:true,//显示条纹
@@ -63,7 +63,7 @@ $(function() {
 
 function formInit(){
     resource_form = $('#resource_form').form({
-        url: ctx+'/sys/resource/_save',
+        url: ctxAdmin+'/sys/resource/_save',
         onSubmit: function(param){
             $.messager.progress({
                 title : '提示信息！',
@@ -102,7 +102,7 @@ function formInit(){
 }
 //显示弹出窗口 新增：row为空 编辑:row有值
 function showDialog(row){
-    var inputUrl = ctx+"/sys/resource/input";
+    var inputUrl = ctxAdmin+"/sys/resource/input";
     if(row != undefined && row.id){
         inputUrl = inputUrl+"?id="+row.id;
     }else{
@@ -175,7 +175,7 @@ function del(rowIndex){
     if (row != undefined) {
         $.messager.confirm('确认提示！','您确定要删除(如果存在子节点，子节点也一起会被删除)？',function(r){
             if (r){
-                $.post(ctx+'/sys/resource/_delete/'+row.id,{},function(data){
+                $.post(ctxAdmin+'/sys/resource/_delete/'+row.id,{},function(data){
                     if (data.code==1){
                         resource_treegrid.treegrid('unselectAll');//取消选择 1.3.6bug
                         resource_treegrid.treegrid('load');	// reload the user data

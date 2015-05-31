@@ -15,7 +15,7 @@
                        class="easyui-validatebox textbox eu-input" placeholder="请输入登录名..."  onkeydown="if(event.keyCode==13)search()"
                        maxLength="25" style="width: 160px" />
             &nbsp;<a class="easyui-linkbutton" href="#" data-options="iconCls:'easyui-icon-search',width:100,height:28,onClick:search">查询</a>
-            <a class="easyui-linkbutton" href="#" data-options="iconCls:'easyui-icon-no',width:100,height:28" onclick="javascript:log_search_form.form('reset');">重置查询</a>
+            <a class="easyui-linkbutton" href="#" data-options="iconCls:'easyui-icon-no',width:100,height:28" onclick="javascript:$log_search_form.form('reset');">重置查询</a>
         </form>
         </form>
     </div>

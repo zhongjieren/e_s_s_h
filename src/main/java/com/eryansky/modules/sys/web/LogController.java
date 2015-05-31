@@ -38,7 +38,7 @@ import java.util.List;
  * @date 2013-12-8 下午5:13
  */
 @Controller
-@RequestMapping(value = "/sys/log")
+@RequestMapping(value = "${adminPath}/sys/log")
 public class LogController
         extends BaseController<Log,Long> {
 
@@ -95,35 +95,5 @@ public class LogController
         return cList;
     }
 
-    /**
-     * 设置日志保留时间 页面
-     *
-     * @return
-     */
-    @RequestMapping(value = {"time"})
-    public String time(Model model) throws Exception {
-        model.addAttribute("keepTime", AppConstants.getLogKeepTime());
-        return "modules/sys/log-time";
-    }
-
-    /**
-     * 更新日志保留时间
-     *
-     * @throws Exception
-     */
-    @RequestMapping(value = {"updateKeepTime"})
-    @ResponseBody
-    public Result updateKeepTime(Integer keepTime) throws Exception {
-        Result reslut = null;
-        if (keepTime != null) {
-            PropertiesLoader propertiesLoader = AppConstants.getConfig();
-            AppConstants.getConfig().modifyProperties(AppConstants.CONFIG_FILE_PATH, AppConstants.CONFIG_LOGKEEPTIME, keepTime.toString());
-            reslut = Result.successResult();
-        } else {
-//            throw new ActionException("未设置参数[keepTime].");
-            reslut = new Result(Result.WARN, "未设置参数[keepTime].", null);
-        }
-        return reslut;
-    }
 
 }

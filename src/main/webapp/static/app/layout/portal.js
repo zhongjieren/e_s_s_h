@@ -6,13 +6,13 @@ $(function() {
         title : protal_titles[0],
         height : 360,
         collapsible : true,
-        href:ctx+'/portal/bug'
+        href:ctxAdmin+'/portal/bug'
     }, {
         id : 'p2',
         title : protal_titles[1],
         height : 360,
         collapsible : true,
-        href : ctx+'/common/layout/portal-component'
+        href : ctxAdmin+'/common/layout/portal-component'
     }];
 
     $('#layout_portal_portal').portal({

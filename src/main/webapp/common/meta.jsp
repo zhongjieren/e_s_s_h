@@ -3,9 +3,8 @@
 <%
     String ctx = request.getContextPath();
     BrowserType browserType = BrowserUtils.getBrowserType(request);
-    long _sysInitTime = AppConstants.SYSY_INIT_TIME;
 %>
-<c:set var="ev" value="1.4" />
+<c:set var="ev" value="1.4.2" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE;chrome=1" />
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta http-equiv="Cache-Control" content="no-store"/>
@@ -15,7 +14,16 @@
 <link rel="shortcut icon" href="${ctxStatic}/img/favicon.ico" />
 <script type="text/javascript" charset="utf-8">
     var ctx = "${ctx}";
+    var ctxAdmin = "${ctxAdmin}";
+    var ctxFront = "${ctxFront}";
     var ctxStatic = "${ctxStatic}";
+    isSuperUser = function() {
+        var isSuperUser = "${sessionInfo.superUser}";
+        if(isSuperUser == "true"){
+            return true;
+        }
+        return false;
+    }
 </script>
 <link rel="stylesheet" type="text/css" href="${ctxStatic}/css/default.css?_=${sysInitTime}" />
 <link rel="stylesheet" type="text/css" href="${ctxStatic}/css/form_style.css?_=${sysInitTime}" />

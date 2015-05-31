@@ -258,17 +258,16 @@ public class UserManager extends EntityManager<User, Long> {
      * @param organId 组织机构ID （注；如果organSysCode参数不为空则 忽略organId）
      * @param organSysCode 组织机构系统编码
      * @param loginNameOrName 姓名或手机号码
-     * @param page 第几页
-     * @param rows 页大小
-     * @param sort 排序字段
-     * @param order 排序方式 增序:'asc',降序:'desc'
+     * @param page 排序方式 增序:'asc',降序:'desc'
      * @return
      */
-    public Page<User> getUsersByQuery(Long organId,String organSysCode, String loginNameOrName, Integer userType,int page, int rows, String sort, String order) {
+    public Page<User> getUsersByQuery(Long organId,String organSysCode, String loginNameOrName, Integer userType,Page<User> page) {
         //条件都为空的时候能够查询出所有数据
         if(organId == null && StringUtils.isBlank(organSysCode) && StringUtils.isBlank(loginNameOrName) && userType == null){
 //            return super.find(page,rows,sort,order,new ArrayList<PropertyFilter>());
-            return super.find(page,rows,"defaultOrgan.id,orderNo","asc,asc",new ArrayList<PropertyFilter>());
+            page.setOrderBy("defaultOrgan.id,orderNo");
+            page.setOrder("asc,asc");
+            return super.findPage(page,new ArrayList<PropertyFilter>());
         }
         Parameter parameter = new Parameter();
         StringBuilder hql = new StringBuilder();
@@ -297,9 +296,7 @@ public class UserManager extends EntityManager<User, Long> {
         }
 
         //设置分页
-        Page<User> p = new Page<User>(rows);
-        p.setPageNo(page);
-        p = userDao.findPage(p,hql.toString(),parameter);
+        page = userDao.findPage(page,hql.toString(),parameter);
 
         //重新计算总数 特殊处理 hql包含distinct语句导致总数出错问题
         String fromHql = hql.toString();
@@ -316,9 +313,9 @@ public class UserManager extends EntityManager<User, Long> {
         } else {
             count = Long.valueOf(list.size());
         }
-        p.setTotalCount(count);
+        page.setTotalCount(count);
 
-        return p;
+        return page;
     }
 
     /**
@@ -713,5 +710,15 @@ public class UserManager extends EntityManager<User, Long> {
         }else{
             logger.warn("参数[userIds]为空.");
         }
+    }
+
+    /**
+     * 根据ID查找
+     * @param userIds 用户ID集合
+     * @return
+     */
+    public List<User> findUsersByIds(List<Long> userIds) {
+        Parameter parameter = new Parameter(userIds);
+        return getEntityDao().find("from User u where u.id in :p1 order by u.orderNo",parameter);
     }
 }

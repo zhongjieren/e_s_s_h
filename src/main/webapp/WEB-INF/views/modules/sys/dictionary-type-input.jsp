@@ -7,7 +7,7 @@
 	//加载分组
 	function loadGroup(){
         $('#_parentId').combobox({
-            url:'${ctx}/sys/dictionary-type/group_combobox?selectType=select',
+            url:'${ctxAdmin}/sys/dictionary-type/group_combobox?selectType=select',
             multiple:false,//是否可多选
             editable:false,//是否可编辑
             height:28,

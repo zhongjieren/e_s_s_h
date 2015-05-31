@@ -32,7 +32,7 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 @Controller
-@RequestMapping(value = "/sys/dictionary-type")
+@RequestMapping(value = "${adminPath}/sys/dictionary-type")
 public class DictionaryTypeController
         extends BaseController<DictionaryType,Long> {
 

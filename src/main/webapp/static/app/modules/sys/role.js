@@ -11,7 +11,7 @@ $(function () {
     role_search_form = $('#role_search_form').form();
     //数据列表
     role_datagrid = $('#role_datagrid').datagrid({
-        url: ctx + '/sys/role/datagrid',
+        url: ctxAdmin + '/sys/role/datagrid',
         fit: true,
         pagination: true,//底部分页
         rownumbers: true,//显示行数
@@ -98,7 +98,7 @@ $(function () {
 });
 function formInit() {
     role_form = $('#role_form').form({
-        url: ctx + '/sys/role/save',
+        url: ctxAdmin + '/sys/role/save',
         onSubmit: function (param) {
             $.messager.progress({
                 title: '提示信息！',
@@ -131,7 +131,7 @@ function formInit() {
 }
 //显示弹出窗口 新增：row为空 编辑:row有值
 function showDialog(row) {
-    var inputUrl = ctx + "/sys/role/input";
+    var inputUrl = ctxAdmin + "/sys/role/input";
     if (row != undefined && row.id) {
         inputUrl = inputUrl + "?id=" + row.id;
     }
@@ -201,7 +201,7 @@ function edit(rowIndex, rowData) {
 //初始化角色角色表单
 function initRoleResourceForm() {
     role_resource_form = $('#role_resource_form').form({
-        url: ctx + '/sys/role/updateRoleResource',
+        url: ctxAdmin + '/sys/role/updateRoleResource',
         onSubmit: function (param) {
             $.messager.progress({
                 title: '提示信息！',
@@ -244,7 +244,7 @@ function editRoleResource() {
             height: 360,
             modal: true,
             maximizable: true,
-            href: ctx + '/sys/role/resource',
+            href: ctxAdmin + '/sys/role/resource',
             buttons: [
                 {
                     text: '保存',
@@ -278,7 +278,7 @@ function editRoleResource() {
 //初始化角色用户表单
 function initRoleUserForm() {
     role_user_form = $('#role_user_form').form({
-        url: ctx + '/sys/role/updateRoleUser',
+        url: ctxAdmin + '/sys/role/updateRoleUser',
         onSubmit: function (param) {
             $.messager.progress({
                 title: '提示信息！',
@@ -313,7 +313,7 @@ function editRoleUser() {
         if (rows.length > 1) {
             eu.showMsg("您选择了多个操作对象，默认操作第一次被选中的记录！");
         }
-        var userUrl = ctx + "/sys/role/user";
+        var userUrl = ctxAdmin + "/sys/role/user";
         if (row != undefined && row.id) {
             userUrl = userUrl + "?id=" + row.id;
         }
@@ -367,7 +367,7 @@ function del() {
                     ids[i] = row.id;
                 });
                 $.ajax({
-                    url: ctx + '/sys/role/_remove',
+                    url: ctxAdmin + '/sys/role/_remove',
                     type: 'post',
                     data: {ids: ids},
                     traditional: true,

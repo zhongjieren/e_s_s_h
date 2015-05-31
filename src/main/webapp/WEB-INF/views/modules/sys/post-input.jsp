@@ -8,7 +8,7 @@
 
     function loadOrgan(){
         organ_combotree = $("#organId").combotree({
-            url:'${ctx}/sys/organ/tree?selectType=select',
+            url:'${ctxAdmin}/sys/organ/tree?selectType=select',
             multiple:false,//是否可多选
             editable:false
         });

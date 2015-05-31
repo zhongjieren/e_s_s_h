@@ -12,8 +12,8 @@ $(function() {
 			minWidth:'650px',//默认最小值为"650px"
 			items : [ 'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste', 'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript', 'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/', 'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak', 'anchor', 'link', 'unlink' ],
 			allowFileManager : true,
-			uploadJson : '${ctx}/servlet/FileUploadServlet',
-			fileManagerJson : '${ctx}/servlet/FileManagerServlet',
+            uploadJson : '${ctxAdmin}/disk/kindeditor/upload',
+            fileManagerJson : '${ctxAdmin}/disk/kindeditor/filemanager',
 			afterCreate:function(){ //加载完成后改变皮肤
 		        var color = $('.panel-header').css('background-color');
 		        $('.ke-toolbar').css('background-color',color);

@@ -13,10 +13,7 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>
             classpath*:applicationContext.xml,
-            classpath*:applicationContext-ehcache.xml,
-            <!--classpath*:applicationContext-task.xml-->
-            <!-- classpath*:applicationContext-quartz.xml -->
-            <!--classpath*:applicationContext-minaServer.xml-->
+            classpath*:applicationContext-ehcache.xml
         </param-value>
     </context-param>
 
@@ -24,9 +21,6 @@
         <param-name>appconfig</param-name>
         <param-value>classpath:/appconfig.properties</param-value>
     </context-param>
-
-
-
 
     <!-- Filter 定义  -->
     <!-- Character Encoding filter -->
@@ -42,42 +36,6 @@
             <param-value>true</param-value>
         </init-param>
     </filter>
-    <!-- Filter 映射 -->
-    <filter-mapping>
-        <filter-name>encodingFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-
-    <!-- Spring监听器 Spring的ApplicationContext 载入 -->
-    <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
-
-    <!-- Spring 刷新Introspector防止内存泄露 -->
-    <listener>
-        <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
-    </listener>
-
-    <!-- 系统启动监听 默认：com.eryansky.common.web.listener.DefaultSystemInitListener -->
-    <listener>
-        <listener-class>com.eryansky.listener.SystemInitListener</listener-class>
-    </listener>
-
-    <!-- 可以使用RequestContextHolder.currentRequestAttributes() 获取到请求的attr -->
-    <listener>
-        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
-    </listener>
-
-    <!-- Hibernate Open Session In View filter-->
-    <filter>
-        <filter-name>hibernateOpenSessionInViewFilter</filter-name>
-        <filter-class>com.eryansky.common.orm.hibernate.OpenSessionInViewFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>hibernateOpenSessionInViewFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
 
     <!-- 表单输入特殊字符Html转译、敏感词汇转译拦截器-->
     <!--
@@ -90,13 +48,6 @@
         </init-param>
     </filter>
      -->
-
-    <!--
-   <filter-mapping>
-       <filter-name>InputReplaceFilter</filter-name>
-       <url-pattern>/*</url-pattern>
-   </filter-mapping>
-    -->
 
     <!--<filter>-->
         <!--<filter-name>AccessLogFilter</filter-name>-->
@@ -113,13 +64,6 @@
     <!--</filter>-->
 
 
-    <!--<filter-mapping>-->
-        <!--<filter-name>AccessLogFilter</filter-name>-->
-        <!--<url-pattern>/*</url-pattern>-->
-        <!--<dispatcher>REQUEST</dispatcher>-->
-    <!--</filter-mapping>-->
-
-
     <!-- 生产环境下使用 Response Header Added Filter -->
     <filter>
         <filter-name>expiresHeaderFilter</filter-name>
@@ -129,9 +73,11 @@
             <param-value>public, max-age=31536000</param-value>
         </init-param>
     </filter>
+
+
     <filter-mapping>
-        <filter-name>expiresHeaderFilter</filter-name>
-        <url-pattern>/static/*</url-pattern>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
     </filter-mapping>
 
 
@@ -174,6 +120,46 @@
     </filter-mapping>
 
 
+    <filter-mapping>
+        <filter-name>expiresHeaderFilter</filter-name>
+        <url-pattern>/static/*</url-pattern>
+    </filter-mapping>
+
+    <!--
+     <filter-mapping>
+         <filter-name>InputReplaceFilter</filter-name>
+         <url-pattern>/*</url-pattern>
+     </filter-mapping>
+      -->
+
+    <!--<filter-mapping>-->
+    <!--<filter-name>AccessLogFilter</filter-name>-->
+    <!--<url-pattern>/*</url-pattern>-->
+    <!--<dispatcher>REQUEST</dispatcher>-->
+    <!--</filter-mapping>-->
+
+
+    <!-- Spring监听器 Spring的ApplicationContext 载入 -->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <!-- Spring 刷新Introspector防止内存泄露 -->
+    <listener>
+        <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+    </listener>
+
+    <!-- 系统启动监听 默认：com.eryansky.common.web.listener.DefaultSystemInitListener -->
+    <listener>
+        <listener-class>com.eryansky.listener.SystemInitListener</listener-class>
+    </listener>
+
+    <!-- 可以使用RequestContextHolder.currentRequestAttributes() 获取到请求的attr -->
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
+
+
     <!-- Spring MVC -->
     <servlet>
         <servlet-name>SpringMVC</servlet-name>
@@ -184,65 +170,7 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>SpringMVC</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>
 
-
-    <!-- kindeditor上传 -->
-    <servlet>
-        <servlet-name>FileUploadServlet</servlet-name>
-        <servlet-class>
-            com.eryansky.common.web.servlet.kindeditor.FileUploadServlet
-        </servlet-class>
-        <!-- 上传保存的目录 -->
-        <init-param>
-            <param-name>UPLOAD_PATH</param-name>
-            <param-value>attached/</param-value>
-        </init-param>
-        <!-- 限制上传图片的大小，单位字节(缺省值为1MB) -->
-        <init-param>
-            <param-name>Img_MAX_SIZE</param-name>
-            <param-value>1024000</param-value>
-        </init-param>
-        <init-param>
-            <!-- 上传图片的类型(缺省值为gif, jpg, jpeg, png, bmp) -->
-            <param-name>Img_YPES</param-name>
-            <param-value>gif,jpg,jpeg,png,bmp</param-value>
-        </init-param>
-        <!-- ===================================================================== -->
-        <!-- 上传附件的大小，单位字节(缺省为1MB) -->
-        <init-param>
-            <param-name>File_MAX_SIZE</param-name>
-            <param-value>1000000</param-value>
-        </init-param>
-        <!-- 上传文件的类型(缺省为doc, xls, ppt, pdf, txt, rar, zip) -->
-        <init-param>
-            <param-name>File_TYPES</param-name>
-            <param-value>doc,docx,xls,xlsx,ppt,pptx,pdf,zip,rar,txt</param-value>
-        </init-param>
-    </servlet>
-    <servlet>
-        <servlet-name>FileManagerServlet</servlet-name>
-        <servlet-class>
-            com.eryansky.common.web.servlet.kindeditor.FileManagerServlet
-        </servlet-class>
-        <!-- 上传保存的目录 -->
-        <init-param>
-            <param-name>UPLOAD_PATH</param-name>
-            <param-value>attached/</param-value>
-        </init-param>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>FileUploadServlet</servlet-name>
-        <url-pattern>/servlet/FileUploadServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>FileManagerServlet</servlet-name>
-        <url-pattern>/servlet/FileManagerServlet</url-pattern>
-    </servlet-mapping>
 
     <!-- 本地静态内容展示与下载的Servlet -->
     <servlet>
@@ -257,36 +185,44 @@
             <param-value>contentInfoCache</param-value>
         </init-param>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>StaticContentServlet</servlet-name>
-        <url-pattern>/servlet/StaticContentServlet</url-pattern>
-    </servlet-mapping>
 
     <!-- 获取远程静态内容并进行展示的Servlet -->
     <servlet>
         <servlet-name>RemoteContentServlet</servlet-name>
         <servlet-class>com.eryansky.common.web.servlet.RemoteContentServlet</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>RemoteContentServlet</servlet-name>
-        <url-pattern>/servlet/RemoteContentServlet</url-pattern>
-    </servlet-mapping>
 
     <!-- Servlet 验证码 -->
     <servlet>
         <servlet-name>ValidateCodeServlet</servlet-name>
         <servlet-class>com.eryansky.common.web.servlet.ValidateCodeServlet</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>ValidateCodeServlet</servlet-name>
-        <url-pattern>/servlet/ValidateCodeServlet</url-pattern>
-    </servlet-mapping>
+
 
     <!--hightcharts导出下载功能-->
     <servlet>
         <servlet-name>DownloadChartServlet</servlet-name>
         <servlet-class>com.eryansky.common.web.servlet.DownloadChartServlet</servlet-class>
     </servlet>
+
+
+    <servlet-mapping>
+        <servlet-name>SpringMVC</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>StaticContentServlet</servlet-name>
+        <url-pattern>/servlet/StaticContentServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RemoteContentServlet</servlet-name>
+        <url-pattern>/servlet/RemoteContentServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ValidateCodeServlet</servlet-name>
+        <url-pattern>/servlet/ValidateCodeServlet</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>DownloadChartServlet</servlet-name>
         <url-pattern>/servlet/DownloadChartServlet</url-pattern>

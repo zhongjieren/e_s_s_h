@@ -7,9 +7,12 @@ package com.eryansky.core.security.annotation;
 
 import com.eryansky.core.security._enum.Logical;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import static com.eryansky.core.security._enum.Logical.*;
+import static com.eryansky.core.security._enum.Logical.AND;
 
 /**
  * 需要的权限

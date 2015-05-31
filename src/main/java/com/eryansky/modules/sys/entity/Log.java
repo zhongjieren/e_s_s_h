@@ -6,7 +6,6 @@
 package com.eryansky.modules.sys.entity;
 
 import com.eryansky.common.orm.entity.BaseEntity;
-import com.eryansky.common.utils.browser.BrowserType;
 import com.eryansky.modules.sys._enum.LogType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -159,7 +158,7 @@ public class Log extends BaseEntity implements Serializable {
         this.browserType = browserType;
     }
 
-    @Column(name = "REMARK", length = 1000)
+    @Column(name = "REMARK", length = 4096)
     public String getRemark() {
         return remark;
     }

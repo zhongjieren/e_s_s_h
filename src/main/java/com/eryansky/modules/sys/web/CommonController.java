@@ -27,7 +27,7 @@ import java.util.Map;
  * @date 2013-2-25 下午1:59:38
  */
 @Controller
-@RequestMapping("/common")
+@RequestMapping("${adminPath}/common")
 public class CommonController extends SimpleController {
 
     @Autowired

@@ -55,6 +55,26 @@
         <function-signature>com.eryansky.modules.sys.entity.User getUserById(java.lang.String)</function-signature>
         <example>${fns:getUserById(id)}</example>
     </function>
+
+    <!--SecurityUtils-->
+    <function>
+        <description>是否具备资源权限</description>
+        <name>isPermitted</name>
+        <function-class>com.eryansky.core.security.SecurityUtils</function-class>
+        <function-signature>java.lang.Boolean isPermitted(java.lang.String)
+        </function-signature>
+        <example>${fns:isPermitted(resourceCode)}</example>
+    </function>
+    <function>
+        <description>是否具备角色权限</description>
+        <name>isPermittedRole</name>
+        <function-class>com.eryansky.core.security.SecurityUtils</function-class>
+        <function-signature>java.lang.Boolean isPermittedRole(java.lang.String)
+        </function-signature>
+        <example>${fns:isPermittedRole(roleCode)}</example>
+    </function>
+
+
     <!-- DictUtils -->
     <function>
         <description>获取字典标签</description>

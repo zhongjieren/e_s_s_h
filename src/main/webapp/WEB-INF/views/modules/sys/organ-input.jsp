@@ -3,7 +3,7 @@
 <script type="text/javascript">
     var organType_combobox;
     var $_parent_combotree;
-    var organTypeUrl = '${ctx}/sys/organ/organTypeCombobox?selectType=select';
+    var organTypeUrl = '${ctxAdmin}/sys/organ/organTypeCombobox?selectType=select';
     $(function() {
         loadParent();
         loadType();
@@ -15,7 +15,7 @@
     //加载父级机构
     function loadParent(){
         $_parent_combotree = $('#_parentId').combotree({
-            url:'${ctx}/sys/organ/parentOrgan?selectType=select',
+            url:'${ctxAdmin}/sys/organ/parentOrgan?selectType=select',
             multiple:false,//是否可多选
             editable:false,//是否可编辑
             height:28,
@@ -57,7 +57,7 @@
 
     //设置排序默认值
     function setSortValue() {
-        $.get('${ctx}/sys/organ/maxSort', function(data) {
+        $.get('${ctxAdmin}/sys/organ/maxSort', function(data) {
             if (data.code == 1) {
                 $('#orderNo').numberspinner('setValue',data.obj+1);
             }

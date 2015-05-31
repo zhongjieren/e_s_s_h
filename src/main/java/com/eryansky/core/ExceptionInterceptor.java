@@ -8,11 +8,16 @@ package com.eryansky.core;
 import com.eryansky.common.exception.ServiceException;
 import com.eryansky.common.exception.SystemException;
 import com.eryansky.common.model.Result;
-import com.eryansky.common.utils.Exceptions;
-import com.eryansky.common.utils.SysConstants;
-import com.eryansky.common.utils.SysUtils;
+import com.eryansky.common.spring.SpringContextHolder;
+import com.eryansky.common.utils.*;
+import com.eryansky.common.utils.browser.BrowserType;
+import com.eryansky.common.utils.browser.BrowserUtils;
 import com.eryansky.common.web.utils.WebUtils;
-import com.google.common.collect.Maps;
+import com.eryansky.core.security.SecurityUtils;
+import com.eryansky.core.security.SessionInfo;
+import com.eryansky.modules.sys._enum.LogType;
+import com.eryansky.modules.sys.entity.Log;
+import com.eryansky.modules.sys.service.LogManager;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.StaleObjectStateException;
 import org.slf4j.Logger;
@@ -25,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -35,6 +39,8 @@ import java.util.Set;
 public class ExceptionInterceptor implements HandlerExceptionResolver {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
+
+    private static LogManager logManager = SpringContextHolder.getBean(LogManager.class);
 
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
@@ -142,6 +148,7 @@ public class ExceptionInterceptor implements HandlerExceptionResolver {
                 result = new Result(Result.ERROR,sb.toString(),obj);
             }
             logger.error(result.toString());
+            saveLog(request,ex);
         }
 //        Map<String, Object> model = Maps.newHashMap();
 //        model.put("ex", ex);
@@ -150,5 +157,38 @@ public class ExceptionInterceptor implements HandlerExceptionResolver {
         //异步方式返回异常信息
         WebUtils.renderText(response,result);
         return null;
+    }
+
+    /**
+     * 保存异常日志
+     * @param request
+     * @param ex
+     */
+    private void saveLog(HttpServletRequest request,Exception ex){
+        SessionInfo sessionInfo = SecurityUtils.getCurrentSessionInfo();
+        if (sessionInfo != null) {
+
+            StringBuilder params = new StringBuilder();
+            int index = 0;
+            for (Object param : request.getParameterMap().keySet()) {
+                params.append((index++ == 0 ? "" : "&") + param + "=");
+                params.append(StringUtils.abbr(StringUtils.endsWithIgnoreCase((String) param, "password")
+                        ? "" : request.getParameter((String) param), 100));
+            }
+
+            Log log = new Log();
+            log.setLoginName(sessionInfo.getLoginName());
+            log.setType(LogType.exception.getValue());
+            BrowserType browserType = BrowserUtils.getBrowserType(request);
+            log.setBrowserType(browserType == null ? null : browserType.toString());
+            log.setIp(IpUtils.getIpAddr(request));
+            log.setModule(request.getRequestURI());
+            log.setAction(request.getMethod());
+            String exceptionInfo = ex != null ? ex.toString() : "";
+            StringBuffer exceptionRemark = new StringBuffer();
+            exceptionRemark.append("请求参数：").append(params.toString()).append("异常信息：").append(exceptionInfo);
+            log.setRemark(exceptionRemark.toString());
+            logManager.save(log);
+        }
     }
 }

@@ -48,7 +48,7 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 @Controller
-@RequestMapping(value = "/sys/organ")
+@RequestMapping(value = "${adminPath}/sys/organ")
 public class OrganController extends BaseController<Organ,Long> {
 
     @Autowired
@@ -133,7 +133,7 @@ public class OrganController extends BaseController<Organ,Long> {
     public Datagrid<Organ> combogrid(String nameOrCode, @RequestParam(value = "ids", required = false)List<Long> ids, Integer rows) throws Exception {
         Criterion statusCriterion = Restrictions.eq("status", StatusState.normal.getValue());
         Criterion[] criterions = new Criterion[0];
-        criterions = (Criterion[]) ArrayUtils.add(criterions, 0, statusCriterion);
+        criterions = ArrayUtils.add(criterions, 0, statusCriterion);
         Criterion criterion = null;
         if (Collections3.isNotEmpty(ids)) {
             //in条件
@@ -148,20 +148,20 @@ public class OrganController extends BaseController<Organ,Long> {
                 criterion = inCriterion;
             }
             //合并查询条件
-            criterions = (Criterion[]) ArrayUtils.add(criterions, 0, criterion);
+            criterions = ArrayUtils.add(criterions, 0, criterion);
         } else {
             if (StringUtils.isNotBlank(nameOrCode)) {
                 Criterion nameCriterion = Restrictions.like("name", nameOrCode, MatchMode.ANYWHERE);
                 Criterion codeCriterion = Restrictions.like("code", nameOrCode, MatchMode.ANYWHERE);
                 criterion = Restrictions.or(nameCriterion, codeCriterion);
                 //合并查询条件
-                criterions = (Criterion[]) ArrayUtils.add(criterions, 0, criterion);
+                criterions = ArrayUtils.add(criterions, 0, criterion);
             }
         }
 
         //分页查询
         Page<Organ> p = new Page<Organ>(rows);//分页对象
-        p = organManager.findByCriteria(p, criterions);
+        p = organManager.findPageByCriteria(p, criterions);
         Datagrid<Organ> dg = new Datagrid<Organ>(p.getTotalCount(), p.getResult());
         return dg;
     }
@@ -289,15 +289,11 @@ public class OrganController extends BaseController<Organ,Long> {
     public List<TreeNode> tree(String selectType,Integer grade) throws Exception {
         List<TreeNode> treeNodes = null;
         List<TreeNode> titleList = Lists.newArrayList();
-        // 添加 "---全部---"、"---请选择---"
-        if (!StringUtils.isBlank(selectType)) {
-            SelectType s = SelectType.getSelectTypeValue(selectType);
-            if (s != null) {
-                TreeNode selectTreeNode = new TreeNode("",
-                        s.getDescription());
-                titleList.add(selectTreeNode);
-            }
+        TreeNode treeNode = SelectType.treeNode(selectType);
+        if(treeNode != null){
+            titleList.add(treeNode);
         }
+
         SessionInfo sessionInfo = SecurityUtils.getCurrentSessionInfo();
         User sueperUser = userManager.getSuperUser();
         Long userId = sessionInfo.getUserId();
@@ -318,13 +314,9 @@ public class OrganController extends BaseController<Organ,Long> {
     @ResponseBody
     public List<Combobox> organTypeCombobox(String selectType, Integer parentOrganType) throws Exception {
         List<Combobox> cList = Lists.newArrayList();
-        //为combobox添加  "---全部---"、"---请选择---"
-        if (!StringUtils.isBlank(selectType)) {
-            SelectType s = SelectType.getSelectTypeValue(selectType);
-            if (s != null) {
-                Combobox selectCombobox = new Combobox("", s.getDescription());
-                cList.add(selectCombobox);
-            }
+        Combobox titleCombobox = SelectType.combobox(selectType);
+        if(titleCombobox != null){
+            cList.add(titleCombobox);
         }
 
         OrganType _enumParentType = OrganType.getOrganType(parentOrganType);
@@ -362,14 +354,9 @@ public class OrganController extends BaseController<Organ,Long> {
     public List<TreeNode> parentOrgan(String selectType, @ModelAttribute("model") Organ organ) throws Exception {
         List<TreeNode> treeNodes = null;
         List<TreeNode> titleList = Lists.newArrayList();
-        // 添加 "---全部---"、"---请选择---"
-        if (!StringUtils.isBlank(selectType)) {
-            SelectType s = SelectType.getSelectTypeValue(selectType);
-            if (s != null) {
-                TreeNode selectTreeNode = new TreeNode("",
-                        s.getDescription());
-                titleList.add(selectTreeNode);
-            }
+        TreeNode treeNode = SelectType.treeNode(selectType);
+        if(treeNode != null){
+            titleList.add(treeNode);
         }
         SessionInfo sessionInfo = SecurityUtils.getCurrentSessionInfo();
         User sueperUser = userManager.getSuperUser();
@@ -377,7 +364,7 @@ public class OrganController extends BaseController<Organ,Long> {
         if(sessionInfo !=null && sueperUser !=null && sessionInfo.getUserId().equals(sueperUser.getId())){
             organId = null;
         }
-        treeNodes = organManager.getOrganTree(organId,organ.getId(), true);
+        treeNodes = organManager.getOrganTree(organId,organ.getId(), true,false,null);
         List<TreeNode> unionList = ListUtils.union(titleList, treeNodes);
         return unionList;
     }

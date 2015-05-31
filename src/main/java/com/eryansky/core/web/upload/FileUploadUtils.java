@@ -7,10 +7,12 @@ package com.eryansky.core.web.upload;
 
 import com.eryansky.common.utils.StringUtils;
 import com.eryansky.common.utils.encode.MD5Util;
+import com.eryansky.core.security.LogUtils;
 import com.eryansky.core.web.upload.exception.FileNameLengthLimitExceededException;
 import com.eryansky.core.web.upload.exception.InvalidExtensionException;
-import com.eryansky.core.security.LogUtils;
-import org.apache.commons.fileupload.FileUploadBase;
+import com.eryansky.utils.AppConstants;
+import org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.validation.BindingResult;
@@ -21,8 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
-
-import static org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException;
 
 /**
  * 文件上传工具类
@@ -35,7 +35,7 @@ public class FileUploadUtils {
     public static final long DEFAULT_MAX_SIZE = 52428800;
 
     //默认上传的地址
-    private static String defaultBaseDir = "attached";
+    private static String defaultBaseDir = "disk";
 
     //默认的文件名最大长度
     public static final int DEFAULT_FILE_NAME_LENGTH = 200;
@@ -100,7 +100,7 @@ public class FileUploadUtils {
      */
     public static final String upload(HttpServletRequest request, MultipartFile file, BindingResult result, String[] allowedExtension) {
         try {
-            return upload(request, getDefaultBaseDir(), file, allowedExtension, DEFAULT_MAX_SIZE, true);
+            return upload(request, getDefaultBaseDir(), file, allowedExtension, DEFAULT_MAX_SIZE, true,null);
         } catch (IOException e) {
             LogUtils.logError("file upload error", e);
             result.reject("upload.server.error");
@@ -112,7 +112,7 @@ public class FileUploadUtils {
             result.reject("upload.not.allow.media.extension");
         } catch (InvalidExtensionException e) {
             result.reject("upload.not.allow.extension");
-        } catch (FileUploadBase.FileSizeLimitExceededException e) {
+        } catch (FileSizeLimitExceededException e) {
             result.reject("upload.exceed.maxSize");
         } catch (FileNameLengthLimitExceededException e) {
             result.reject("upload.filename.exceed.length");
@@ -125,36 +125,105 @@ public class FileUploadUtils {
      * 文件上传
      *
      * @param request                   当前请求 从请求中提取 应用上下文根
-     * @param baseDir                   相对应用的基目录
+     * @param dir                   当request不为空,入参为相对应用的基目录;当为空时,入参为除配置路径外的文件夹相对路径
      * @param file                      上传的文件
      * @param allowedExtension          允许的文件类型 null 表示允许所有
      * @param maxSize                   最大上传的大小 -1 表示不限制
      * @param needDatePathAndRandomName 是否需要日期目录和随机文件名前缀
+     * @param _prefix 文件名前缀 建议在needDatePathAndRandomName为false时使用
      * @return 返回上传成功的文件名
-     * @throws InvalidExtensionException            如果MIME类型不允许
-     * @throws FileSizeLimitExceededException       如果超出最大大小
-     * @throws FileNameLengthLimitExceededException 文件名太长
+     * @throws com.eryansky.core.web.upload.exception.InvalidExtensionException            如果MIME类型不允许
+     * @throws org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException       如果超出最大大小
+     * @throws com.eryansky.core.web.upload.exception.FileNameLengthLimitExceededException 文件名太长
      * @throws java.io.IOException                          比如读写文件出错时
      */
-    public static final String upload(
-            HttpServletRequest request, String baseDir, MultipartFile file,
-            String[] allowedExtension, long maxSize, boolean needDatePathAndRandomName)
-            throws InvalidExtensionException, FileSizeLimitExceededException, IOException, FileNameLengthLimitExceededException {
+    public static final String upload(HttpServletRequest request, String dir,
+                                      MultipartFile file, String[] allowedExtension, long maxSize,
+                                      boolean needDatePathAndRandomName, String _prefix)
+            throws InvalidExtensionException, FileSizeLimitExceededException,
+            IOException, FileNameLengthLimitExceededException {
 
         int fileNamelength = file.getOriginalFilename().length();
         if (fileNamelength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH) {
-            throw new FileNameLengthLimitExceededException(file.getOriginalFilename(), fileNamelength, FileUploadUtils.DEFAULT_FILE_NAME_LENGTH);
+            throw new FileNameLengthLimitExceededException(
+                    file.getOriginalFilename(), fileNamelength,
+                    FileUploadUtils.DEFAULT_FILE_NAME_LENGTH);
         }
-
+        File desc = null;
+        String filename = null;
         assertAllowed(file, allowedExtension, maxSize);
-        String filename = extractFilename(file, baseDir, needDatePathAndRandomName);
-
-        File desc = getAbsoluteFile(extractUploadDir(request), filename);
+        if (request != null) {
+            filename = extractFilename(file, dir, needDatePathAndRandomName,
+                    _prefix);
+            desc = getAbsoluteFile(extractUploadDir(request), filename);
+        } else {
+            filename = extractFilename(file, dir, needDatePathAndRandomName,
+                    _prefix);
+            String fileBasePath = getBasePath(filename);
+            desc = getAbsoluteFile(fileBasePath);
+        }
 
         file.transferTo(desc);
         return filename;
     }
 
+
+    public static final String upload(HttpServletRequest request, String dir,
+                                      File file, String[] allowedExtension, long maxSize,
+                                      boolean needDatePathAndRandomName, String _prefix)
+            throws InvalidExtensionException, FileSizeLimitExceededException,
+            IOException, FileNameLengthLimitExceededException {
+
+        int fileNamelength = file.getName().length();
+        if (fileNamelength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH) {
+            throw new FileNameLengthLimitExceededException(
+                    file.getName(), fileNamelength,
+                    FileUploadUtils.DEFAULT_FILE_NAME_LENGTH);
+        }
+        File desc = null;
+        String filename = null;
+        assertAllowed(file, allowedExtension, maxSize);
+        if (request != null) {
+            filename = extractFilename(file, dir, needDatePathAndRandomName,
+                    _prefix);
+            desc = getAbsoluteFile(extractUploadDir(request), filename);
+        } else {
+            filename = extractFilename(file, dir, needDatePathAndRandomName,
+                    _prefix);
+            String fileBasePath = getBasePath(filename);
+            desc = getAbsoluteFile(fileBasePath);
+        }
+
+        if(!file.isDirectory()){
+            FileUtils.copyFile(file,desc);
+        }
+        return filename;
+    }
+
+    /**
+     * 根据相对路径创建绝对路径
+     *
+     * @param relativePath
+     *            相对路径
+     * @return
+     */
+    public static String getBasePath(String relativePath) {
+        StringBuffer path = new StringBuffer();
+        if (StringUtils.isNotBlank(relativePath)) {
+            path.append(AppConstants.getDiskBasePath())
+                    .append(File.separator).append(relativePath);
+        }
+
+        return path.toString();
+    }
+
+    /**
+     * 获取文件的据对路径
+     * @param uploadDir 相对应用的基目录
+     * @param filename 文件名
+     * @return
+     * @throws java.io.IOException
+     */
     private static final File getAbsoluteFile(String uploadDir, String filename) throws IOException {
 
         uploadDir = FilenameUtils.normalizeNoEndSeparator(uploadDir);
@@ -170,35 +239,106 @@ public class FileUploadUtils {
         return desc;
     }
 
+    public static final File getAbsoluteFile(String fileName) throws IOException {
+        File desc = new File(fileName);
 
-    public static final String extractFilename(MultipartFile file, String baseDir, boolean needDatePathAndRandomName)
+        if (!desc.getParentFile().exists()) {
+            desc.getParentFile().mkdirs();
+        }
+        if (!desc.exists()) {
+            desc.createNewFile();
+        }
+        return desc;
+    }
+
+
+
+    /**
+     * 获取文件绝对路径
+     * @param request HTTP请求对象
+     * @param filename 文件名
+     * @return
+     * @throws java.io.IOException
+     */
+    public static final File getAbsoluteFile(HttpServletRequest request,String filename) throws IOException{
+        return  getAbsoluteFile(extractUploadDir(request), filename);
+    }
+
+    /**
+     * 提取文件名
+     * @param file
+     * @param baseDir
+     * @param needDatePathAndRandomName
+     * @param _prefix
+     * @return
+     * @throws java.io.UnsupportedEncodingException
+     */
+    public static final String extractFilename(MultipartFile file,
+                                               String baseDir, boolean needDatePathAndRandomName, String _prefix)
             throws UnsupportedEncodingException {
-        String filename = file.getOriginalFilename();
-        int slashIndex = filename.indexOf("/");
+        String fileAllName = file.getOriginalFilename();
+
+        return extractFilename(fileAllName, baseDir, needDatePathAndRandomName,
+                _prefix);
+    }
+
+    public static final String extractFilename(File file,
+                                               String baseDir, boolean needDatePathAndRandomName, String _prefix)
+            throws UnsupportedEncodingException {
+        String fileAllName = file.getName();
+
+        return extractFilename(fileAllName, baseDir, needDatePathAndRandomName,
+                _prefix);
+    }
+
+
+
+    public static final String extractFilename(String fileAllName,
+                                               String baseDir, boolean needDatePathAndRandomName, String _prefix)
+            throws UnsupportedEncodingException {
+        int slashIndex = fileAllName.indexOf("/");
         if (slashIndex >= 0) {
-            filename = filename.substring(slashIndex + 1);
+            fileAllName = fileAllName.substring(slashIndex + 1);
+        }
+        if (StringUtils.isNotBlank(_prefix)) {
+            fileAllName += _prefix;
         }
         if (needDatePathAndRandomName) {
-            filename = baseDir + File.separator + datePath() + File.separator + encodingFilename(filename);
+            fileAllName = baseDir + File.separator + FileUploadUtils.datePath()
+                    + File.separator
+                    + FileUploadUtils.encodingFilename(fileAllName);
         } else {
-            filename = baseDir + File.separator + filename;
+            fileAllName = baseDir + File.separator + fileAllName;
         }
 
-        return filename;
+        return fileAllName;
     }
 
     /**
      * 编码文件名,默认格式为：
-     * 1、'_'替换为 ' '
+     * 1、'_'替换为 ''
      * 2、hex(md5(filename + now nano time + counter++))
      * 3、[2]_原始文件名
      *
-     * @param filename
+     * @param filename 原始文件名
      * @return
      */
-    private static final String encodingFilename(String filename) {
-        filename = filename.replace("_", " ");
-        filename = MD5Util.hash(filename + System.nanoTime() + counter++) + "_" + filename;
+    public static final String encodingFilename(String filename) {
+        filename = encodingFilenamePrefix("",filename) + "_" + filename;
+        return filename;
+    }
+
+    /**
+     * 生成文件名前缀
+     * 1、'_'替换为 ''
+     * 2、hex(md5(filename + now nano time + counter++))
+     * 3、[2]_
+     * @param filename 原始文件名
+     * @return
+     */
+    public static final String encodingFilenamePrefix(String userId,String filename) {
+        filename = filename.replace("_", "");
+        filename = userId + "_" + MD5Util.hash(filename + System.nanoTime() + counter++) ;
         return filename;
     }
 
@@ -207,9 +347,9 @@ public class FileUploadUtils {
      *
      * @return
      */
-    private static final String datePath() {
+    public static final String datePath() {
         Date now = new Date();
-        return DateFormatUtils.format(now, "yyyy/MM/dd");
+        return DateFormatUtils.format(now, "MM");
     }
 
 
@@ -220,8 +360,8 @@ public class FileUploadUtils {
      * @param allowedExtension 文件类型  null 表示允许所有
      * @param maxSize          最大大小 字节为单位 -1表示不限制
      * @return
-     * @throws InvalidExtensionException      如果MIME类型不允许
-     * @throws FileSizeLimitExceededException 如果超出最大大小
+     * @throws com.eryansky.core.web.upload.exception.InvalidExtensionException      如果MIME类型不允许
+     * @throws org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException 如果超出最大大小
      */
     public static final void assertAllowed(MultipartFile file, String[] allowedExtension, long maxSize)
             throws InvalidExtensionException, FileSizeLimitExceededException {
@@ -242,6 +382,31 @@ public class FileUploadUtils {
         }
 
         long size = file.getSize();
+        if (maxSize != -1 && size > maxSize) {
+            throw new FileSizeLimitExceededException("not allowed upload upload", size, maxSize);
+        }
+    }
+
+
+    public static final void assertAllowed(File file, String[] allowedExtension, long maxSize)
+            throws InvalidExtensionException, FileSizeLimitExceededException {
+
+        String filename = file.getName();
+        String extension = FilenameUtils.getExtension(file.getName());
+
+        if (allowedExtension != null && !isAllowedExtension(extension, allowedExtension)) {
+            if (allowedExtension == IMAGE_EXTENSION) {
+                throw new InvalidExtensionException.InvalidImageExtensionException(allowedExtension, extension, filename);
+            } else if (allowedExtension == FLASH_EXTENSION) {
+                throw new InvalidExtensionException.InvalidFlashExtensionException(allowedExtension, extension, filename);
+            } else if (allowedExtension == MEDIA_EXTENSION) {
+                throw new InvalidExtensionException.InvalidMediaExtensionException(allowedExtension, extension, filename);
+            } else {
+                throw new InvalidExtensionException(allowedExtension, extension, filename);
+            }
+        }
+
+        long size = file.length();
         if (maxSize != -1 && size > maxSize) {
             throw new FileSizeLimitExceededException("not allowed upload upload", size, maxSize);
         }
@@ -273,11 +438,26 @@ public class FileUploadUtils {
         return request.getSession().getServletContext().getRealPath("/");
     }
 
-    public static final void delete(HttpServletRequest request, String filename) throws IOException {
-        if (StringUtils.isEmpty(filename)) {
+
+    /**
+     * request 为空 入参fileName为除配置路径外的附件相对路径; 不为空则为servlet下附件的绝对路径
+     *
+     * @param request
+     * @return
+     */
+    public static final void delete(HttpServletRequest request, String fileName)
+            throws IOException {
+        if (StringUtils.isEmpty(fileName)) {
             return;
         }
-        File desc = getAbsoluteFile(extractUploadDir(request), filename);
+        File desc = null;
+        if (request == null) {
+            String fileAbsoluteName = getBasePath(fileName);
+            desc = getAbsoluteFile(fileAbsoluteName);
+        } else {
+            desc = getAbsoluteFile(extractUploadDir(request), fileName);
+        }
+
         if (desc.exists()) {
             desc.delete();
         }

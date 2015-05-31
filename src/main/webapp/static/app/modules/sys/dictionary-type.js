@@ -5,7 +5,7 @@ var dictionaryType_search_form;
 $(function() {
     //数据列表
     dictionaryType_treegrid = $('#dictionaryType_treegrid').treegrid({
-        url:ctx+'/sys/dictionary-type/treegrid',
+        url:ctxAdmin+'/sys/dictionary-type/treegrid',
         fit:true,
         fitColumns:false,//自适应列宽
         striped:true,//显示条纹
@@ -68,7 +68,7 @@ $(function() {
 
 //设置排序默认值
 function setSortValue() {
-    $.get(ctx+'/sys/dictionary-type/maxSort', function(data) {
+    $.get(ctxAdmin+'/sys/dictionary-type/maxSort', function(data) {
         if (data.code == 1) {
             $('#orderNo').numberspinner('setValue',data.obj+1);
         }
@@ -77,7 +77,7 @@ function setSortValue() {
 
 function formInit(){
     dictionaryType_form = $('#dictionaryType_form').form({
-        url: ctx+'/sys/dictionary-type/save',
+        url: ctxAdmin+'/sys/dictionary-type/save',
         onSubmit: function(param){
             $.messager.progress({
                 title : '提示信息！',
@@ -121,7 +121,7 @@ function formInit(){
 }
 //显示弹出窗口 新增：row为空 编辑:row有值
 function showDialog(row){
-    var inputUrl = ctx+"/sys/dictionary-type/input";
+    var inputUrl = ctxAdmin+"/sys/dictionary-type/input";
     if(row != undefined && row.id){
         inputUrl = inputUrl+"?id="+row.id;
     }
@@ -207,7 +207,7 @@ function del(){
                     ids[i] = row.id;
                 });
                 $.ajax({
-                    url:ctx+'/sys/dictionary-type/remove',
+                    url:ctxAdmin+'/sys/dictionary-type/remove',
                     type:'post',
                     data: {ids:ids},
                     traditional:true,
@@ -230,7 +230,7 @@ function del(){
 
 function loadGroupDictionaryType(){
     $('#filter_EQS_groupDictionaryType__code').combobox({
-        url:ctx+'/sys/dictionary-type/group_combobox?selectType=all',
+        url:ctxAdmin+'/sys/dictionary-type/group_combobox?selectType=all',
         multiple:false,//是否可多选
         editable:false,//是否可编辑
         width:120

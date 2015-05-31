@@ -79,7 +79,7 @@ $(function() {
         title:indexTitle,
         iconCls:'eu-icon-application',
         closable:false,
-        content:'<iframe scrolling="no" frameborder="0" src="'+ctx+'/portal" style="width:100%;height:100%;"></iframe>'
+        content:'<iframe scrolling="no" frameborder="0" src="'+ctxAdmin+'/portal" style="width:100%;height:100%;"></iframe>'
     });
 
     //首页tip标题提示

@@ -2,7 +2,7 @@
 <%@ include file="/common/taglibs.jsp"%>
 <script type="text/javascript">
     var $type_combobox;
-    var typeUrl = "${ctx}/sys/resource/resourceTypeCombobox";
+    var typeUrl = "${ctxAdmin}/sys/resource/resourceTypeCombobox";
 	$(function() {
 		loadParent();
 		loadIco();
@@ -16,7 +16,7 @@
 	//加载父级资源
 	function loadParent(){
 		$('#_parentId').combotree({
-	        url:'${ctx}/sys/resource/parentResource?selectType=select',
+	        url:'${ctxAdmin}/sys/resource/parentResource?selectType=select',
 		    multiple:false,//是否可多选
 		    editable:false,//是否可编辑
             height:28,
@@ -62,7 +62,7 @@
     }
     //设置排序默认值
     function setSortValue() {
-        $.get('${ctx}/sys/resource/maxSort', function(data) {
+        $.get('${ctxAdmin}/sys/resource/maxSort', function(data) {
             if (data.code == 1) {
                 $('#orderNo').numberspinner('setValue',data.obj+1);
             }

@@ -9,7 +9,7 @@ function showAbout(){
         height : 240,
         modal : true,
         iconCls:'eu-icon-essh',
-        href : ctx+'/common/layout/about',
+        href : ctxAdmin+'/common/layout/about',
         buttons : [{
             text : '关闭',
             iconCls : 'easyui-icon-cancel',
@@ -26,7 +26,7 @@ function showAbout(){
 
 function initLoginPasswordForm(){
     login_password_form = $('#login_password_form').form({
-        url: ctx+'/sys/user/updateUserPassword',
+        url: ctxAdmin+'/sys/user/updateUserPassword',
         onSubmit: function(param){
             param.upateOperate = '1';
             return $(this).form('validate');
@@ -60,7 +60,7 @@ function editLoginUserPassword(){
         height : 240,
         modal : true,
         iconCls:'easyui-icon-edit',
-        href : ctx+'/common/layout/north-password',
+        href : ctxAdmin+'/common/layout/north-password',
         buttons : [{
             text : '保存',
             iconCls : 'easyui-icon-save',
@@ -91,7 +91,7 @@ function logout(clearCookie) {
                     expires : 7
                 });
             }
-            window.location.href = ctx+"/login/logout";
+            window.location.href = ctxAdmin+"/login/logout";
         }
     });
 }
@@ -101,5 +101,5 @@ function toApp(){
     $.cookie('themeType', themeType_index, {
         expires : 7
     });
-    window.location.href = ctx+'/login/index?theme='+themeType_index;
+    window.location.href = ctxAdmin+'/index?theme='+themeType_index;
 }

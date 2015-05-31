@@ -6,7 +6,7 @@
 package com.eryansky.common.orm.entity;
 
 import com.eryansky.common.excel.annotation.Excel;
-import com.eryansky.common.utils.DateUtil;
+import com.eryansky.common.utils.DateUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -61,12 +61,12 @@ public  class BaseEntity extends AutoEntity implements Serializable,
 	public static final String TIMEZONE = "GMT+08:00";
 
 	public static String date2String(Date date, String dateFormat) {
-		return DateUtil.format(date, dateFormat);
+		return DateUtils.format(date, dateFormat);
 	}
 
 	public static <T extends Date> T string2Date(String dateString,
 			String dateFormat, Class<T> targetResultType) {
-		return (T) DateUtil.parse(dateString, dateFormat, targetResultType);
+		return (T) DateUtils.parse(dateString, dateFormat, targetResultType);
 	}
 
 	/**

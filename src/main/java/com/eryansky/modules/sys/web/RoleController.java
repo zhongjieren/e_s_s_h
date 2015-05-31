@@ -40,7 +40,7 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 @Controller
-@RequestMapping(value = "/sys/role")
+@RequestMapping(value = "${adminPath}/sys/role")
 public class RoleController extends BaseController<Role,Long> {
 
     @Autowired

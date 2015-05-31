@@ -14,6 +14,7 @@ import com.eryansky.core.security.SecurityUtils;
 import com.eryansky.core.security.SessionInfo;
 import com.eryansky.modules.sys._enum.LogType;
 import com.eryansky.modules.sys.entity.Log;
+import com.eryansky.modules.sys.web.LoginController;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -77,7 +78,7 @@ public class SecurityLogAspect {
             methodName = joinPoint.getSignature().getName();
             className = joinPoint.getTarget().getClass().getSimpleName();
         }else{
-            className = "LoginAction";
+            className = LoginController.class.getSimpleName();
             methodName = "logout";
         }
         String user = null;
@@ -94,7 +95,7 @@ public class SecurityLogAspect {
             log.setModule(className + "-" + methodName);
             log.setActionTime(opTime.toString());
             log.setIp(sessionInfo.getIp());
-            log.setAction(securityType.getDescription());
+            log.setAction("["+sessionInfo.getLoginName()+"]"+securityType.getDescription());
             BrowserType browserType = BrowserUtils.getBrowserType(SpringMVCHolder.getRequest());
             log.setBrowserType(browserType == null ? null : browserType.toString());
             if(logger.isDebugEnabled()){

@@ -34,7 +34,7 @@ import java.util.List;
  * @date : 2014-06-09 14:07
  */
 @Controller
-@RequestMapping(value = "/sys/post")
+@RequestMapping(value = "${adminPath}/sys/post")
 public class PostController
         extends BaseController<Post,Long> {
 

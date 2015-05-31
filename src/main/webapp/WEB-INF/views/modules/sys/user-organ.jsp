@@ -20,7 +20,7 @@
     function loadOrgan(){
         var isChange = false; //标识所属组织机构是否变更
         organs_combotree = $("#organIds").combotree({
-            url:'${ctx}/sys/organ/tree',
+            url:'${ctxAdmin}/sys/organ/tree',
             multiple:true,//是否可多选
             editable:false,
             cascadeCheck:false,

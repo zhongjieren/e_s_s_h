@@ -5,6 +5,7 @@
  */
 package com.eryansky.common.web.springmvc;
 
+import com.eryansky.common.exception.ActionException;
 import com.eryansky.common.model.Datagrid;
 import com.eryansky.common.model.Result;
 import com.eryansky.common.orm.Page;
@@ -12,13 +13,16 @@ import com.eryansky.common.orm.PropertyFilter;
 import com.eryansky.common.orm.hibernate.EntityManager;
 import com.eryansky.common.orm.hibernate.HibernateWebUtils;
 import com.eryansky.common.utils.StringUtils;
+import com.eryansky.common.utils.reflection.MyBeanUtils;
 import com.eryansky.common.utils.reflection.ReflectionUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.ui.Model;
+import org.springframework.util.NumberUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 
@@ -43,30 +47,27 @@ public abstract class BaseController<T, PK extends Serializable> extends SimpleC
 
     @ModelAttribute
     public T getModel(@RequestParam(value = "id", required = false) PK id, Model model) {
-        T entity = null;
-        if(id != null || StringUtils.isNotBlank((String)id)){
-            entity = getEntityManager().loadById(id);
-            model.addAttribute("model", entity);
+        T cloneEntity = null;
+        boolean flag = (id != null);
+        if(id != null && id instanceof String){
+            flag = StringUtils.isNotBlank((String)id);
         }
-        return entity;
-
-//        T cloneEntity = null;
-//        if (id != null) {
-//            T entity = getEntityManager().getById(id);
-//            //对象拷贝
-//            if(entity != null){
-//                try {
-//                    cloneEntity = (T) MyBeanUtils.cloneBean(entity);
-//                } catch (Exception e) {
-//                    cloneEntity = entity;
-//                    logger.error(e.getMessage(),e);
-//                }
-//            }else{
-//                throw new ActionException("ID为["+id+"]的记录不存在或已被其它用户删除！");
-//            }
-//            model.addAttribute("model", cloneEntity);
-//        }
-//        return cloneEntity;
+        if (flag) {
+            T entity = getEntityManager().getById(id);
+            //对象拷贝
+            if(entity != null){
+                try {
+                    cloneEntity = (T) MyBeanUtils.cloneBean(entity);
+                } catch (Exception e) {
+                    cloneEntity = entity;
+                    logger.error(e.getMessage(),e);
+                }
+            }else{
+                throw new ActionException("ID为["+id+"]的记录不存在或已被其它用户删除！");
+            }
+            model.addAttribute("model", cloneEntity);
+        }
+        return cloneEntity;
     }
 
 
@@ -112,22 +113,16 @@ public abstract class BaseController<T, PK extends Serializable> extends SimpleC
 
     /**
      * EasyUI 列表数据
-     *
-     * @param page  第几页
-     * @param rows  页大小
-     * @param sort  排序字段
-     * @param order 排序方式 增序:'asc',降序:'desc'
      * @return
-     * @throws Exception
      */
     @RequestMapping(value = {"datagrid"})
     @ResponseBody
-    public Datagrid datagrid(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                             @RequestParam(value = "rows", required = false, defaultValue = Page.DEFAULT_PAGESIZE + "") int rows,
-                             String sort, String order) {
+    public Datagrid<T> datagrid() {
+        HttpServletRequest request = SpringMVCHolder.getRequest();
         // 自动构造属性过滤器
-        List<PropertyFilter> filters = HibernateWebUtils.buildPropertyFilters(SpringMVCHolder.getRequest());
-        Page<T> p = getEntityManager().find(page, rows, sort, order, filters);
+        List<PropertyFilter> filters = HibernateWebUtils.buildPropertyFilters(request);
+        Page<T> p = new Page<T>(request);
+        p = getEntityManager().findPage(p, filters,true);
         Datagrid<T> datagrid = new Datagrid<T>(p.getTotalCount(), p.getResult());
         return datagrid;
     }

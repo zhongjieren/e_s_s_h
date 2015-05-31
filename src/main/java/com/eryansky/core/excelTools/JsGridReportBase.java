@@ -312,7 +312,7 @@ public class JsGridReportBase {
 				.get("STRING"));
 		// 设置前两列根据数据自动列宽
 		for (int c = 0; c <= headerMetaData.getColumns().size(); c++) {
-			sheet.autoSizeColumn((short) c);
+			sheet.autoSizeColumn((short) c,true);
 		}
 		sheet.setGridsPrinted(true);
 		

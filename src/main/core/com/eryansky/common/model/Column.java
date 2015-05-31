@@ -57,7 +57,10 @@ public class Column implements Serializable{
 	 */
 	private String align = ALIGN_LEFT;
 
-	public Column(Integer index, String field, String title, Integer width,
+    public Column() {
+    }
+
+    public Column(Integer index, String field, String title, Integer width,
 			String align) {
 		super();
 		this.index = index;
@@ -142,7 +145,7 @@ public class Column implements Serializable{
 	/**
 	 * 是否选中checkbox
 	 */
-	public boolean isCheckbox() {
+	public Boolean isCheckbox() {
 		return checkbox;
 	}
 

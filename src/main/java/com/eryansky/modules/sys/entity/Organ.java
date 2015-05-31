@@ -7,18 +7,16 @@ package com.eryansky.modules.sys.entity;
 
 
 import com.eryansky.common.orm.entity.BaseEntity;
-import com.eryansky.common.orm.entity.StatusState;
 import com.eryansky.common.utils.ConvertUtils;
 import com.eryansky.common.utils.collections.Collections3;
 import com.eryansky.modules.sys._enum.OrganType;
-import com.eryansky.utils.CacheConstants;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.collect.Lists;
-import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.*;
 
-import javax.persistence.*;
 import javax.persistence.CascadeType;
+import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -361,5 +359,21 @@ public class Organ extends BaseEntity implements Serializable {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    /**
+     * 机构下默认用户
+     * @return
+     */
+    @Transient
+    public List<User> getDefautUsers() {
+        List<User> list = Lists.newArrayList();
+        List<User> users = getUsers();
+        for (User user : users) {
+            if (user.getDefaultOrganId() != null && user.getDefaultOrganId().equals(id)) {
+                list.add(user);
+            }
+        }
+        return list;
     }
 }

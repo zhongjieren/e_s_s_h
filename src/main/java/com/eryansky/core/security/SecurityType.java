@@ -19,7 +19,9 @@ public enum SecurityType {
 	/** 用户注销(1) */
 	logout(1, "用户注销"),
 	/** 用户非正常注销(2) */
-    logout_abnormal(2, "用户非正常注销");
+	logout_abnormal(2, "用户非正常注销"),
+	/** 强制下线(3) */
+	offline(3, "强制下线");
 
 	/**
 	 * 值 Integer型

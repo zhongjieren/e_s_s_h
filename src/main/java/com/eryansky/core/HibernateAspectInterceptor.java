@@ -22,9 +22,10 @@ import java.util.Date;
  * 
  */
 public class HibernateAspectInterceptor extends EmptyInterceptor {
-	private static final Logger logger = Logger
-			.getLogger(HibernateAspectInterceptor.class);
+
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = Logger.getLogger(HibernateAspectInterceptor.class);
+
 
 	@Override
 	public boolean onSave(Object entity, Serializable id, Object[] state,
@@ -57,6 +58,17 @@ public class HibernateAspectInterceptor extends EmptyInterceptor {
 					}
 					continue;
 				}
+
+                if ("updateUser".equals(propertyNames[index])) {
+					/* 使用拦截器将对象的"修改人名称"属性赋上值 */
+                    state[index] = sessionInfo.getLoginName();
+                    continue;
+                }
+                if ("updateTime".equals(propertyNames[index])) {
+					/* 使用拦截器将对象的"修改时间"属性赋上值 */
+                    state[index] = new Date();
+                    continue;
+                }
 			}
 		} catch (Exception e) {
 			return false;

@@ -21,7 +21,7 @@ function userDatagrid() {
     $select_user_search_form = $('#select_user_search_form').form();
     //数据列表啊
     $select_user_datagrid = $('#select_user_datagrid').datagrid({
-        url: ctx + "/sys/user/combogridSelectUser",
+        url: ctxAdmin + "/sys/user/combogridSelectUser",
         data: selectUserDatagridData,
         fit: true,
         rownumbers: true,//显示行数
@@ -124,7 +124,7 @@ function selectOrganTree() {
     //组织机构树
     var selectedOrganNode = null;//存放被选中的节点对象 临时变量
     $select_organ_tree = $("#select_organ_tree").tree({
-        url: ctx + "/sys/organ/tree?grade="+grade,
+        url: ctxAdmin + "/sys/organ/tree?grade="+grade,
         onClick: function (node) {
             var selectesRoleNode = $select_role_tree.tree('getSelected');
             if (selectesRoleNode) {
@@ -160,7 +160,7 @@ function selectRoleTree() {
     //组织机构树
     var selectedRoleNode = null;//存放被选中的节点对象 临时变量
     $select_role_tree = $("#select_role_tree").tree({
-        url: ctx + "/sys/role/tree",
+        url: ctxAdmin + "/sys/role/tree",
         onClick: function (node) {
             var selectesOrganNode = $select_organ_tree.tree('getSelected');
             if (selectesOrganNode) {
@@ -204,7 +204,7 @@ function search() {
         roleId = selectRoleNode.id; //搜索 id:主键 即是通过左边组织机构树点击得到搜索结果
     }
     $select_user_datagrid.datagrid({
-        url: ctx + "/sys/user/combogridSelectUser",
+        url: ctxAdmin + "/sys/user/combogridSelectUser",
         queryParams: {organId: organId, roleId: roleId, loginNameOrName: $("#personName").val()}
     });
 }

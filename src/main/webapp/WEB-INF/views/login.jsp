@@ -6,6 +6,7 @@
 <head>
     <title>用户登录</title>
     <%@ include file="/common/meta.jsp" %>
+    <%@ include file="/common/autocomplete.jsp" %>
     <style type="text/css">
         .login_label {display: inline-block;text-align: right;width: 76px;font-size: 14px;}
         body{width:100%; height:100%; margin:0; padding:0;}
@@ -73,12 +74,12 @@
                 }
             });
 
-            $loginName = $("#loginName").next().children(".textbox-text").autocomplete('${ctx}/sys/user/autoComplete', {
+            $loginNameAutocompleter = $("#loginName").next().children(".textbox-text").autocomplete('${ctxAdmin}/sys/user/autoComplete', {
                 remoteDataType:'json',
                 minChars: 0,
                 maxItemsToShow: 10
             });
-            var ac = $loginName.data('autocompleter');
+            var ac = $loginNameAutocompleter.data('autocompleter');
             //添加查询属性
             ac.setExtraParam("rows",ac.options.maxItemsToShow);
         });
@@ -109,7 +110,7 @@
                     disabled: true
                 });
                 var cookieThemeType = "${cookie.themeType.value}"; //cookie初访的登录管理界面类型
-                $.post('${ctx}/login/login?theme=' + cookieThemeType, $.serializeObject(loginForm), function (data) {
+                $.post('${ctxAdmin}/login/login?theme=' + cookieThemeType, $.serializeObject(loginForm), function (data) {
                     if (data.code == 1) {
                         window.location = data.obj;//操作结果提示
                     } else {

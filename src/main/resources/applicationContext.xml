@@ -18,6 +18,7 @@
 
     <!-- 定义受环境影响易变的变量 -->
     <context:property-placeholder ignore-unresolvable="true" location="classpath*:/appconfig.properties" />
+    <context:property-placeholder ignore-unresolvable="true" location="classpath*:/config.properties" />
 
     <!-- 提供对@Required,@Autowired以及JSR 250'的@Resource注解的支持 -->
     <context:annotation-config />
@@ -123,6 +124,12 @@
             <tx:method name="*" propagation="REQUIRED" />
         </tx:attributes>
     </tx:advice>
+
+    <!--发布webservice-->
+    <!--<bean class= "org.springframework.remoting.jaxws.SimpleJaxWsServiceExporter">-->
+        <!--<property name="baseAddress" value="${webservice.url}"></property>-->
+    <!--</bean>-->
+    <!--<bean class="com.eryansky.webservice.soap.server.impl.UserWebServiceImpl"/>-->
 
     <!--Spring上下文获取工具-->
     <bean class="com.eryansky.common.spring.SpringContextHolder"></bean>

@@ -20,21 +20,21 @@
 		</div>
 	</noscript>
 	<%-- north顶部Logo区域 --%>
-	<div data-options="region:'north',border:false,split:false,href:'${ctx}/common/layout/north'"
+	<div data-options="region:'north',border:false,split:false,href:'${ctxAdmin}/common/layout/north'"
 		style="height: 72px;overflow: hidden;">
 	</div>
 
 	<%-- west菜单栏 --%>
-	<div data-options="region:'west',title:'导航菜单',split:false,href:'${ctx}/index/west'"
+	<div data-options="region:'west',title:'导航菜单',split:false,href:'${ctxAdmin}/index/west'"
 		style="width: 180px;overflow: hidden;">
 	</div>
 
 	<%-- center主面板 --%>
-	<div data-options="region:'center',split:false,href:'${ctx}/common/layout/center'" style="overflow: hidden;">
+	<div data-options="region:'center',split:false,href:'${ctxAdmin}/common/layout/center'" style="overflow: hidden;">
 	</div>
 	
 	<%-- south底部 --%>
-	<div data-options="region:'south',border:false,split:false,href:'${ctx}/common/layout/south'"
+	<div data-options="region:'south',border:false,split:false,href:'${ctxAdmin}/common/layout/south'"
 		style="height: 20px;overflow: hidden;">
 	</div>
 </body>

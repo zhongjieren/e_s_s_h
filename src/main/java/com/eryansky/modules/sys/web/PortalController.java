@@ -25,7 +25,7 @@ import java.util.ArrayList;
  * @date   2014-07-31 12:30
  */
 @Controller
-@RequestMapping(value = "/portal")
+@RequestMapping(value = "${adminPath}/portal")
 public class PortalController extends SimpleController {
 
     @Autowired
@@ -46,7 +46,7 @@ public class PortalController extends SimpleController {
     public ModelAndView notice() {
         ModelAndView modelAnView = new ModelAndView("layout/portal-bug");
         Page<Bug> page = new Page<Bug>(Page.DEFAULT_PAGESIZE);
-        page = bugManager.find(page,new ArrayList<PropertyFilter>());
+        page = bugManager.findPage(page,new ArrayList<PropertyFilter>());
         Datagrid datagrid = new Datagrid(page.getTotalCount(),page.getResult());
         modelAnView.addObject("bugDatagrid",datagrid);
         return modelAnView;

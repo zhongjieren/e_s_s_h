@@ -8,7 +8,7 @@ var organ_Id;
 $(function() {
     //数据列表
     organ_treegrid = $('#organ_treegrid').treegrid({
-        url:ctx+'/sys/organ/treegrid',
+        url:ctxAdmin+'/sys/organ/treegrid',
         fit:true,
         fitColumns:false,//自适应列宽
         striped:true,//显示条纹
@@ -73,7 +73,7 @@ $(function() {
 
 function formInit(){
     organ_form = $('#organ_form').form({
-        url: ctx+'/sys/organ/_save',
+        url: ctxAdmin+'/sys/organ/_save',
         onSubmit: function(param){
             $.messager.progress({
                 title : '提示信息！',
@@ -112,7 +112,7 @@ function formInit(){
 }
 //显示弹出窗口 新增：row为空 编辑:row有值
 function showDialog(row){
-    var inputUrl = ctx+"/sys/organ/input";
+    var inputUrl = ctxAdmin+"/sys/organ/input";
     if(row != undefined && row.id){
         inputUrl = inputUrl+"?id="+row.id;
     }else{
@@ -179,7 +179,7 @@ function edit(row) {
 //初始化机构用户表单
 function initOrganUserForm(){
     organ_user_form = $('#organ_user_form').form({
-        url: ctx+'/sys/organ/updateOrganUser',
+        url: ctxAdmin+'/sys/organ/updateOrganUser',
         onSubmit: function(param){
             $.messager.progress({
                 title : '提示信息！',
@@ -209,7 +209,7 @@ function editOrganUser(){
     //选中的行（第一条）
     var row = organ_treegrid.treegrid('getSelected');
     if (row){
-        var userUrl = ctx+"/sys/organ/user";
+        var userUrl = ctxAdmin+"/sys/organ/user";
         if(row != undefined && row.id){
             userUrl = userUrl+"?id="+row.id;
         }
@@ -258,7 +258,7 @@ function del(rowIndex){
     if (row != undefined) {
         $.messager.confirm('确认提示！','您确定要删除(如果存在子节点，子节点也一起会被删除)？',function(r){
             if (r){
-                $.post(ctx+'/sys/organ/delete/'+row.id,{},function(data){
+                $.post(ctxAdmin+'/sys/organ/delete/'+row.id,{},function(data){
                     if (data.code==1){
                         organ_treegrid.treegrid('unselectAll');//取消选择 1.3.6bug
                         organ_treegrid.treegrid('load');	// reload the user data

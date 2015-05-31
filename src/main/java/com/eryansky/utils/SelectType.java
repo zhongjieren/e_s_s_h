@@ -5,6 +5,10 @@
  */
 package com.eryansky.utils;
 
+import com.eryansky.common.model.Combobox;
+import com.eryansky.common.model.TreeNode;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * 
  * combobox、combotree功能类型 全部、请选择  枚举类型.
@@ -68,5 +72,44 @@ public enum SelectType {
 		}
 		return null;
 	}
+
+
+    /**
+     * 快速构造一个树形节点
+     * @param selectType
+     * @return
+     */
+    public static TreeNode treeNode(String selectType){
+        TreeNode selectTreeNode = null;
+        //为combobox添加  "---全部---"、"---请选择---"
+        if(StringUtils.isNotBlank(selectType)){
+            SelectType s = SelectType.getSelectTypeValue(selectType);
+            String title = selectType;
+            if(s != null){
+                title = s.getDescription();
+            }
+            selectTreeNode = new TreeNode("", title);
+        }
+        return selectTreeNode;
+    }
+
+    /**
+     * 快速构造一个选项节点
+     * @param selectType
+     * @return
+     */
+    public static Combobox combobox(String selectType){
+        Combobox selectCombobox = null;
+        //为combobox添加  "---全部---"、"---请选择---"
+        if(StringUtils.isNotBlank(selectType)){
+            SelectType s = SelectType.getSelectTypeValue(selectType);
+            String title = selectType;
+            if(s != null){
+                title = s.getDescription();
+            }
+            selectCombobox = new Combobox("", title);
+        }
+        return selectCombobox;
+    }
 
 }

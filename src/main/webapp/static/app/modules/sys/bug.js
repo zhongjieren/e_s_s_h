@@ -10,7 +10,7 @@ $(function () {
     bug_search_form = $('#bug_search_form').form();
     //数据列表
     bug_datagrid = $('#bug_datagrid').datagrid({
-        url: ctx + '/sys/bug/datagrid',
+        url: ctxAdmin + '/sys/bug/datagrid',
         fit: true,
         pagination: true,//底部分页
         rownumbers: true,//显示行数
@@ -36,7 +36,7 @@ $(function () {
                 {field: 'id', title: '主键', hidden: true, sortable: true, align: 'right', width: 80},
                 {field: 'typeName', title: '类型', width: 120 },
                 {field: 'operater', title: '操作', width: 260, formatter: function (value, rowData, rowIndex) {
-                    var url = $.formatString(ctx + '/sys/bug/view?id={0}', rowData.id);
+                    var url = $.formatString(ctxAdmin + '/sys/bug/view?id={0}', rowData.id);
                     var operaterHtml = "<a class='easyui-linkbutton' iconCls='easyui-icon-add'  " +
                         "onclick='view(\"" + rowData.title + "\",\"" + url + "\")' >查看</a>"
                         + "&nbsp;<a class='easyui-linkbutton' iconCls='easyui-icon-edit'  href='#' " +
@@ -116,7 +116,7 @@ function view(title, url) {
 
 function formInit() {
     bug_form = $('#bug_form').form({
-        url: ctx + '/sys/bug/_save',
+        url: ctxAdmin + '/sys/bug/_save',
         onSubmit: function (param) {
             $.messager.progress({
                 title: '提示信息！',
@@ -152,7 +152,7 @@ function formInit() {
 }
 //显示弹出窗口 新增：row为空 编辑:row有值
 function showDialog(row) {
-    var inputUrl = ctx + "/sys/bug/input";
+    var inputUrl = ctxAdmin + "/sys/bug/input";
     if (row != undefined && row.id) {
         inputUrl = inputUrl + "?id=" + row.id;
     }
@@ -246,7 +246,7 @@ function del(rowIndex) {
                     ids[i] = row.id;
                 });
                 $.ajax({
-                    url: ctx + '/sys/bug/remove',
+                    url: ctxAdmin + '/sys/bug/remove',
                     type: 'post',
                     data: {ids: ids},
                     traditional: true,
@@ -274,12 +274,12 @@ function search() {
 
 //导出Excel
 function exportExcel() {
-    $('#bug_temp_iframe').attr('src', ctx + '/sys/bug/exportExcel');
+    $('#bug_temp_iframe').attr('src', ctxAdmin + '/sys/bug/exportExcel');
 }
 
 function importFormInit() {
     bug_import_form = $('#bug_import_form').form({
-        url: ctx + '/sys/bug/importExcel',
+        url: ctxAdmin + '/sys/bug/importExcel',
         onSubmit: function (param) {
             $.messager.progress({
                 title: '提示信息！',
@@ -310,7 +310,7 @@ function importExcel() {
         width: 500,
         modal: true,
         maximizable: true,
-        href: ctx + '/sys/bug/import',
+        href: ctxAdmin + '/sys/bug/import',
         buttons: [
             {
                 text: '保存',

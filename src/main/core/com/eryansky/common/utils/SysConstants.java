@@ -112,45 +112,5 @@ public class SysConstants {
     public static boolean isdevMode(){
     	return getAppConfig().getBoolean("devMode",false);
     }
-    
-    
-    
-	/**
-	 * 获得上传表单域的名称
-	 * 
-	 * @return
-	 */
-	public static final String getUploadFieldName() {
-		return getAppConfig().getProperty("uploadFieldName", "filedata");
-	}
-
-	/**
-	 * 获得上传文件的最大大小限制
-	 * 
-	 * @return
-	 */
-	public static final long getUploadFileMaxSize() {
-		 String uploadFileMaxSize = getAppConfig().getProperty("uploadFileMaxSize", "20971520");
-		 return Long.valueOf(uploadFileMaxSize);
-	}
-
-	/**
-	 * 获得允许上传文件的扩展名
-	 * 
-	 * @return
-	 */
-	public static final String getUploadFileExts() {
-		return getAppConfig().getProperty("uploadFileExts","txt,rar,zip,doc,docx,xls,xlsx,jpg,jpeg,gif,png,swf,wmv,avi,wma,mp3,mid");
-	}
-
-	/**
-	 * 获得上传文件要放到那个目录
-	 * 
-	 * @return
-	 */
-	public static final String getUploadDirectory() {
-		return getAppConfig().getProperty("uploadDirectory", "attached");
-	}
-
 
 }

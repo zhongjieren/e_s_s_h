@@ -5,17 +5,14 @@
  */
 package com.eryansky.listener;
 
-import com.eryansky.common.utils.StringUtils;
 import com.eryansky.common.web.listener.DefaultSystemInitListener;
+import com.eryansky.core.security.SecurityType;
 import com.eryansky.core.security.SecurityUtils;
-import com.eryansky.utils.AppConstants;
-import com.eryansky.webservice.soap.server.impl.UserWebServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpSessionEvent;
-import javax.xml.ws.Endpoint;
 
 /**
  * 系统初始化监听 继承默认系统启动监听器.
@@ -35,20 +32,20 @@ public class SystemInitListener extends DefaultSystemInitListener{
     public void contextInitialized(ServletContextEvent sce) {
         super.contextInitialized(sce);
         //WebService发布
-        if(StringUtils.isNotBlank(AppConstants.getWebServiceUrl())){
-            logger.info("WebService发布...");
-            Endpoint.publish(AppConstants.getWebServiceUrl(), new UserWebServiceImpl());
-            logger.info("WebService[{}]发布成功。",AppConstants.getWebServiceUrl());
-        }
+//        if(StringUtils.isNotBlank(AppConstants.getWebServiceUrl())){
+//            logger.info("WebService发布...");
+//            Endpoint.publish(AppConstants.getWebServiceUrl(), new UserWebServiceImpl());
+//            logger.info("WebService[{}]发布成功。",AppConstants.getWebServiceUrl());
+//        }
     }
 
     /**
 	 * session销毁
 	 */
 	public void sessionDestroyed(HttpSessionEvent evt) {
-		logger.debug("sessionDestroyed");
+		super.sessionDestroyed(evt);
 		String sessionId = evt.getSession().getId();
-		SecurityUtils.removeUserFromSession(sessionId,true);
+		SecurityUtils.removeUserFromSession(sessionId,true, SecurityType.logout_abnormal);
 	}
 
 }

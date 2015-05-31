@@ -58,7 +58,7 @@ $(function () {
     //组织机构树
     var selectedNode = null;//存放被选中的节点对象 临时变量
     organ_tree = $("#organ_tree").tree({
-        url: ctx + "/sys/organ/tree",
+        url: ctxAdmin + "/sys/organ/tree",
         onClick: function (node) {
             search();
         },
@@ -87,7 +87,7 @@ $(function () {
 
     //数据列表
     user_datagrid = $('#user_datagrid').datagrid({
-        url: ctx + '/sys/user/userDatagrid',
+        url: ctxAdmin + '/sys/user/userDatagrid',
         fit: true,
         pagination: true,//底部分页
         rownumbers: true,//显示行数
@@ -262,7 +262,7 @@ $(function () {
         }
     }).datagrid('showTooltip');
 
-    $loginNameOrName = $("#loginNameOrName").autocomplete(ctx+'/sys/user/autoComplete', {
+    $loginNameOrName = $("#loginNameOrName").autocomplete(ctxAdmin+'/sys/user/autoComplete', {
         remoteDataType:'json',
         minChars: 0,
         maxItemsToShow: 20
@@ -324,7 +324,7 @@ function move(up){
 
         }
         $.ajax({
-            url: ctx+'/sys/user/changeOrderNo',
+            url: ctxAdmin+'/sys/user/changeOrderNo',
             type: 'post',
             data: {upUserId: upUserId,downUserId:downUserId,moveUp:moveUp},
             dataType: 'json',
@@ -361,7 +361,7 @@ function lock(lock){
         }
 
         $.ajax({
-            url: ctx+'/sys/user/lock',
+            url: ctxAdmin+'/sys/user/lock',
             type: 'post',
             data: {userIds: userIds,status:status},
             dataType: 'json',
@@ -384,7 +384,7 @@ function lock(lock){
 
 function formInit() {
     user_form = $('#user_form').form({
-        url: ctx + '/sys/user/save',
+        url: ctxAdmin + '/sys/user/save',
         onSubmit: function (param) {
             $.messager.progress({
                 title: '提示信息！',
@@ -418,7 +418,7 @@ function formInit() {
 }
 //显示弹出窗口 新增：row为空 编辑:row有值
 function showDialog(row) {
-    var inputUrl = ctx + "/sys/user/input";
+    var inputUrl = ctxAdmin + "/sys/user/input";
     if (row != undefined && row.id) {
         inputUrl = inputUrl + "?id=" + row.id;
     }
@@ -506,7 +506,7 @@ function edit(rowIndex, rowData) {
 //初始化修改密码表单
 function initPasswordForm() {
     user_password_form = $('#user_password_form').form({
-        url: ctx + '/sys/user/_updateUserPassword',
+        url: ctxAdmin + '/sys/user/_updateUserPassword',
         onSubmit: function (param) {
             param.upateOperate = '0';
             $.messager.progress({
@@ -561,7 +561,7 @@ function editPassword() {
             height: 200,
             modal: true,
             maximizable: true,
-            href: ctx + '/sys/user/password',
+            href: ctxAdmin + '/sys/user/password',
             buttons: [
                 {
                     text: '保存',
@@ -598,7 +598,7 @@ function editPassword() {
 //初始化用户角色表单
 function initUserRoleForm() {
     user_role_form = $('#user_role_form').form({
-        url: ctx + '/sys/user/updateUserRole',
+        url: ctxAdmin + '/sys/user/updateUserRole',
         onSubmit: function (param) {
             $.messager.progress({
                 title: '提示信息！',
@@ -650,7 +650,7 @@ function editUserRole() {
             return;
         }
 
-        var inputUrl = ctx+'/sys/user/role';
+        var inputUrl = ctxAdmin+'/sys/user/role';
         if (row != undefined && row.id && rows.length ==1) {
             inputUrl = inputUrl + "?id=" + row.id;
         }
@@ -699,7 +699,7 @@ function editUserRole() {
 //初始化用户资源表单
 function initUserResourceForm() {
     user_resource_form = $('#user_resource_form').form({
-        url: ctx + '/sys/user/updateUserResource',
+        url: ctxAdmin + '/sys/user/updateUserResource',
         onSubmit: function (param) {
             $.messager.progress({
                 title: '提示信息！',
@@ -757,7 +757,7 @@ function editUserResource() {
             height: 360,
             modal: true,
             maximizable: true,
-            href: ctx + '/sys/user/resource',
+            href: ctxAdmin + '/sys/user/resource',
             buttons: [
                 {
                     text: '保存',
@@ -793,7 +793,7 @@ function editUserResource() {
 //初始化用户机构表单
 function initUserOrganForm() {
     user_organ_form = $('#user_organ_form').form({
-        url: ctx + '/sys/user/updateUserOrgan',
+        url: ctxAdmin + '/sys/user/updateUserOrgan',
         onSubmit: function (param) {
             $.messager.progress({
                 title: '提示信息！',
@@ -840,7 +840,7 @@ function editUserOrgan() {
             return;
         }
 
-        var inputUrl = ctx+'/sys/user/organ';
+        var inputUrl = ctxAdmin+'/sys/user/organ';
         if (row != undefined && row.id && rows.length ==1) {
             inputUrl = inputUrl + "?id=" + row.id;
         }
@@ -888,7 +888,7 @@ function editUserOrgan() {
 //初始化用户岗位表单
 function initUserPostForm() {
     $user_post_form = $('#user_post_form').form({
-        url: ctx + '/sys/user/updateUserPost',
+        url: ctxAdmin + '/sys/user/updateUserPost',
         onSubmit: function (param) {
             $.messager.progress({
                 title: '提示信息！',
@@ -938,7 +938,7 @@ function editUserPost() {
             organParamUrl = "organId="+node.id;
         }
 
-        var userUrl = ctx+"/sys/user/post";
+        var userUrl = ctxAdmin+"/sys/user/post";
         if (row != undefined && row.id) {
             userUrl = userUrl + "?id=" + row.id+"&"+organParamUrl;
         }else{
@@ -997,7 +997,7 @@ function del() {
                     ids[i] = row.id;
                 });
                 $.ajax({
-                    url: ctx + '/sys/user/_remove',
+                    url: ctxAdmin + '/sys/user/_remove',
                     type: 'post',
                     data: {ids: ids},
                     traditional: true,

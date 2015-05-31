@@ -11,12 +11,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 用户需要登录
+ * 用户登录验证注解
  * @author : 尔演&Eryan eryanwcp@gmail.com
  * @date : 2014-06-24 15:06
  */
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ElementType.TYPE, ElementType.METHOD,ElementType.PACKAGE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RequiresUser {
+
+    /**
+     * 用户是否需要登录 是：true 否：false 默认值：true
+     * @return
+     */
+    boolean required() default true;
 
 }

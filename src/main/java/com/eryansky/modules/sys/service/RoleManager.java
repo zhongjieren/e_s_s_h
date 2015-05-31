@@ -10,6 +10,7 @@ import com.eryansky.common.exception.ServiceException;
 import com.eryansky.common.exception.SystemException;
 import com.eryansky.common.orm.hibernate.EntityManager;
 import com.eryansky.common.orm.hibernate.HibernateDao;
+import com.eryansky.common.orm.hibernate.Parameter;
 import com.eryansky.modules.sys.entity.Role;
 import com.eryansky.utils.CacheConstants;
 import org.hibernate.SessionFactory;
@@ -138,4 +139,14 @@ public class RoleManager extends EntityManager<Role, Long> {
 		return list;
 	}
 
+
+    /**
+     * 根据ID查找
+     * @param roleIds 角色ID集合
+     * @return
+     */
+    public List<Role> findRolesByIds(List<Long> roleIds) {
+        Parameter parameter = new Parameter(roleIds);
+        return getEntityDao().find("from Role r where r.id in :p1",parameter);
+    }
 }

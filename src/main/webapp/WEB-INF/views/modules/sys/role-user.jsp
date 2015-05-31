@@ -26,7 +26,7 @@
         _dialog = $("<div/>").dialog({
             title: "选择用户",
             top: 10,
-            href: '${ctx}/sys/user/select?grade=0&userIds=' + userIds,
+            href: '${ctxAdmin}/sys/user/select?grade=0&userIds=' + userIds,
             width: '700',
             height: '450',
             maximizable: true,
@@ -64,7 +64,7 @@
             type: "post",
             dataType: 'json',
             contentType: "application/json",
-            url: "${ctx}/sys/user/combogridAll",
+            url: "${ctxAdmin}/sys/user/combogridAll",
 //            async: true,
             success: function (data) {
                 $multiSelectUser = $("#userIds").kendoMultiSelect({

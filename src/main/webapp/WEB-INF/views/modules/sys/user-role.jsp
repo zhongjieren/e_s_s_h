@@ -11,7 +11,7 @@
             height:28,
 	        width: 260,
 	        editable:false,
-	        url: '${ctx}/sys/role/combobox'
+	        url: '${ctxAdmin}/sys/role/combobox'
 	    });
 	}	
 </script>

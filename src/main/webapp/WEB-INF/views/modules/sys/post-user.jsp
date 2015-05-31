@@ -10,7 +10,7 @@
     function loadUser(){
         var isChange = false;
         user_combogrid = $('#userIds').combogrid({
-            url:'${ctx}/sys/user/combogridOrganUser',
+            url:'${ctxAdmin}/sys/user/combogridOrganUser',
             width:360,
             height:96,
             panelWidth:360,

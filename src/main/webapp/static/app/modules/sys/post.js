@@ -13,7 +13,7 @@ $(function() {
     //组织机构树
     var selectedNode = null;//存放被选中的节点对象 临时变量
     $organ_tree = $("#organ_tree").tree({
-        url : ctx+"/sys/organ/tree",
+        url : ctxAdmin+"/sys/organ/tree",
         onClick:function(node){
             search();
         },
@@ -42,7 +42,7 @@ $(function() {
 
     //数据列表
     $post_datagrid = $('#post_datagrid').datagrid({
-        url:ctx+'/sys/post/datagrid',
+        url:ctxAdmin+'/sys/post/datagrid',
         fit:true,
         pagination:true,//底部分页
         rownumbers:true,//显示行数
@@ -103,7 +103,7 @@ $(function() {
 
 function formInit(){
     $post_form = $('#post_form').form({
-        url: ctx+'/sys/post/_save',
+        url: ctxAdmin+'/sys/post/_save',
         onSubmit: function(param){
             $.messager.progress({
                 title : '提示信息！',
@@ -137,7 +137,7 @@ function formInit(){
 }
 //显示弹出窗口 新增：row为空 编辑:row有值
 function showDialog(row){
-    var inputUrl = ctx+"/sys/post/input";
+    var inputUrl = ctxAdmin+"/sys/post/input";
     if(row != undefined && row.id){
         inputUrl = inputUrl+"?id="+row.id;
     }
@@ -212,7 +212,7 @@ function edit(rowIndex, rowData){
 //初始化岗位用户表单
 function initPostUserForm(){
     $post_user_form = $('#post_user_form').form({
-        url: ctx+'/sys/post/updatePostUser',
+        url: ctxAdmin+'/sys/post/updatePostUser',
         onSubmit: function(param){
             $.messager.progress({
                 title : '提示信息！',
@@ -247,7 +247,7 @@ function editPostUser(){
         if(rows.length>1){
             eu.showMsg("您选择了多个操作对象，默认操作第一次被选中的记录！");
         }
-        var userUrl = ctx+"/sys/post/user";
+        var userUrl = ctxAdmin+"/sys/post/user";
         if(row != undefined && row.id){
             userUrl = userUrl+"?id="+row.id;
         }
@@ -300,7 +300,7 @@ function del(){
                     ids[i] = row.id;
                 });
                 $.ajax({
-                    url:ctx+'/sys/post/remove',
+                    url:ctxAdmin+'/sys/post/remove',
                     type:'post',
                     data: {ids:ids},
                     dataType:'json',

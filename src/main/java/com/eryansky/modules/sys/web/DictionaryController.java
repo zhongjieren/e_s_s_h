@@ -40,7 +40,7 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 @Controller
-@RequestMapping(value = "/sys/dictionary")
+@RequestMapping(value = "${adminPath}/sys/dictionary")
 public class DictionaryController extends BaseController<Dictionary,Long> {
 
     @Autowired
@@ -64,11 +64,12 @@ public class DictionaryController extends BaseController<Dictionary,Long> {
     }
 
     @Override
-    public Datagrid datagrid(@RequestParam(value = "page", required = false, defaultValue = "1") int page, @RequestParam(value = "rows", required = false, defaultValue = Page.DEFAULT_PAGESIZE + "") int rows, String sort, String order) {
+    public Datagrid<Dictionary> datagrid() {
+        Page<Dictionary> page = new Page<Dictionary>(SpringMVCHolder.getRequest());
         // 自动构造属性过滤器
         List<PropertyFilter> filters = HibernateWebUtils.buildPropertyFilters(SpringMVCHolder.getRequest(), HibernateWebUtils.FILTERPREFIX, false);
-        Page<Dictionary> p = getEntityManager().find(page, rows, sort, order, filters);
-        Datagrid<Dictionary> datagrid = new Datagrid<Dictionary>(p.getTotalCount(), p.getResult());
+        page = getEntityManager().findPage(page,filters);
+        Datagrid<Dictionary> datagrid = new Datagrid<Dictionary>(page.getTotalCount(), page.getResult());
         return datagrid;
     }
 

@@ -5,12 +5,14 @@
  */
 package com.eryansky.common.orm;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.eryansky.common.utils.StringUtils;
+import com.eryansky.common.web.utils.WebUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 与具体ORM实现无关的分页参数及查询结果封装.
@@ -90,6 +92,23 @@ public class Page<T> {
         this.pageSize = pageSize;
         this.setResult(list);
 //        initialize();
+    }
+
+    /**
+     * 构造方法 用于easyui
+     * @param request http请求对象
+     */
+    public Page(HttpServletRequest request) {
+        String _pageNo = WebUtils.getParameter(request, "page");
+        String _pageSize = WebUtils.getParameter(request,"rows");
+        String sort = WebUtils.getParameter(request,"sort");
+        String order = WebUtils.getParameter(request,"order");
+        this.setPageSize(StringUtils.isBlank(_pageSize) ? Page.DEFAULT_PAGESIZE:Integer.valueOf(_pageSize));
+        this.setPageNo(StringUtils.isBlank(_pageNo) ? pageNo:Integer.valueOf(_pageNo));
+        if (StringUtils.isNotBlank(sort) && StringUtils.isNotBlank(order)) {
+            this.setOrder(order);
+            this.setOrderBy(sort);
+        }
     }
 
 

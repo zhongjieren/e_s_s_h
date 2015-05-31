@@ -35,7 +35,7 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 @Controller
-@RequestMapping(value = "/sys/resource")
+@RequestMapping(value = "${adminPath}/sys/resource")
 public class ResourceController extends BaseController<Resource,Long> {
 
     @Autowired

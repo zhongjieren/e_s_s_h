@@ -8,7 +8,7 @@ $(function() {
     dictionary_search_form = $('#dictionary_search_form').form();
     //数据列表
     dictionary_datagrid = $('#dictionary_datagrid').datagrid({
-        url:ctx+'/sys/dictionary/datagrid',
+        url:ctxAdmin+'/sys/dictionary/datagrid',
         fit:true,
         pagination:true,//底部分页
         pagePosition:'bottom',//'top','bottom','both'.
@@ -35,7 +35,7 @@ $(function() {
                 editor : {
                     type : 'combobox',
                     options : {
-                        url:ctx+'/sys/dictionary-type/combobox',
+                        url:ctxAdmin+'/sys/dictionary-type/combobox',
                         required : true,
                         missingMessage:'请选择字典类型(如果不存在,可以选择[字典类型管理]按钮,添加字典类型)！',
                         editable:false,//是否可编辑
@@ -76,7 +76,7 @@ $(function() {
                 editor : {
                     type : 'combotree',
                     options : {
-                        url:ctx+'/sys/dictionary/combotree?selectType=select',
+                        url:ctxAdmin+'/sys/dictionary/combotree?selectType=select',
                         onBeforeLoad:function(node,param){
                             if(dictionaryTypeCode != undefined){
                                 param.dictionaryTypeCode = dictionaryTypeCode;
@@ -187,7 +187,7 @@ $(function() {
                 eu.showMsg("数据未更新!");
                 return;
             }
-            $.post(ctx+'/sys/dictionary/_save',rowData,
+            $.post(ctxAdmin+'/sys/dictionary/_save',rowData,
                 function(data) {
                     $.messager.progress('close');
                     if (data.code == 1) {
@@ -226,7 +226,7 @@ $(function() {
     }).datagrid('showTooltip');
 
     dictionary_filter_EQS_dictionaryType__code = $('#filter_EQS_dictionaryType__code').combobox({
-        url:ctx+'/sys/dictionary-type/combobox?selectType=all',
+        url:ctxAdmin+'/sys/dictionary-type/combobox?selectType=all',
         multiple:false,//是否可多选
         editable:false,//是否可编辑
         height:28,
@@ -247,12 +247,12 @@ function bindCodeEvent(rowIndex){
 //字典类型管理
 function dictionaryType(){
     //parent.layout_center_tabs 指向父级layout_center_tabs选项卡(center.jsp)
-    eu.addTab(parent.layout_center_tabs,"字典类型管理",ctx+"/sys/dictionary-type",true,"easyui-icon-folder");
+    eu.addTab(parent.layout_center_tabs,"字典类型管理",ctxAdmin+"/sys/dictionary-type",true,"easyui-icon-folder");
 }
 
 //设置排序默认值
 function setSortValue(target) {
-    $.get(ctx+'/sys/dictionary/maxSort', function(data) {
+    $.get(ctxAdmin+'/sys/dictionary/maxSort', function(data) {
         if (data.code == 1) {
             $(target).numberbox({value:data.obj + 1});
             $(target).numberbox('validate');
@@ -347,7 +347,7 @@ function del() {
                     ids[i] = row.id;
                 });
                 $.ajax({
-                    url:ctx+'/sys/dictionary/remove',
+                    url:ctxAdmin+'/sys/dictionary/remove',
                     type:'post',
                     data: {ids:ids},
                     traditional:true,

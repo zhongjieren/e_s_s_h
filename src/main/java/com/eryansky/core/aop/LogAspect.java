@@ -10,6 +10,7 @@ import com.eryansky.common.utils.StringUtils;
 import com.eryansky.common.utils.browser.BrowserType;
 import com.eryansky.common.utils.browser.BrowserUtils;
 import com.eryansky.common.web.springmvc.SpringMVCHolder;
+import com.eryansky.core.aop.annotation.Logging;
 import com.eryansky.core.security.SecurityConstants;
 import com.eryansky.core.security.SecurityUtils;
 import com.eryansky.core.security.SessionInfo;
@@ -18,11 +19,14 @@ import com.eryansky.modules.sys.entity.Log;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Method;
+import java.text.MessageFormat;
 import java.util.Date;
 
 /**
@@ -67,34 +71,43 @@ public class LogAspect {
                 logger.error(e.getMessage());
             }
             if (sessionInfo != null) {
-                userName = sessionInfo.getLoginName();
+                userName = StringUtils.isBlank(sessionInfo.getName()) ? sessionInfo.getLoginName() : sessionInfo.getName();
                 ip = sessionInfo.getIp();
             } else {
                 userName = "系统";
                 ip = "127.0.0.1";
-                logger.warn("sessionInfo为空.");
+//                logger.warn("sessionInfo为空.");
             }
         } catch (Throwable e) {
             logger.error(e.getMessage(),e);
             throw e;
         }
-        String name = null;
-        // 操作范围
-        if (className.indexOf("Resource") > -1) {
-            name = "资源管理";
-        } else if (className.indexOf("Role") > -1) {
-            name = "角色管理";
-        } else if (className.indexOf("User") > -1) {
-            name = "用户管理";
-        } else if (className.indexOf("Organ") > -1) {
-            name = "机构管理";
-        } else {
-            name = className;
-        }
+        String name = className;
         // 操作类型
         String opertype = methodName;
-        if (StringUtils.isNotBlank(opertype) && (opertype.indexOf("save") > -1 || opertype.indexOf("update") > -1 ||
-                opertype.indexOf("delete") > -1 || opertype.indexOf("merge") > -1)) {
+
+        //注解式日志
+        MethodSignature joinPointObject = (MethodSignature) point.getSignature();
+        Method method = joinPointObject.getMethod();
+        Logging logging = method.getAnnotation(Logging.class);//注解式日志
+        boolean loglog = false;
+        String remark = null;
+        String newLogValue = null;
+        if(logging != null && logging.logging() == true){
+            loglog = true;
+            String logValue = logging.value();
+            newLogValue = logValue;
+            if(StringUtils.isNotBlank(logValue)){
+                Object[] args = point.getArgs();
+                newLogValue = MessageFormat.format(logValue,args);
+            }
+
+            remark = newLogValue;
+        }
+
+        if (loglog == true ||
+                ((opertype.indexOf("save") > -1 || opertype.indexOf("update") > -1 ||
+                        opertype.indexOf("delete") > -1 || opertype.indexOf("remove") > -1 || opertype.indexOf("merge") > -1) && (logging != null && logging.logging() != false))) {
             Long time = end - start;
             Log log = new Log();
             log.setType(LogType.operate.getValue());
@@ -104,6 +117,7 @@ public class LogAspect {
             log.setOperTime(new Date(start));
             log.setActionTime(time.toString());
             log.setIp(ip);
+            log.setRemark(remark);
             BrowserType browserType = BrowserUtils.getBrowserType(SpringMVCHolder.getRequest());
             log.setBrowserType(browserType == null ? null : browserType.toString());
             defaultEntityManager.save(log);

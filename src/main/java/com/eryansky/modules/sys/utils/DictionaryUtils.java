@@ -62,7 +62,7 @@ public class DictionaryUtils {
     public static String getDictionaryNameByDV(String dictionaryTypeCode,String dictionaryValue, String defaultValue){
         Dictionary dictionary = dictionaryManager.getDictionaryByDV(dictionaryTypeCode,dictionaryValue);
         if(dictionary != null){
-            return dictionary.getName();
+            defaultValue = dictionary.getName();
         }
         return defaultValue;
     }

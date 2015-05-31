@@ -83,23 +83,29 @@
 	<!--<mvc:default-servlet-handler/>-->
 
     <mvc:resources mapping="/static/**" location="/static/" cache-period="31556926"/>
-    <mvc:resources mapping="/attached/**" location="/attached/" cache-period="31556926"/>
 
 	<!-- 定义无Controller的path<->view直接映射 -->
-	<mvc:view-controller path="/" view-name="redirect:${web.view.index}"/>
+	<mvc:view-controller path="/" view-name="redirect:${redirectURL}"/>
 
 	<!-- 拦截器配置 -->
 	<mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**" />
-            <bean class="com.eryansky.core.AuthorityInterceptor" ><!-- 不需要权限验证的地址 -->
-                <property name="excludeUrls">
-                    <list>
-                        <value>${web.view.ctx}/login/welcome</value><!-- 欢迎页面 -->
-                        <value>${web.view.ctx}/login/login</value><!-- 登录页面 -->
-                        <value>${web.view.ctx}/static/*</value>
-                    </list>
-                </property>
+            <mvc:exclude-mapping path="/static/**" /><!--静态资源-->
+            <mvc:exclude-mapping path="/disk/**" /><!--云盘-->
+            <mvc:exclude-mapping path="/servlet/**" />
+            <!--OpenSessionInViewInterceptor-->
+            <bean id="openSessionInViewInterceptor" class="org.springframework.orm.hibernate4.support.OpenSessionInViewInterceptor">
+                <property name="sessionFactory" ref="sessionFactory" />
+            </bean>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/**" />
+            <mvc:exclude-mapping path="/jump.jsp" /><!-- 跳转页面 -->
+            <mvc:exclude-mapping path="/static/**" /><!--静态资源-->
+            <mvc:exclude-mapping path="/disk/**" /><!--云盘-->
+            <mvc:exclude-mapping path="/servlet/**" />
+            <bean class="com.eryansky.core.security.interceptor.AuthorityInterceptor" >
             </bean>
         </mvc:interceptor>
 	</mvc:interceptors>
@@ -107,7 +113,6 @@
     <!-- proxy-target-class true:CGLIB代理 false:JDK代理-->
     <aop:aspectj-autoproxy proxy-target-class="true" />
 
-    <bean class="com.eryansky.core.LogInterceptor" />
     <!--异常拦截器-->
     <bean class="com.eryansky.core.ExceptionInterceptor"/>
 

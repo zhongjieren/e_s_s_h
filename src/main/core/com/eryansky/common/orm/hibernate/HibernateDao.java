@@ -570,9 +570,22 @@ public class HibernateDao<T, PK extends Serializable> extends
         }
         // order by
         String sql = sqlString;
-        if (StringUtils.isNotBlank(page.getOrderBy())) {
-            sql += " order by " + page.getOrderBy();
-        }
+		if (StringUtils.isNotBlank(page.getOrderBy()) && StringUtils.isNotBlank(page.getOrder())) {
+			String[] orderByArray = StringUtils.split(page.getOrderBy(), ',');
+			String[] orderArray = StringUtils.split(page.getOrder(), ',');
+
+			Assert.isTrue(orderByArray.length == orderArray.length,
+					"分页多重排序参数中,排序字段与排序方向的个数不相等");
+			sql += " order by ";
+			for (int i = 0; i < orderByArray.length; i++) {
+				sql += orderByArray[i] + " " + orderArray[i];
+				if (i != orderByArray.length - 1) {
+					sql += ",";
+				}
+			}
+		}
+
+
         SQLQuery query = createSqlQuery(sql, parameter);
         query.setFirstResult(page.getFirstResult());
         query.setMaxResults(page.getMaxResults());

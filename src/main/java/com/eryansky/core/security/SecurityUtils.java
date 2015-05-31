@@ -16,11 +16,13 @@ import com.eryansky.modules.sys.entity.Role;
 import com.eryansky.modules.sys.entity.User;
 import com.eryansky.modules.sys.service.ResourceManager;
 import com.eryansky.modules.sys.service.UserManager;
+import com.eryansky.utils.AppConstants;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -36,6 +38,10 @@ public class SecurityUtils {
 
     private static final Logger logger = LoggerFactory
             .getLogger(SecurityUtils.class);
+    private static ResourceManager resourceManager = SpringContextHolder.getBean(ResourceManager.class);
+    private static UserManager userManager = SpringContextHolder.getBean(UserManager.class);
+    private static SecurityLogAspect securityLogAspect = SpringContextHolder.getBean(SecurityConstants.SERVICE_SECURITY_LOGINASPECT);
+    private static ApplicationSessionContext applicationSessionContext = ApplicationSessionContext.getInstance();
 
     /**
      * 是否授权某个资源
@@ -43,13 +49,10 @@ public class SecurityUtils {
      * @param resourceCode 资源编码
      * @return
      */
-    public static boolean isPermitted(String resourceCode) {
-        boolean flag = false;
+    public static Boolean isPermitted(String resourceCode) {
+        Boolean flag = false;
         try {
-            ResourceManager resourceManager = SpringContextHolder.getBean(ResourceManager.class);
-            UserManager userManager = SpringContextHolder.getBean(UserManager.class);
             User superUser = userManager.getSuperUser();
-            HttpServletRequest request = SpringMVCHolder.getRequest();
             SessionInfo sessionInfo = getCurrentSessionInfo();
             if (sessionInfo != null && superUser != null
                     && sessionInfo.getUserId().equals(superUser.getId())) {// 超级用户
@@ -70,8 +73,7 @@ public class SecurityUtils {
      * @param roleCode 角色编码
      * @return
      */
-    public static boolean isPermittedRole(String roleCode) {
-        HttpServletRequest request = SpringMVCHolder.getRequest();
+    public static Boolean isPermittedRole(String roleCode) {
         SessionInfo sessionInfo = getCurrentSessionInfo();
         return isPermittedRole(sessionInfo.getUserId(), roleCode);
     }
@@ -83,11 +85,10 @@ public class SecurityUtils {
      * @param roleCode 角色编码
      * @return
      */
-    public static boolean isPermittedRole(Long userId, String roleCode) {
+    public static Boolean isPermittedRole(Long userId, String roleCode) {
         boolean flag = false;
         try {
             if (userId == null) {
-                HttpServletRequest request = SpringMVCHolder.getRequest();
                 SessionInfo sessionInfo = getCurrentSessionInfo();
                 if (sessionInfo != null) {
                     userId = sessionInfo.getUserId();
@@ -143,8 +144,9 @@ public class SecurityUtils {
      *
      * @param user
      */
-    public static void putUserToSession(HttpServletRequest request, User user) {
-        String sessionId = request.getSession().getId();
+    public static synchronized void putUserToSession(HttpServletRequest request, User user) {
+        HttpSession session = request.getSession();
+        String sessionId = session.getId();
         if(logger.isDebugEnabled()){
             logger.debug("putUserToSession:{}", sessionId);
         }
@@ -172,7 +174,6 @@ public class SecurityUtils {
      * 获取当前登录用户信息.
      */
     public static User getCurrentUser() {
-        UserManager userManager = SpringContextHolder.getBean(UserManager.class);
         SessionInfo sessionInfo = getCurrentSessionInfo();
         User user = null;
         if(sessionInfo != null){
@@ -187,7 +188,6 @@ public class SecurityUtils {
      * @return
      */
     public static User getUserById(String userId) {
-        UserManager userManager = SpringContextHolder.getBean(UserManager.class);
         Long uId = Long.valueOf(userId);
         User user = null;
         if(uId != null){
@@ -197,12 +197,12 @@ public class SecurityUtils {
     }
 
     /**
-     * 将用户信息从sessionInf中移除
+     * 将用户信息从session中移除
      *
      * @param sessionId session ID
      * @param saveLog   是否 保存切面日志
      */
-    public static void removeUserFromSession(String sessionId, boolean saveLog) {
+    public static synchronized void removeUserFromSession(String sessionId, boolean saveLog,SecurityType securityType) {
         if (StringUtils.isNotBlank(sessionId)) {
             Set<String> keySet = SecurityConstants.sessionInfoMap.keySet();
             for (String key : keySet) {
@@ -211,16 +211,24 @@ public class SecurityUtils {
                         logger.debug("removeUserFromSession:{}", sessionId);
                     }
                     if (saveLog) {
-                        SecurityLogAspect securityLogAspect = SpringContextHolder.getBean(SecurityConstants.SERVICE_SECURITY_LOGINASPECT);
                         SessionInfo sessionInfo = SecurityConstants.sessionInfoMap.get(key);
-                        securityLogAspect.saveLog(sessionInfo, null, SecurityType.logout_abnormal);
+                        securityLogAspect.saveLog(sessionInfo, null, securityType);
                     }
                     SecurityConstants.sessionInfoMap.remove(key);
                 }
             }
+            HttpSession session = applicationSessionContext.getSession(sessionId);
+            if(session != null){
+                session.removeAttribute(SecurityConstants.SESSION_SESSIONINFO);
+                applicationSessionContext.removeSession(session);
+            }
         }
     }
 
+    /**
+     * 查看当前登录用户信息
+     * @return
+     */
     public static Datagrid<SessionInfo> getSessionUser() {
         List<SessionInfo> list = Lists.newArrayList();
         Set<String> keySet = SecurityConstants.sessionInfoMap.keySet();
@@ -238,6 +246,58 @@ public class SecurityUtils {
 
         Datagrid<SessionInfo> dg = new Datagrid<SessionInfo>(SecurityConstants.sessionInfoMap.size(), list);
         return dg;
+    }
+
+
+    /**
+     * 查看某个用户登录信息
+     * @param loginName 登录帐号
+     * @return
+     */
+    public static List<SessionInfo> getSessionUser(String loginName) {
+        Datagrid<SessionInfo> datagrid = getSessionUser();
+        List<SessionInfo> sessionInfos = Lists.newArrayList();
+        for(SessionInfo sessionInfo: datagrid.getRows()){
+            if(sessionInfo.getLoginName().equals(loginName)){
+                sessionInfos.add(sessionInfo);
+            }
+        }
+        return sessionInfos;
+    }
+
+    /**
+     * 根据SessionId查找对应的SessionInfo信息
+     * @param sessionId
+     * @return
+     */
+    public static SessionInfo getSessionInfo(String sessionId) {
+        Datagrid<SessionInfo> datagrid = getSessionUser();
+        for(SessionInfo sessionInfo: datagrid.getRows()){
+            if(sessionInfo.getId().equals(sessionId)){
+                return sessionInfo;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * 云盘管理员 超级管理 + 系统管理员 + 网盘管理员
+     * @param userId 用户ID 如果为null,则为当前登录用户ID
+     * @return
+     */
+    public static boolean isDiskAdmin(Long userId){
+        Long _userId = userId;
+        if(_userId == null){
+            SessionInfo sessionInfo = SecurityUtils.getCurrentSessionInfo();
+            _userId = sessionInfo.getUserId();
+        }
+
+        boolean isAdmin = false;
+        if (userManager.isSuperUser(_userId) || SecurityUtils.isPermittedRole(AppConstants.ROLE_SYSTEM_MANAGER) || SecurityUtils.isPermittedRole(AppConstants.ROLE_DISK_MANAGER)) {//系统管理员 + 网盘管理员
+            isAdmin = true;
+        }
+        return isAdmin;
     }
 }
 

@@ -2,7 +2,7 @@
 <%@ include file="/common/taglibs.jsp"%>
 <script type="text/javascript">
     function viewBug(title,id){
-        eu.addTab(window.parent.layout_center_tabs, title,'${ctx}/sys/bug/view?id='+id, true,"","",true);
+        eu.addTab(window.parent.layout_center_tabs, title,'${ctxAdmin}/sys/bug/view?id='+id, true,"","",true);
     }
 </script>
 <div style="width: 100%;height: 100%">

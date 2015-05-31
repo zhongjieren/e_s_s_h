@@ -10,7 +10,7 @@ import com.eryansky.core.security._enum.Logical;
 
 import java.lang.annotation.*;
 
-import static com.eryansky.core.security._enum.Logical.*;
+import static com.eryansky.core.security._enum.Logical.AND;
 
 /**
  * 需要的角色

@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,15 +28,15 @@ public class Datagrid<T> implements Serializable {
     /**
      * 动态列
      */
-    private List<Column> columns;
+    private List<Column> columns = new ArrayList<Column>(0);
     /**
      * 列表行
      */
-    private List<T> rows;
+    private List<T> rows = new ArrayList<T>(0);
     /**
      * 脚列表
      */
-    private List<Map<String, Object>> footer;
+    private List<Map<String, Object>> footer = new ArrayList<Map<String, Object>>(0);
 
     public Datagrid() {
         super();

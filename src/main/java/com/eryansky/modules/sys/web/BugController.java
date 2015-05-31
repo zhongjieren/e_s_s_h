@@ -18,7 +18,7 @@ import com.eryansky.common.utils.StringUtils;
 import com.eryansky.common.web.springmvc.BaseController;
 import com.eryansky.common.web.springmvc.SpringMVCHolder;
 import com.eryansky.common.web.utils.WebUtils;
-import com.eryansky.modules.sys.entity.*;
+import com.eryansky.modules.sys.entity.Bug;
 import com.eryansky.modules.sys.entity.Dictionary;
 import com.eryansky.modules.sys.service.BugManager;
 import com.eryansky.modules.sys.service.DictionaryManager;
@@ -37,8 +37,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.beans.PropertyEditorSupport;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.List;
 
 /**
  * bug管理Controller层.
@@ -48,7 +51,7 @@ import java.util.*;
  */
 @SuppressWarnings("serial")
 @Controller
-@RequestMapping(value = "/sys/bug")
+@RequestMapping(value = "${adminPath}/sys/bug")
 public class BugController extends BaseController<Bug,Long> {
 
     public final static String SSSION_SEARCH = "BUG_SEARCH";
@@ -121,14 +124,11 @@ public class BugController extends BaseController<Bug,Long> {
     @Override
     @RequestMapping(value = {"datagrid"})
     @ResponseBody
-    public Datagrid datagrid(@RequestParam(value = "page", required = false,defaultValue = "1")int page,
-                             @RequestParam(value = "rows", required = false,defaultValue = Page.DEFAULT_PAGESIZE+"")int rows,
-                             String sort, String order) {
+    public Datagrid datagrid() {
         // 自动构造属性过滤器
         List<PropertyFilter> filters = HibernateWebUtils.buildPropertyFilters(SpringMVCHolder.getRequest());
-
-        Page<Bug> p = getEntityManager().find(page, rows, sort, order,
-                filters);
+        Page<Bug> p = new Page<Bug>(SpringMVCHolder.getRequest());
+        p = getEntityManager().findPage(p,filters);
 
         //转换设置bug类型名称
         if (p.getResult() != null) {

@@ -15,6 +15,7 @@ import com.eryansky.common.orm.hibernate.HibernateDao;
 import com.eryansky.common.orm.hibernate.Parameter;
 import com.eryansky.common.utils.StringUtils;
 import com.eryansky.common.utils.collections.Collections3;
+import com.eryansky.modules.sys._enum.SexType;
 import com.eryansky.modules.sys.entity.Organ;
 import com.eryansky.modules.sys.entity.User;
 import com.eryansky.utils.CacheConstants;
@@ -145,43 +146,99 @@ public class OrganManager extends EntityManager<Organ, Long> {
 
 
     /**
-     *
      * @param entity
-     * @param excludeOrganId 需要排除的机构ID 子级也会被排除
+     * @param excludeOrganId
      * @param isCascade 是否级联
+     * @param adduser   是否带用户
      * @return
-     * @throws DaoException
-     * @throws SystemException
-     * @throws ServiceException
+     * @throws com.eryansky.common.exception.DaoException
+     * @throws com.eryansky.common.exception.SystemException
+     * @throws com.eryansky.common.exception.ServiceException
      */
-    public TreeNode getTreeNode(Organ entity, Long excludeOrganId, boolean isCascade)
-            throws DaoException, SystemException, ServiceException {
-        TreeNode node = this.organToTreeNode(entity,null,false);
-        List<Organ> subOrgans = this.getByParentId(entity.getId(),StatusState.normal.getValue());
+    public TreeNode getTreeNode(Organ entity, Long excludeOrganId, boolean isCascade, boolean adduser,List<Long> checkedUserIds) throws DaoException, SystemException, ServiceException {
+        TreeNode node = this.organToTreeNode(entity, null, false);
+        List<Organ> subOrgans = this.getByParentId(entity.getId(), StatusState.normal.getValue());
         if (isCascade) {// 递归查询子节点
-            List<TreeNode> children = Lists.newArrayList();
-            for (Organ o : subOrgans) {
-                boolean isInclude = true;// 是否包含到节点树
-                TreeNode treeNode = null;
-                // 排除自身
-                if (excludeOrganId != null) {
-                    if (!o.getId().equals(excludeOrganId)) {
-                        treeNode = getTreeNode(o, excludeOrganId, true);
-                    } else {
-                        isInclude = false;
+            if (Collections3.isNotEmpty(subOrgans)) {
+                List<TreeNode> children = Lists.newArrayList();
+                if (adduser) {
+                    for (User user : entity.getDefautUsers()) {
+                        TreeNode userNode = new TreeNode();
+                        userNode.setId(user.getId().toString());
+                        userNode.setText(user.getName());
+                        if(SexType.girl.getValue().equals(user.getSex())){
+                            userNode.setIconCls("eu-icon-user_red");
+                        }else{
+                            userNode.setIconCls("eu-icon-user");
+                        }
+                        if(Collections3.isNotEmpty(checkedUserIds)){
+                            if(checkedUserIds.contains(user.getId())){
+                                userNode.setChecked(true);
+                            }
+                        }
+
+                        Map<String, Object> attributes = Maps.newHashMap();
+                        attributes.put("nType", "u");
+                        userNode.setAttributes(attributes);
+                        children.add(userNode);
                     }
-                } else {
-                    treeNode = getTreeNode(o, excludeOrganId, true);
                 }
-                if (isInclude) {
-                    children.add(treeNode);
-                    node.setState(TreeNode.STATE_CLOASED);
-                } else {
-                    node.setState(TreeNode.STATE_OPEN);
+                for (Organ d : subOrgans) {
+                    boolean isInclude = true;// 是否包含到节点树
+                    TreeNode treeNode = null;
+                    // 排除自身
+                    if (excludeOrganId != null) {
+                        if (!d.getId().equals(excludeOrganId)) {
+                            treeNode = getTreeNode(d, excludeOrganId, true, adduser,checkedUserIds);
+                        } else {
+                            isInclude = false;
+                        }
+                    } else {
+                        treeNode = getTreeNode(d, excludeOrganId, true, adduser,checkedUserIds);
+                    }
+                    if (isInclude) {
+                        Map<String, Object> attributes = Maps.newHashMap();
+                        attributes.put("nType", "o");
+                        attributes.put("type", d.getType());
+                        attributes.put("sysCode", d.getSysCode());
+                        treeNode.setAttributes(attributes);
+                        treeNode.setIconCls("eu-icon-group");
+                        children.add(treeNode);
+                        node.setState(TreeNode.STATE_CLOASED);
+                    } else {
+                        node.setState(TreeNode.STATE_OPEN);
+                    }
+                }
+                node.setChildren(children);
+            } else {
+                if (adduser) {
+                    if (Collections3.isNotEmpty(entity.getDefautUsers())) {
+                        List<TreeNode> userTreeNodes = Lists.newArrayList();
+                        for (User user : entity.getDefautUsers()) {
+                            TreeNode userNode = new TreeNode();
+                            userNode.setId(user.getId().toString());
+                            userNode.setText(user.getName());
+                            if(SexType.girl.getValue().equals(user.getSex())){
+                                userNode.setIconCls("eu-icon-user_red");
+                            }else{
+                                userNode.setIconCls("eu-icon-user");
+                            }
+                            if(Collections3.isNotEmpty(checkedUserIds)){
+                                if(checkedUserIds.contains(user.getId())){
+                                    userNode.setChecked(true);
+                                }
+                            }
+
+                            Map<String, Object> attributes = Maps.newHashMap();
+                            attributes.put("nType", "u");
+                            userNode.setAttributes(attributes);
+                            userTreeNodes.add(userNode);
+                        }
+                        node.setState(TreeNode.STATE_CLOASED);
+                        node.setChildren(userTreeNodes);
+                    }
                 }
             }
-
-            node.setChildren(children);
         }
         return node;
     }
@@ -232,11 +289,11 @@ public class OrganManager extends EntityManager<Organ, Long> {
         User sessionUser = userManager.loadById(userId);
         User sueperUser = userManager.getSuperUser();
         if(sessionUser !=null && sueperUser !=null && sessionUser.getId().equals(sueperUser.getId())){
-            treeNodes = this.getOrganTree(null,null,true);
+            treeNodes = this.getOrganTree(null,null,true,false,null);
         }else{
             List<Organ> organs = this.getUserPermissionOrgan(userId);
             for (Organ rs:organs) {
-                TreeNode rootNode = getTreeNode(rs, null, true);
+                TreeNode rootNode = getTreeNode(rs, null, true,false,null);
                 treeNodes.add(rootNode);
             }
         }
@@ -245,30 +302,33 @@ public class OrganManager extends EntityManager<Organ, Long> {
 
     /**
      * 获取所有导航机构.
-     * @param parentId 父级ID 为null，则可查询所有节点；不为null，则查询该级以及以下
+     *
+     * @param parentId       父级ID 为null，则可查询所有节点；不为null，则查询该级以及以下
      * @param excludeOrganId 需要排除的机构ID 子级也会被排除
-     * @param isCascade 是否级联
+     * @param isCascade      是否级联
+     * @param adduser        是否带用户
      * @return
      * @throws DaoException
      * @throws SystemException
      * @throws ServiceException
      */
-    public List<TreeNode> getOrganTree(Long parentId,Long excludeOrganId,boolean isCascade) throws DaoException, SystemException,
+    public List<TreeNode> getOrganTree(Long parentId, Long excludeOrganId, boolean isCascade, boolean adduser,List<Long> checkedUserIds) throws DaoException, SystemException,
             ServiceException {
         List<TreeNode> treeNodes = Lists.newArrayList();
         // 顶级机构
 
         List<Organ> organs = Lists.newArrayList();
-        if(parentId == null){
+        if (parentId == null) {
             organs = getByParentId(null,
                     StatusState.normal.getValue());
-        }else{
+        } else {
             Organ parent = this.loadById(parentId);
             organs.add(parent);
         }
 
-        for (Organ rs:organs) {
-            TreeNode rootNode = getTreeNode(rs, excludeOrganId, isCascade);
+        for (Organ rs : organs) {
+            TreeNode rootNode = getTreeNode(rs, excludeOrganId, isCascade, adduser,checkedUserIds);
+            rootNode.setIconCls("icon-organ-root");
             treeNodes.add(rootNode);
         }
         return treeNodes;
@@ -407,5 +467,15 @@ public class OrganManager extends EntityManager<Organ, Long> {
         hql.append("from Organ o where o.status = :p1  and o.sysCode like  :p2 order by o.sysCode asc");
         List<Organ> list = organDao.find(hql.toString(), parameter);
         return list;
+    }
+
+    /**
+     * 根据ID查找
+     * @param organIds 机构ID集合
+     * @return
+     */
+    public List<Organ> findOrgansByIds(List<Long> organIds) {
+        Parameter parameter = new Parameter(organIds);
+        return getEntityDao().find("from Organ o where o.id in :p1",parameter);
     }
 }

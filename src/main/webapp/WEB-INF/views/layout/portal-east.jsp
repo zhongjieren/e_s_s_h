@@ -12,7 +12,7 @@ $(function() {
 	});
 	
 	$('#layout_east_onlineDatagrid').datagrid({
-		url : '${ctx}/login/onlineDatagrid',
+		url : '${ctxAdmin}/login/onlineDatagrid',
 		fit : true,
 		fitColumns : true,
 		nowarp : false,
@@ -57,7 +57,7 @@ $(function() {
 	
 	$('#layout_east_onlinePanel').panel({
 		tools : [ {
-			iconCls : 'icon-reload',
+			iconCls : 'easyui-icon-reload',
 			handler : function() {
 				$('#layout_east_onlineDatagrid').datagrid('load');
 			}

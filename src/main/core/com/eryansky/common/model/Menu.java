@@ -5,11 +5,11 @@
  */
 package com.eryansky.common.model;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +45,7 @@ public class Menu implements Serializable {
 	/**
 	 * 子节点
 	 */
-	private List<Menu> children = Lists.newArrayList();
+	private List<Menu> children = new ArrayList<Menu>(0);
 
 
 	/**

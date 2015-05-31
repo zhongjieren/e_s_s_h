@@ -5,6 +5,7 @@
  */
 package com.eryansky.core.tag;
 
+import com.eryansky.utils.AppConstants;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.jsp.JspException;
@@ -16,7 +17,7 @@ import java.io.IOException;
  * 数据字典标签
  * @author 尔演&Eryan eryanwcp@gmail.com
  * @date 2014-3-29 下午8:02:39
-  */
+ */
 @SuppressWarnings("serial")
 public class DictionaryTag extends TagSupport {
 
@@ -66,9 +67,13 @@ public class DictionaryTag extends TagSupport {
      */
     private String validType;
     /**
-     * 是否多选 默认值:否
+     * 是否多选 默认值:false
      */
     private boolean multiple = false;
+    /**
+     * 是否可编辑 默认值：true
+     */
+    private boolean editable = true;
     /**
      * 默认值
      */
@@ -116,7 +121,7 @@ public class DictionaryTag extends TagSupport {
             buffer.append(" name=\"" + this.name + "\" ");
         }
 
-        buffer.append(" data-options=\"url:'").append(contextPath).append("/sys/dictionary/")
+        buffer.append(" data-options=\"url:'").append(contextPath).append(AppConstants.getAdminPath()).append("/sys/dictionary/")
                 .append(method)
                 .append("?dictionaryTypeCode=")
                 .append(this.code);
@@ -127,6 +132,7 @@ public class DictionaryTag extends TagSupport {
         if(this.multiple){
             buffer.append(",multiple:").append(multiple);
         }
+        buffer.append(",editable:").append(editable);
         if(this.width != null){
             buffer.append(",width:'").append(this.width).append("'");
         }
@@ -141,7 +147,7 @@ public class DictionaryTag extends TagSupport {
             buffer.append(",validType:").append(this.validType);
         }
         buffer.append(",valueField:'value',textField:'text'")
-            .append("\"");
+                .append("\"");
 
         buffer.append(" />");
         return buffer.toString();
@@ -155,16 +161,16 @@ public class DictionaryTag extends TagSupport {
         this.id = id;
     }
 
+    public Integer getWidth() {
+        return width;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Integer getWidth() {
-        return width;
     }
 
     public void setWidth(Integer width) {
@@ -179,20 +185,20 @@ public class DictionaryTag extends TagSupport {
         this.height = height;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
     public String getType() {
         return type;
     }
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getSelectType() {
@@ -233,6 +239,14 @@ public class DictionaryTag extends TagSupport {
 
     public void setMultiple(boolean multiple) {
         this.multiple = multiple;
+    }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 
     public String getValue() {

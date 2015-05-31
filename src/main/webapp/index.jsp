@@ -1,3 +1,8 @@
+<%@ page import="com.eryansky.utils.AppConstants" %>
 <%
     String ctx = request.getContextPath();
-    response.sendRedirect(ctx + "/login/welcome"); %>
+    String adminPath = AppConstants.getAdminPath();
+    String frontPath = AppConstants.getFrontPath();
+//    response.sendRedirect(ctx + adminPath + "/login/welcome");
+    response.sendRedirect(ctx + adminPath);
+%>

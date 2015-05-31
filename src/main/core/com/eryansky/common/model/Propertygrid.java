@@ -5,10 +5,10 @@
  */
 package com.eryansky.common.model;
 
-import com.google.common.collect.Lists;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +25,7 @@ public class Propertygrid implements Serializable {
     /**
      * 列表 Map包含属性：name、value、group、editor等
      */
-    private List<Map<String, Object>> rows = Lists.newArrayList();
+    private List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>(0);
 
     public Propertygrid() {
     }

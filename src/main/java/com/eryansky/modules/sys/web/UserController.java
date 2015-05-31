@@ -19,18 +19,24 @@ import com.eryansky.common.utils.collections.Collections3;
 import com.eryansky.common.utils.encode.Encrypt;
 import com.eryansky.common.utils.mapper.JsonMapper;
 import com.eryansky.common.web.springmvc.BaseController;
+import com.eryansky.common.web.springmvc.SpringMVCHolder;
 import com.eryansky.core.excelTools.ExcelUtils;
 import com.eryansky.core.excelTools.JsGridReportBase;
 import com.eryansky.core.excelTools.TableData;
 import com.eryansky.core.security.SecurityUtils;
 import com.eryansky.core.security.SessionInfo;
+import com.eryansky.core.web.upload.FileUploadUtils;
+import com.eryansky.core.web.upload.exception.FileNameLengthLimitExceededException;
+import com.eryansky.core.web.upload.exception.InvalidExtensionException;
+import com.eryansky.modules.disk.utils.DiskUtils;
 import com.eryansky.modules.sys._enum.SexType;
-import com.eryansky.modules.sys.entity.*;
+import com.eryansky.modules.sys.entity.Organ;
+import com.eryansky.modules.sys.entity.User;
 import com.eryansky.modules.sys.service.*;
-import com.eryansky.modules.sys.utils.FileUploadUtils;
 import com.eryansky.utils.AppConstants;
 import com.eryansky.utils.SelectType;
 import com.google.common.collect.Lists;
+import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.lang3.ArrayUtils;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
@@ -42,13 +48,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 用户User管理 Controller层.
@@ -58,7 +66,7 @@ import java.util.Map;
  */
 @SuppressWarnings("serial")
 @Controller
-@RequestMapping(value = "/sys/user")
+@RequestMapping(value = "${adminPath}/sys/user")
 public class UserController extends BaseController<User,Long> {
 
 
@@ -141,8 +149,8 @@ public class UserController extends BaseController<User,Long> {
      */
     @RequestMapping(value = {"userDatagrid"})
     @ResponseBody
-    public Datagrid<User> userDatagrid(Long organId,String organSysCode, String loginNameOrName,Integer userType,
-                                       Integer page, Integer rows, String sort, String order) {
+    public Datagrid<User> userDatagrid(Long organId,String organSysCode, String loginNameOrName,Integer userType) {
+        Page<User> p = new Page<User>(SpringMVCHolder.getRequest());
         //非管理员用户 添加机构系统编码
         if(StringUtils.isBlank(organSysCode)){
             SessionInfo sessionInfo = SecurityUtils.getCurrentSessionInfo();
@@ -151,7 +159,7 @@ public class UserController extends BaseController<User,Long> {
                 organSysCode = sessionInfo.getLoginOrganSysCode();
             }
         }
-        Page<User> p = userManager.getUsersByQuery(organId,organSysCode, loginNameOrName,userType, page, rows, sort, order);
+        p = userManager.getUsersByQuery(organId,organSysCode, loginNameOrName,userType, p);
         Datagrid<User> dg = new Datagrid<User>(p.getTotalCount(), p.getResult());
         return dg;
     }
@@ -225,19 +233,41 @@ public class UserController extends BaseController<User,Long> {
 
         //分页查询
         Page<User> p = new Page<User>(rows);//分页对象
-        p = userManager.findByCriteria(p, criterions);
+        p = userManager.findPageByCriteria(p, criterions);
         Datagrid<User> dg = new Datagrid<User>(p.getTotalCount(), p.getResult());
         return dg;
     }
 
 
     /**
-     * 文件上传
+     * 头像 文件上传
+     * @param request
+     * @param multipartFile
+     * @return
      */
     @RequestMapping(value = {"upload"})
     @ResponseBody
-    public Map<String, Object> upload(HttpServletRequest request,HttpServletResponse response) {
-        return FileUploadUtils.upload(request, response);
+    public Result upload(HttpServletRequest request,
+                         @RequestParam(value = "uploadFile", required = false)MultipartFile multipartFile) {
+        Result result = null;
+        try {
+            SessionInfo sessionInfo = SecurityUtils.getCurrentSessionInfo();
+//            String basePath = DiskUtils.getUserPhotoRelativePath(sessionInfo.getUserId());
+//            String filename = FileUploadUtils.upload(request, AppConstants.getDiskBaseDir() + File.separator + basePath, multipartFile, null, AppConstants.getDiskMaxUploadSize(), true, null);
+            com.eryansky.modules.disk.entity.File file = DiskUtils.saveSystemFile(DiskUtils.FOLDER_USER_PHOTO, null, sessionInfo, multipartFile);
+            String filename =  DiskUtils.getVirtualFilePath(file);
+            result = Result.successResult().setObj(filename);
+        } catch (InvalidExtensionException e) {
+            result = Result.errorResult().setMsg(DiskUtils.UPLOAD_FAIL_MSG+e.getMessage());
+        } catch (FileUploadBase.FileSizeLimitExceededException e) {
+            result = Result.errorResult().setMsg(DiskUtils.UPLOAD_FAIL_MSG);
+        } catch (FileNameLengthLimitExceededException e) {
+            result = Result.errorResult().setMsg(DiskUtils.UPLOAD_FAIL_MSG);
+        } catch (IOException e){
+            result = Result.errorResult().setMsg(DiskUtils.UPLOAD_FAIL_MSG+e.getMessage());
+        }
+
+        return result;
     }
     /**
      * 保存.
@@ -489,27 +519,22 @@ public class UserController extends BaseController<User,Long> {
 
     /**
      *
-     * @param page
-     * @param rows
-     * @param sort
-     * @param order
      * @param q 查询关键字
      * @return
      * @throws Exception
      */
     @RequestMapping(value = {"autoComplete"})
     @ResponseBody
-    public List<String> autoComplete(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-    @RequestParam(value = "rows", required = false, defaultValue = Page.DEFAULT_PAGESIZE + "") int rows,
-    String sort, String order,String q) throws Exception {
+    public List<String> autoComplete(String q) throws Exception {
         List<String> cList = Lists.newArrayList();
         List<PropertyFilter> filters = Lists.newArrayList();
         System.out.println(q);
         PropertyFilter propertyFilter = new PropertyFilter("LIKES_name",q);
         filters.add(propertyFilter);
 
-        Page<User> users = userManager.find(page,rows,sort,order,filters);
-        for (User user:users.getResult()) {
+        Page<User> p = new Page<User>(SpringMVCHolder.getRequest());
+        p  = userManager.findPage(p,filters);
+        for (User user:p .getResult()) {
             cList.add(user.getName());
         }
         return cList;
