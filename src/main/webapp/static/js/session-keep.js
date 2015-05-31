@@ -1,6 +1,6 @@
 var eu = eu || {};
 
-eu.contextPath = ctx==undefined ?"":ctx;
+eu.contextPath = ctxAdmin==undefined ?"":ctxAdmin;
 /**
  * 保持心跳
  */

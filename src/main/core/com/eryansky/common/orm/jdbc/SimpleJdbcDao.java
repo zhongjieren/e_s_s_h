@@ -250,7 +250,7 @@ public class SimpleJdbcDao {
     public long queryForLong(final String sql,Map parameters){
         Assert.hasText(sql,"sql语句不正确!");
         if(parameters != null){
-            return  jdbcTemplate.queryForLong(sql, parameters);
+            return  jdbcTemplate.queryForObject(sql, new Object[]{parameters},Long.class);
         }
         return  jdbcTemplate.queryForObject(sql,Long.class);
     }
@@ -265,7 +265,7 @@ public class SimpleJdbcDao {
     public long queryForLong(String  sql,Object... param) {
         Assert.hasText(sql,"sql语句不正确!");
         if(param != null){
-            return  jdbcTemplate.queryForLong(sql, param);
+            return  jdbcTemplate.queryForObject(sql, param, Long.class);
         }
         return  jdbcTemplate.queryForObject(sql,Long.class);
     }
@@ -280,7 +280,7 @@ public class SimpleJdbcDao {
     public int queryForInt(String sql, Object... param) {
         Assert.hasText(sql,"sql语句不正确!");
         if(param != null){
-            return  jdbcTemplate.queryForInt(sql, param);
+            return  jdbcTemplate.queryForObject(sql, param,Integer.class);
         }
         return  jdbcTemplate.queryForObject(sql,Integer.class);
     }
