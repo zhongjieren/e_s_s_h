@@ -2,18 +2,205 @@
 Navicat MariaDB Data Transfer
 
 Source Server         : localhost
-Source Server Version : 50525
+Source Server Version : 100019
 Source Host           : localhost:3306
 Source Database       : essh_v2.0
 
 Target Server Type    : MariaDB
-Target Server Version : 50525
+Target Server Version : 100019
 File Encoding         : 65001
 
-Date: 2014-09-01 19:36:20
+Date: 2015-05-31 10:06:59
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for t_disk_file
+-- ----------------------------
+DROP TABLE IF EXISTS `t_disk_file`;
+CREATE TABLE `t_disk_file` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `create_time` datetime DEFAULT NULL,
+  `create_user` varchar(36) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `update_user` varchar(36) DEFAULT NULL,
+  `version` int(11) DEFAULT NULL,
+  `code` varchar(128) NOT NULL,
+  `file_path` varchar(1024) DEFAULT NULL,
+  `file_size` bigint(20) DEFAULT NULL,
+  `file_suffix` varchar(36) DEFAULT NULL,
+  `file_type` int(11) DEFAULT NULL,
+  `keyword` varchar(128) DEFAULT NULL,
+  `name` varchar(512) NOT NULL,
+  `remark` varchar(255) DEFAULT NULL,
+  `share_user_id` bigint(20) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  `folder_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_451ihoi6yukkju3h47fo3ydyk` (`folder_id`),
+  CONSTRAINT `FK_451ihoi6yukkju3h47fo3ydyk` FOREIGN KEY (`folder_id`) REFERENCES `t_disk_folder` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of t_disk_file
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for t_disk_folder
+-- ----------------------------
+DROP TABLE IF EXISTS `t_disk_folder`;
+CREATE TABLE `t_disk_folder` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `create_time` datetime DEFAULT NULL,
+  `create_user` varchar(36) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `update_user` varchar(36) DEFAULT NULL,
+  `version` int(11) DEFAULT NULL,
+  `code` varchar(36) DEFAULT NULL,
+  `folder_authorize` int(11) DEFAULT NULL,
+  `limit_size` int(11) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `order_no` int(11) DEFAULT NULL,
+  `organ_id` bigint(20) DEFAULT NULL,
+  `parent_id` bigint(20) DEFAULT NULL,
+  `path` varchar(255) DEFAULT NULL,
+  `remark` varchar(255) DEFAULT NULL,
+  `role_id` bigint(20) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of t_disk_folder
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for t_disk_organ_storage
+-- ----------------------------
+DROP TABLE IF EXISTS `t_disk_organ_storage`;
+CREATE TABLE `t_disk_organ_storage` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `limit_size` int(11) DEFAULT NULL,
+  `organ_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of t_disk_organ_storage
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for t_disk_user_storage
+-- ----------------------------
+DROP TABLE IF EXISTS `t_disk_user_storage`;
+CREATE TABLE `t_disk_user_storage` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `limit_size` int(11) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of t_disk_user_storage
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for t_notice_notice
+-- ----------------------------
+DROP TABLE IF EXISTS `t_notice_notice`;
+CREATE TABLE `t_notice_notice` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `create_time` datetime DEFAULT NULL,
+  `create_user` varchar(36) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `update_user` varchar(36) DEFAULT NULL,
+  `version` int(11) DEFAULT NULL,
+  `content` varchar(4096) DEFAULT NULL,
+  `effect_time` datetime DEFAULT NULL,
+  `end_time` datetime DEFAULT NULL,
+  `end_top_day` int(11) DEFAULT NULL,
+  `is_record_read` int(11) DEFAULT NULL,
+  `is_to_all` int(11) DEFAULT NULL,
+  `is_top` int(11) DEFAULT NULL,
+  `notice_mode` int(11) DEFAULT NULL,
+  `organ_id` bigint(20) DEFAULT NULL,
+  `publish_time` datetime DEFAULT NULL,
+  `title` varchar(512) DEFAULT NULL,
+  `type` varchar(36) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of t_notice_notice
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for t_notice_notice_file
+-- ----------------------------
+DROP TABLE IF EXISTS `t_notice_notice_file`;
+CREATE TABLE `t_notice_notice_file` (
+  `notice_id` bigint(20) NOT NULL,
+  `file_id` bigint(20) DEFAULT NULL,
+  KEY `FK_klwa06kkhdlcrcvnlruxdmpq9` (`notice_id`),
+  CONSTRAINT `FK_klwa06kkhdlcrcvnlruxdmpq9` FOREIGN KEY (`notice_id`) REFERENCES `t_notice_notice` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of t_notice_notice_file
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for t_notice_notice_organ
+-- ----------------------------
+DROP TABLE IF EXISTS `t_notice_notice_organ`;
+CREATE TABLE `t_notice_notice_organ` (
+  `notice_id` bigint(20) NOT NULL,
+  `organ_id` bigint(20) DEFAULT NULL,
+  KEY `FK_cnciwgtc6470yvwtkhevxabhc` (`notice_id`),
+  CONSTRAINT `FK_cnciwgtc6470yvwtkhevxabhc` FOREIGN KEY (`notice_id`) REFERENCES `t_notice_notice` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of t_notice_notice_organ
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for t_notice_notice_scope
+-- ----------------------------
+DROP TABLE IF EXISTS `t_notice_notice_scope`;
+CREATE TABLE `t_notice_notice_scope` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `notice_id` bigint(20) DEFAULT NULL,
+  `is_read` int(11) DEFAULT NULL,
+  `organ_id` bigint(20) DEFAULT NULL,
+  `read_time` datetime DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of t_notice_notice_scope
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for t_notice_notice_user
+-- ----------------------------
+DROP TABLE IF EXISTS `t_notice_notice_user`;
+CREATE TABLE `t_notice_notice_user` (
+  `notice_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  KEY `FK_aubwmu312txuoglpde3ecqxng` (`notice_id`),
+  CONSTRAINT `FK_aubwmu312txuoglpde3ecqxng` FOREIGN KEY (`notice_id`) REFERENCES `t_notice_notice` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of t_notice_notice_user
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for t_sys_bug
@@ -36,6 +223,22 @@ CREATE TABLE `t_sys_bug` (
 
 -- ----------------------------
 -- Records of t_sys_bug
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for t_sys_config
+-- ----------------------------
+DROP TABLE IF EXISTS `t_sys_config`;
+CREATE TABLE `t_sys_config` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `code` varchar(255) DEFAULT NULL,
+  `remark` varchar(255) DEFAULT NULL,
+  `value` varchar(4096) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of t_sys_config
 -- ----------------------------
 
 -- ----------------------------
@@ -125,11 +328,51 @@ CREATE TABLE `t_sys_log` (
   `remark` varchar(1000) DEFAULT NULL,
   `type` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=131 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=171 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of t_sys_log
 -- ----------------------------
+INSERT INTO `t_sys_log` VALUES ('131', '2015-05-30 11:31:37', 'admin', '0', '2015-05-30 11:31:37', 'admin', '0', '用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 11:31:37', null, '0');
+INSERT INTO `t_sys_log` VALUES ('132', '2015-05-30 13:28:18', 'admin', '0', '2015-05-30 13:28:18', 'admin', '0', '用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 13:28:18', null, '0');
+INSERT INTO `t_sys_log` VALUES ('133', '2015-05-30 13:35:52', 'admin', '0', '2015-05-30 13:35:52', 'admin', '0', '用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 13:35:52', null, '0');
+INSERT INTO `t_sys_log` VALUES ('134', '2015-05-30 14:34:27', 'admin', '0', '2015-05-30 14:34:27', 'admin', '0', '用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 14:34:27', null, '0');
+INSERT INTO `t_sys_log` VALUES ('135', '2015-05-30 14:42:36', 'admin', '0', '2015-05-30 14:42:36', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 14:42:36', null, '0');
+INSERT INTO `t_sys_log` VALUES ('136', '2015-05-30 17:42:48', 'admin', '0', '2015-05-30 17:42:48', 'admin', '0', '[admin]用户非正常注销', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-logout', '2015-05-30 17:42:48', null, '0');
+INSERT INTO `t_sys_log` VALUES ('137', '2015-05-30 17:52:22', 'admin', '0', '2015-05-30 17:52:22', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 17:52:22', null, '0');
+INSERT INTO `t_sys_log` VALUES ('138', '2015-05-30 18:19:00', 'admin', '0', '2015-05-30 18:19:00', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 18:19:00', null, '0');
+INSERT INTO `t_sys_log` VALUES ('139', '2015-05-30 18:19:48', 'admin', '0', '2015-05-30 18:19:48', 'admin', '0', 'POST', null, 'Chrome', '0:0:0:0:0:0:0:1', 'admin', '/disk/diskTree', null, '请求参数：异常信息：java.lang.NullPointerException: 参数[organId]不能为null.', '3');
+INSERT INTO `t_sys_log` VALUES ('140', '2015-05-30 18:32:28', 'admin', '0', '2015-05-30 18:32:28', 'admin', '0', 'POST', null, 'Chrome', '0:0:0:0:0:0:0:1', 'admin', '/disk/diskTree', null, '请求参数：异常信息：java.lang.NullPointerException: 参数[organId]不能为null.', '3');
+INSERT INTO `t_sys_log` VALUES ('141', '2015-05-30 18:34:09', 'admin', '0', '2015-05-30 18:34:09', 'admin', '0', 'POST', null, 'Chrome', '0:0:0:0:0:0:0:1', 'admin', '/disk/diskTree', null, '请求参数：异常信息：java.lang.NullPointerException: 参数[organId]不能为null.', '3');
+INSERT INTO `t_sys_log` VALUES ('142', '2015-05-30 19:59:11', 'admin', '0', '2015-05-30 19:59:11', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 19:59:11', null, '0');
+INSERT INTO `t_sys_log` VALUES ('143', '2015-05-30 20:58:53', 'admin', '0', '2015-05-30 20:58:53', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 20:58:53', null, '0');
+INSERT INTO `t_sys_log` VALUES ('144', '2015-05-30 21:07:59', 'admin', '0', '2015-05-30 21:07:59', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 21:07:59', null, '0');
+INSERT INTO `t_sys_log` VALUES ('145', '2015-05-30 21:08:32', 'admin', '0', '2015-05-30 21:08:32', 'admin', '0', '[admin]用户注销', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-logout', '2015-05-30 21:08:32', null, '0');
+INSERT INTO `t_sys_log` VALUES ('146', '2015-05-30 21:08:41', 'admin', '0', '2015-05-30 21:08:41', 'admin', '0', '[admin]用户注销', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-logout', '2015-05-30 21:08:41', null, '0');
+INSERT INTO `t_sys_log` VALUES ('147', '2015-05-30 21:10:35', 'admin', '0', '2015-05-30 21:10:35', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 21:10:35', null, '0');
+INSERT INTO `t_sys_log` VALUES ('148', '2015-05-30 21:11:36', 'admin', '0', '2015-05-30 21:11:36', 'admin', '0', '[admin]用户登录', '0', 'IE11', '127.0.0.1', 'admin', 'LoginController-login', '2015-05-30 21:11:36', null, '0');
+INSERT INTO `t_sys_log` VALUES ('149', '2015-05-30 21:14:03', 'admin', '0', '2015-05-30 21:14:03', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 21:14:03', null, '0');
+INSERT INTO `t_sys_log` VALUES ('150', '2015-05-30 21:21:21', 'admin', '0', '2015-05-30 21:21:21', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 21:21:21', null, '0');
+INSERT INTO `t_sys_log` VALUES ('151', '2015-05-30 21:23:01', 'admin', '0', '2015-05-30 21:23:01', 'admin', '0', 'POST', null, 'Chrome', '0:0:0:0:0:0:0:1', 'admin', '/a/disk/diskTree', null, '请求参数：异常信息：java.lang.NullPointerException: 参数[organId]不能为null.', '3');
+INSERT INTO `t_sys_log` VALUES ('152', '2015-05-30 21:24:39', 'admin', '0', '2015-05-30 21:24:39', 'admin', '0', 'POST', null, 'Chrome', '0:0:0:0:0:0:0:1', 'admin', '/a/disk/diskTree', null, '请求参数：异常信息：java.lang.NullPointerException: 参数[organId]不能为null.', '3');
+INSERT INTO `t_sys_log` VALUES ('153', '2015-05-30 21:25:16', 'admin', '0', '2015-05-30 21:25:16', 'admin', '0', 'POST', null, 'Chrome', '0:0:0:0:0:0:0:1', 'admin', '/a/disk/diskTree', null, '请求参数：异常信息：java.lang.NullPointerException: 参数[organId]不能为null.', '3');
+INSERT INTO `t_sys_log` VALUES ('154', '2015-05-30 21:25:53', 'admin', '0', '2015-05-30 21:25:53', 'admin', '0', 'POST', null, 'Chrome', '0:0:0:0:0:0:0:1', 'admin', '/a/disk/diskTree', null, '请求参数：异常信息：java.lang.NullPointerException: 参数[organId]不能为null.', '3');
+INSERT INTO `t_sys_log` VALUES ('155', '2015-05-30 21:26:15', 'admin', '0', '2015-05-30 21:26:15', 'admin', '0', 'POST', null, 'Chrome', '0:0:0:0:0:0:0:1', 'admin', '/a/disk/diskTree', null, '请求参数：异常信息：java.lang.NullPointerException: 参数[organId]不能为null.', '3');
+INSERT INTO `t_sys_log` VALUES ('156', '2015-05-30 21:27:18', 'admin', '0', '2015-05-30 21:27:18', 'admin', '0', 'POST', null, 'Chrome', '0:0:0:0:0:0:0:1', 'admin', '/a/disk/diskTree', null, '请求参数：异常信息：java.lang.NullPointerException: 参数[organId]不能为null.', '3');
+INSERT INTO `t_sys_log` VALUES ('157', '2015-05-30 21:42:16', 'admin', '0', '2015-05-30 21:42:16', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 21:42:16', null, '0');
+INSERT INTO `t_sys_log` VALUES ('158', '2015-05-30 21:44:46', 'admin', '0', '2015-05-30 21:44:46', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 21:44:46', null, '0');
+INSERT INTO `t_sys_log` VALUES ('159', '2015-05-30 22:04:36', 'admin', '0', '2015-05-30 22:04:36', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 22:04:36', null, '0');
+INSERT INTO `t_sys_log` VALUES ('160', '2015-05-30 22:06:47', 'admin', '0', '2015-05-30 22:06:47', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 22:06:47', null, '0');
+INSERT INTO `t_sys_log` VALUES ('161', '2015-05-30 22:08:44', 'admin', '0', '2015-05-30 22:08:44', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 22:08:44', null, '0');
+INSERT INTO `t_sys_log` VALUES ('162', '2015-05-30 22:10:36', 'admin', '0', '2015-05-30 22:10:36', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 22:10:36', null, '0');
+INSERT INTO `t_sys_log` VALUES ('163', '2015-05-30 22:13:15', 'admin', '0', '2015-05-30 22:13:15', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 22:13:14', null, '0');
+INSERT INTO `t_sys_log` VALUES ('164', '2015-05-30 22:14:38', 'admin', '0', '2015-05-30 22:14:38', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-30 22:14:38', null, '0');
+INSERT INTO `t_sys_log` VALUES ('165', '2015-05-30 22:15:22', 'admin', '0', '2015-05-30 22:15:22', 'admin', '0', 'POST', null, 'Chrome', '0:0:0:0:0:0:0:1', 'admin', '/a/disk/diskTree', null, '请求参数：异常信息：java.lang.NullPointerException: 参数[organId]不能为null.', '3');
+INSERT INTO `t_sys_log` VALUES ('166', '2015-05-31 09:41:18', 'admin', '0', '2015-05-31 09:41:18', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-31 09:41:18', null, '0');
+INSERT INTO `t_sys_log` VALUES ('167', '2015-05-31 09:42:01', 'admin', '0', '2015-05-31 09:42:01', 'admin', '0', 'POST', null, 'Chrome', '0:0:0:0:0:0:0:1', 'admin', '/a/disk/diskTree', null, '请求参数：异常信息：java.lang.NullPointerException: 参数[organId]不能为null.', '3');
+INSERT INTO `t_sys_log` VALUES ('168', '2015-05-31 09:42:07', 'admin', '0', '2015-05-31 09:42:07', 'admin', '0', 'POST', null, 'Chrome', '0:0:0:0:0:0:0:1', 'admin', '/a/disk/diskTree', null, '请求参数：异常信息：java.lang.NullPointerException: 参数[organId]不能为null.', '3');
+INSERT INTO `t_sys_log` VALUES ('169', '2015-05-31 09:42:37', 'admin', '0', '2015-05-31 09:42:37', 'admin', '0', '[admin]用户注销', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-logout', '2015-05-31 09:42:37', null, '0');
+INSERT INTO `t_sys_log` VALUES ('170', '2015-05-31 09:42:38', 'admin', '0', '2015-05-31 09:42:38', 'admin', '0', '[admin]用户登录', '0', 'Chrome', '0:0:0:0:0:0:0:1', 'admin', 'LoginController-login', '2015-05-31 09:42:38', null, '0');
 
 -- ----------------------------
 -- Table structure for t_sys_organ
@@ -221,7 +464,7 @@ CREATE TABLE `t_sys_resource` (
   PRIMARY KEY (`id`),
   KEY `FK_h232wdc1pbxbfbgmckm1msf92` (`parent_id`) USING BTREE,
   CONSTRAINT `t_sys_resource_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `t_sys_resource` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of t_sys_resource
@@ -242,6 +485,10 @@ INSERT INTO `t_sys_resource` VALUES ('19', '2013-11-17 00:14:32', 'admin', '0', 
 INSERT INTO `t_sys_resource` VALUES ('20', '2013-11-17 00:46:09', 'eryan', '0', '2014-08-26 12:33:19', 'admin', '2', 'bug:view', null, 'easyui-icon-search', '', '查看', '15', '1', '', '9');
 INSERT INTO `t_sys_resource` VALUES ('21', '2013-12-08 17:26:38', 'admin', '0', '2014-08-26 12:29:44', 'admin', '5', '', null, 'eu-icon-monitor', '', '日志管理', '10', '0', 'sys/log', '1');
 INSERT INTO `t_sys_resource` VALUES ('26', '2014-06-11 19:43:48', 'admin', '0', '2014-08-26 12:29:03', 'admin', '5', '', null, 'eu-icon-vcard', '', '岗位管理', '5', '0', 'sys/post', '1');
+INSERT INTO `t_sys_resource` VALUES ('29', '2015-05-30 13:28:51', 'admin', '0', '2015-05-30 13:28:51', 'admin', '0', '', null, '', '', '配置管理', '16', '0', 'sys/config', '1');
+INSERT INTO `t_sys_resource` VALUES ('30', '2015-05-30 18:19:23', 'admin', '0', '2015-05-30 18:19:43', 'admin', '1', '', null, '', '', '云盘管理', '17', '0', 'disk', '1');
+INSERT INTO `t_sys_resource` VALUES ('31', '2015-05-30 21:42:50', 'admin', '0', '2015-05-30 21:42:56', 'admin', '1', '', null, 'eu-icon-application', '', '我的工作', '18', '0', '', null);
+INSERT INTO `t_sys_resource` VALUES ('32', '2015-05-30 21:43:14', 'admin', '0', '2015-05-30 21:43:14', 'admin', '0', '', null, '', '', '我的通知', '19', '0', 'notice/notice', '31');
 
 -- ----------------------------
 -- Table structure for t_sys_role
@@ -304,6 +551,10 @@ CREATE TABLE `t_sys_user` (
   `sex` int(11) DEFAULT NULL,
   `tel` varchar(36) DEFAULT NULL,
   `default_organid` bigint(20) DEFAULT NULL,
+  `birthday` datetime DEFAULT NULL,
+  `order_no` int(11) DEFAULT NULL,
+  `photo` varchar(1000) DEFAULT NULL,
+  `remark` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_f5qmscb98th0wvaayv07mrunh` (`default_organid`) USING BTREE,
   CONSTRAINT `t_sys_user_ibfk_1` FOREIGN KEY (`default_organid`) REFERENCES `t_sys_organ` (`id`)
@@ -312,7 +563,7 @@ CREATE TABLE `t_sys_user` (
 -- ----------------------------
 -- Records of t_sys_user
 -- ----------------------------
-INSERT INTO `t_sys_user` VALUES ('1', null, null, '0', '2013-11-13 08:02:20', 'admin', '3', '', '', 'admin', null, '', '5f4dcc3b5aa765d61d8327deb882cf99', '2', '', null);
+INSERT INTO `t_sys_user` VALUES ('1', null, null, '0', '2015-05-31 09:42:32', 'admin', '8', '', '', 'admin', '', '管理员', '5f4dcc3b5aa765d61d8327deb882cf99', '2', '', '1', null, null, '', '');
 
 -- ----------------------------
 -- Table structure for t_sys_user_organ
@@ -381,4 +632,24 @@ CREATE TABLE `t_sys_user_role` (
 
 -- ----------------------------
 -- Records of t_sys_user_role
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for t_sys_version_log
+-- ----------------------------
+DROP TABLE IF EXISTS `t_sys_version_log`;
+CREATE TABLE `t_sys_version_log` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `app_type` int(11) DEFAULT NULL,
+  `remark` varchar(8192) DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `update_user` varchar(36) DEFAULT NULL,
+  `url` varchar(1024) DEFAULT NULL,
+  `version_code` varchar(36) DEFAULT NULL,
+  `version_name` varchar(36) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of t_sys_version_log
 -- ----------------------------
