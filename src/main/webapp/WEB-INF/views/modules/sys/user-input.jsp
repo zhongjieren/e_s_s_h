@@ -5,7 +5,7 @@
         loadSex();
         up();
         if($('#photo').val()){
-            $('#photo_pre').attr("src","${_ctx}/"+$('#photo').val());
+            $('#photo_pre').attr("src","${ctx}"+$('#photo').val());
         }
 
         $('#photo_pre').show();
@@ -49,7 +49,7 @@
             onUploadSuccess: function (file, data, response) {
                 data = eval("(" + data + ")");
                 if(data.code != undefined && data.code == 1){
-                    $('#photo_pre').attr("src","${_ctx}/" + data.obj);
+                    $('#photo_pre').attr("src","${ctx}" + data.obj);
                     $('#photo_pre').show();
                     $("#photo").val(data.obj);
                 }
