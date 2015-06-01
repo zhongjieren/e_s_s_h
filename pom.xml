@@ -131,7 +131,7 @@
             <!--<artifactId>essh-common</artifactId>-->
             <!--<version>${essh.version}</version>-->
             <!--<scope>system</scope>-->
-            <!--<systemPath>${project.basedir}/src/main/doc/essh-common-2.0.150522.jar</systemPath>-->
+            <!--<systemPath>${project.basedir}/doc/essh-common-2.0.150522.jar</systemPath>-->
         <!--</dependency>-->
 
         <dependency>
