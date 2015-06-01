@@ -1,16 +1,16 @@
-var role_datagrid;
-var role_form;
-var role_search_form;
-var role_resource_form
-var role_user_form;
-var role_dialog;
-var role_resource_dialog;
-var role_user_dialog;
+var $role_datagrid;
+var $role_form;
+var $role_search_form;
+var $role_resource_form;
+var $role_user_form;
+var $role_dialog;
+var $role_resource_dialog;
+var $role_user_dialog;
 $(function () {
-    role_form = $('#role_form').form();
-    role_search_form = $('#role_search_form').form();
+    $role_form = $('#role_form').form();
+    $role_search_form = $('#role_search_form').form();
     //数据列表
-    role_datagrid = $('#role_datagrid').datagrid({
+    $role_datagrid = $('#role_datagrid').datagrid({
         url: ctxAdmin + '/sys/role/datagrid',
         fit: true,
         pagination: true,//底部分页
@@ -97,7 +97,7 @@ $(function () {
 
 });
 function formInit() {
-    role_form = $('#role_form').form({
+    $role_form = $('#role_form').form({
         url: ctxAdmin + '/sys/role/save',
         onSubmit: function (param) {
             $.messager.progress({
@@ -114,8 +114,8 @@ function formInit() {
             $.messager.progress('close');
             var json = $.parseJSON(data);
             if (json.code == 1) {
-                role_dialog.dialog('destroy');//销毁对话框
-                role_datagrid.datagrid('reload');//重新加载列表数据
+                $role_dialog.dialog('destroy');//销毁对话框
+                $role_datagrid.datagrid('reload');//重新加载列表数据
                 eu.showMsg(json.msg);//操作结果提示
             } else if (json.code == 2) {
                 $.messager.alert('提示信息！', json.msg, 'warning', function () {
@@ -137,7 +137,7 @@ function showDialog(row) {
     }
 
     //弹出对话窗口
-    role_dialog = $('<div/>').dialog({
+    $role_dialog = $('<div/>').dialog({
         title: '角色详细信息',
         top: 20,
         width: 500,
@@ -150,24 +150,24 @@ function showDialog(row) {
                 text: '保存',
                 iconCls: 'easyui-icon-save',
                 handler: function () {
-                    role_form.submit();
+                    $role_form.submit();
                 }
             },
             {
                 text: '关闭',
                 iconCls: 'easyui-icon-cancel',
                 handler: function () {
-                    role_dialog.dialog('destroy');
+                    $role_dialog.dialog('destroy');
                 }
             }
         ],
         onClose: function () {
-            role_dialog.dialog('destroy');
+            $role_dialog.dialog('destroy');
         },
         onLoad: function () {
             formInit();
             if (row) {
-                role_form.form('load', row);
+                $role_form.form('load', row);
             }
 
         }
@@ -183,9 +183,9 @@ function edit(rowIndex, rowData) {
         return;
     }
     //选中的所有行
-    var rows = role_datagrid.datagrid('getSelections');
+    var rows = $role_datagrid.datagrid('getSelections');
     //选中的行（第一次选择的行）
-    var row = role_datagrid.datagrid('getSelected');
+    var row = $role_datagrid.datagrid('getSelected');
     if (row) {
         if (rows.length > 1) {
             row = rows[rows.length - 1];
@@ -200,7 +200,7 @@ function edit(rowIndex, rowData) {
 
 //初始化角色角色表单
 function initRoleResourceForm() {
-    role_resource_form = $('#role_resource_form').form({
+    $role_resource_form = $('#role_resource_form').form({
         url: ctxAdmin + '/sys/role/updateRoleResource',
         onSubmit: function (param) {
             $.messager.progress({
@@ -217,8 +217,8 @@ function initRoleResourceForm() {
             $.messager.progress('close');
             var json = $.parseJSON(data);
             if (json.code == 1) {
-                role_resource_dialog.dialog('destroy');//销毁对话框
-                role_datagrid.datagrid('reload');	// reload the role data
+                $role_resource_dialog.dialog('destroy');//销毁对话框
+                $role_datagrid.datagrid('reload');	// reload the role data
                 eu.showMsg(json.msg);//操作结果提示
             } else {
                 eu.showAlertMsg(json.msg, 'error');
@@ -229,15 +229,15 @@ function initRoleResourceForm() {
 //修改角色角色
 function editRoleResource() {
     //选中的所有行
-    var rows = role_datagrid.datagrid('getSelections');
+    var rows = $role_datagrid.datagrid('getSelections');
     //选中的行（第一条）
-    var row = role_datagrid.datagrid('getSelected');
+    var row = $role_datagrid.datagrid('getSelected');
     if (row) {
         if (rows.length > 1) {
             eu.showMsg("您选择了多个操作对象，默认操作第一次被选中的记录！");
         }
         //弹出对话窗口
-        role_resource_dialog = $('<div/>').dialog({
+        $role_resource_dialog = $('<div/>').dialog({
             title: '角色资源信息',
             top: 20,
             width: 500,
@@ -250,23 +250,23 @@ function editRoleResource() {
                     text: '保存',
                     iconCls: 'easyui-icon-save',
                     handler: function () {
-                        role_resource_form.submit();
+                        $role_resource_form.submit();
                     }
                 },
                 {
                     text: '关闭',
                     iconCls: 'easyui-icon-cancel',
                     handler: function () {
-                        role_resource_dialog.dialog('destroy');
+                        $role_resource_dialog.dialog('destroy');
                     }
                 }
             ],
             onClose: function () {
-                role_resource_dialog.dialog('destroy');
+                $role_resource_dialog.dialog('destroy');
             },
             onLoad: function () {
                 initRoleResourceForm();
-                role_resource_form.form('load', row);
+                $role_resource_form.form('load', row);
             }
         });
 
@@ -277,7 +277,7 @@ function editRoleResource() {
 
 //初始化角色用户表单
 function initRoleUserForm() {
-    role_user_form = $('#role_user_form').form({
+    $role_user_form = $('#role_user_form').form({
         url: ctxAdmin + '/sys/role/updateRoleUser',
         onSubmit: function (param) {
             $.messager.progress({
@@ -294,8 +294,8 @@ function initRoleUserForm() {
             $.messager.progress('close');
             var json = $.parseJSON(data);
             if (json.code == 1) {
-                role_user_dialog.dialog('destroy');//销毁对话框
-                role_datagrid.datagrid('reload');	// reload the role data
+                $role_user_dialog.dialog('destroy');//销毁对话框
+                $role_datagrid.datagrid('reload');	// reload the role data
                 eu.showMsg(json.msg);//操作结果提示
             } else {
                 eu.showAlertMsg(json.msg, 'error');
@@ -306,9 +306,9 @@ function initRoleUserForm() {
 //修改角色用户
 function editRoleUser() {
     //选中的所有行
-    var rows = role_datagrid.datagrid('getSelections');
+    var rows = $role_datagrid.datagrid('getSelections');
     //选中的行（第一条）
-    var row = role_datagrid.datagrid('getSelected');
+    var row = $role_datagrid.datagrid('getSelected');
     if (row) {
         if (rows.length > 1) {
             eu.showMsg("您选择了多个操作对象，默认操作第一次被选中的记录！");
@@ -318,7 +318,7 @@ function editRoleUser() {
             userUrl = userUrl + "?id=" + row.id;
         }
         //弹出对话窗口
-        role_user_dialog = $('<div/>').dialog({
+        $role_user_dialog = $('<div/>').dialog({
             title: '角色用户信息',
             top: 20,
             width: 800,
@@ -331,23 +331,23 @@ function editRoleUser() {
                     text: '保存',
                     iconCls: 'easyui-icon-save',
                     handler: function () {
-                        role_user_form.submit();
+                        $role_user_form.submit();
                     }
                 },
                 {
                     text: '关闭',
                     iconCls: 'easyui-icon-cancel',
                     handler: function () {
-                        role_user_dialog.dialog('destroy');
+                        $role_user_dialog.dialog('destroy');
                     }
                 }
             ],
             onClose: function () {
-                role_user_dialog.dialog('destroy');
+                $role_user_dialog.dialog('destroy');
             },
             onLoad: function () {
                 initRoleUserForm();
-                role_user_form.form('load', row);
+                $role_user_form.form('load', row);
             }
         });
 
@@ -358,7 +358,7 @@ function editRoleUser() {
 
 //删除
 function del() {
-    var rows = role_datagrid.datagrid('getSelections');
+    var rows = $role_datagrid.datagrid('getSelections');
     if (rows.length > 0) {
         $.messager.confirm('确认提示！', '您确定要删除选中的所有行？', function (r) {
             if (r) {
@@ -374,7 +374,7 @@ function del() {
                     dataType: 'json',
                     success: function (data) {
                         if (data.code == 1) {
-                            role_datagrid.datagrid('load');	// reload the user data
+                            $role_datagrid.datagrid('load');	// reload the user data
                             eu.showMsg(data.msg);//操作结果提示
                         } else {
                             eu.showAlertMsg(data.msg, 'error');
@@ -390,5 +390,5 @@ function del() {
 
 //搜索
 function search() {
-    role_datagrid.datagrid('load', $.serializeObject(role_search_form));
+    $role_datagrid.datagrid('load', $.serializeObject($role_search_form));
 }

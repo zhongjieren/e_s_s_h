@@ -221,7 +221,7 @@ function initDatagrid(){
                 text: '我的联系人',
                 iconCls: 'eu-icon-user',
                 handler: function () {
-                    eu.addTab(window.parent.layout_center_tabs, '我的联系人','${ctxAdmin}/mail/contactGroup', true,'eu-icon-user','',false);
+                    eu.addTab(window.parent.$layout_center_tabs, '我的联系人','${ctxAdmin}/mail/contactGroup', true,'eu-icon-user','',false);
                 }
             }],
         onRowContextMenu : function(e, rowIndex, rowData) {

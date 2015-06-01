@@ -1,15 +1,15 @@
-var bug_datagrid;
-var bug_form;
-var bug_search_form;
-var bug_dialog;
+var $bug_datagrid;
+var $bug_form;
+var $bug_search_form;
+var $bug_dialog;
 
-var bug_import_dialog;//bug导入表单弹出对话框
-var bug_import_form;
+var $bug_import_dialog;//bug导入表单弹出对话框
+var $bug_import_form;
 $(function () {
-    bug_form = $('#bug_form').form();
-    bug_search_form = $('#bug_search_form').form();
+    $bug_form = $('#bug_form').form();
+    $bug_search_form = $('#bug_search_form').form();
     //数据列表
-    bug_datagrid = $('#bug_datagrid').datagrid({
+    $bug_datagrid = $('#bug_datagrid').datagrid({
         url: ctxAdmin + '/sys/bug/datagrid',
         fit: true,
         pagination: true,//底部分页
@@ -108,14 +108,14 @@ $(function () {
 });
 //查看
 function view(title, url) {
-    if (window.parent.layout_center_tabs) {
-        bug_datagrid.datagrid('unselectAll');
-        eu.addTab(window.parent.layout_center_tabs, title, url, true);
+    if (window.parent.$layout_center_tabs) {
+        $bug_datagrid.datagrid('unselectAll');
+        eu.addTab(window.parent.$layout_center_tabs, title, url, true);
     }
 }
 
 function formInit() {
-    bug_form = $('#bug_form').form({
+    $bug_form = $('#bug_form').form({
         url: ctxAdmin + '/sys/bug/_save',
         onSubmit: function (param) {
             $.messager.progress({
@@ -135,8 +135,8 @@ function formInit() {
             $.messager.progress('close');
             var json = $.parseJSON(data);
             if (json.code == 1) {
-                bug_dialog.dialog('destroy');//销毁对话框
-                bug_datagrid.datagrid('reload');//重新加载列表数据
+                $bug_dialog.dialog('destroy');//销毁对话框
+                $bug_datagrid.datagrid('reload');//重新加载列表数据
                 eu.showMsg(json.msg);//操作结果提示
             } else if (json.code == 2) {
                 $.messager.alert('提示信息！', json.msg, 'warning', function () {
@@ -158,7 +158,7 @@ function showDialog(row) {
     }
 
     //弹出对话窗口
-    bug_dialog = $('<div/>').dialog({
+    $bug_dialog = $('<div/>').dialog({
         title: '详细信息',
         width: document.body.clientWidth,
         height: document.body.clientHeight,
@@ -170,24 +170,24 @@ function showDialog(row) {
                 text: '保存',
                 iconCls: 'easyui-icon-save',
                 handler: function () {
-                    bug_form.submit();
+                    $bug_form.submit();
                 }
             },
             {
                 text: '关闭',
                 iconCls: 'easyui-icon-cancel',
                 handler: function () {
-                    bug_dialog.dialog('destroy');
+                    $bug_dialog.dialog('destroy');
                 }
             }
         ],
         onClose: function () {
-            bug_dialog.dialog('destroy');
+            $bug_dialog.dialog('destroy');
         },
         onLoad: function () {
             formInit();
             if (row) {
-                bug_form.form('load', row);
+                $bug_form.form('load', row);
             }
             if (content_kindeditor) {
                 content_kindeditor.sync();
@@ -201,17 +201,17 @@ function showDialog(row) {
 function edit(rowIndex, rowData) {
     //响应双击事件
     if (rowIndex != undefined) {
-        bug_datagrid.datagrid('unselectAll');
-        bug_datagrid.datagrid('selectRow', rowIndex);
-        var rowData = bug_datagrid.datagrid('getSelected');
-        bug_datagrid.datagrid('unselectRow', rowIndex);
+        $bug_datagrid.datagrid('unselectAll');
+        $bug_datagrid.datagrid('selectRow', rowIndex);
+        var rowData = $bug_datagrid.datagrid('getSelected');
+        $bug_datagrid.datagrid('unselectRow', rowIndex);
         showDialog(rowData);
         return;
     }
     //选中的所有行
-    var rows = bug_datagrid.datagrid('getSelections');
+    var rows = $bug_datagrid.datagrid('getSelections');
     //选中的行（第一次选择的行）
-    var row = bug_datagrid.datagrid('getSelected');
+    var row = $bug_datagrid.datagrid('getSelected');
     if (row) {
         if (rows.length > 1) {
             row = rows[rows.length - 1];
@@ -228,14 +228,14 @@ function del(rowIndex) {
     var rows = new Array();
     var tipMsg = "您确定要删除选中的所有行？";
     if (rowIndex != undefined) {
-        bug_datagrid.datagrid('unselectAll');
-        bug_datagrid.datagrid('selectRow', rowIndex);
-        var rowData = bug_datagrid.datagrid('getSelected');
+        $bug_datagrid.datagrid('unselectAll');
+        $bug_datagrid.datagrid('selectRow', rowIndex);
+        var rowData = $bug_datagrid.datagrid('getSelected');
         rows[0] = rowData;
-        bug_datagrid.datagrid('unselectRow', rowIndex);
+        $bug_datagrid.datagrid('unselectRow', rowIndex);
         tipMsg = "您确定要删除？";
     } else {
-        rows = bug_datagrid.datagrid('getSelections');
+        rows = $bug_datagrid.datagrid('getSelections');
     }
 
     if (rows.length > 0) {
@@ -253,7 +253,7 @@ function del(rowIndex) {
                     dataType: 'json',
                     success: function (data) {
                         if (data.code == 1) {
-                            bug_datagrid.datagrid('load');	// reload the user data
+                            $bug_datagrid.datagrid('load');	// reload the user data
                             eu.showMsg(data.msg);//操作结果提示
                         } else {
                             eu.showAlertMsg(data.msg, 'error');
@@ -269,7 +269,7 @@ function del(rowIndex) {
 
 //搜索
 function search() {
-    bug_datagrid.datagrid('load', $.serializeObject(bug_search_form));
+    $bug_datagrid.datagrid('load', $.serializeObject($bug_search_form));
 }
 
 //导出Excel
@@ -278,7 +278,7 @@ function exportExcel() {
 }
 
 function importFormInit() {
-    bug_import_form = $('#bug_import_form').form({
+    $bug_import_form = $('#bug_import_form').form({
         url: ctxAdmin + '/sys/bug/importExcel',
         onSubmit: function (param) {
             $.messager.progress({
@@ -291,8 +291,8 @@ function importFormInit() {
             $.messager.progress('close');
             var json = $.parseJSON(data);
             if (json.code == 1) {
-                bug_import_dialog.dialog('destroy');//销毁对话框
-                bug_datagrid.datagrid('reload');//重新加载列表数据
+                $bug_import_dialog.dialog('destroy');//销毁对话框
+                $bug_datagrid.datagrid('reload');//重新加载列表数据
                 eu.showMsg(json.msg);//操作结果提示
             } else {
                 eu.showAlertMsg(json.msg, 'error');
@@ -303,7 +303,7 @@ function importFormInit() {
 
 //导入
 function importExcel() {
-    bug_import_dialog = $('<div/>').dialog({//基于中心面板
+    $bug_import_dialog = $('<div/>').dialog({//基于中心面板
         title: 'Excel导入',
         top: 20,
         height: 200,
@@ -316,19 +316,19 @@ function importExcel() {
                 text: '保存',
                 iconCls: 'easyui-icon-save',
                 handler: function () {
-                    bug_import_form.submit();
+                    $bug_import_form.submit();
                 }
             },
             {
                 text: '关闭',
                 iconCls: 'easyui-icon-cancel',
                 handler: function () {
-                    bug_import_dialog.dialog('destroy');
+                    $bug_import_dialog.dialog('destroy');
                 }
             }
         ],
         onClose: function () {
-            bug_import_dialog.dialog('destroy');
+            $bug_import_dialog.dialog('destroy');
         },
         onLoad: function () {
             importFormInit();

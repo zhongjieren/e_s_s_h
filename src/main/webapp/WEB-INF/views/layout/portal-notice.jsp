@@ -5,7 +5,7 @@
         $("#notice_icon_" + id).removeClass('tree-icon tree-file eu-icon-star_yellow').addClass("tree-icon tree-file eu-icon-star_gray")
                 .attr("title", "已读");
         $("#notice_label_" + id).removeClass("tip_unread").html("[已读]");
-        eu.addTab(window.parent.layout_center_tabs, "我的通知", '${ctxAdmin}/notice/notice?noticeId=' + id, true, "eu-icon-notice_user_comment", "", true);
+        eu.addTab(window.parent.$layout_center_tabs, "我的通知", '${ctxAdmin}/notice/notice?noticeId=' + id, true, "eu-icon-notice_user_comment", "", true);
     }
 </script>
 <div class="portal-div">
@@ -48,6 +48,6 @@
         </tbody>
     </table>
     <%--<div style="float: right;margin-right: 4px;">--%>
-    <%--<button class="btn btn-primary" onclick="eu.addTab(window.parent.layout_center_tabs,'我的通知','${ctxAdmin}/notice/notice?mode=view',true)" type="button">更 多</button>--%>
+    <%--<button class="btn btn-primary" onclick="eu.addTab(window.parent.$layout_center_tabs,'我的通知','${ctxAdmin}/notice/notice?mode=view',true)" type="button">更 多</button>--%>
     <%--</div>--%>
 </div>

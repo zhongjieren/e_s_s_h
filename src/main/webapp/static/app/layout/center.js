@@ -1,14 +1,14 @@
-var layout_center_tabs;
-var layout_center_tabsMenu;
+var $layout_center_tabs;
+var $layout_center_tabsMenu;
 $(function() {
-    layout_center_tabs = $('#layout_center_tabs').tabs();
-    layout_center_tabsMenu = $('#layout_center_tabsMenu').menu({
+    $layout_center_tabs = $('#layout_center_tabs').tabs();
+    $layout_center_tabsMenu = $('#layout_center_tabsMenu').menu({
         onClick : function(item) {
             var curTabTitle = $(this).data('tabTitle');
             var type = $(item.target).attr('type');
             //刷新
             if (type === 'refresh') {
-                refresh(layout_center_tabs.tabs('getTab',curTabTitle));
+                refresh($layout_center_tabs.tabs('getTab',curTabTitle));
                 return;
             }
             //关闭
@@ -17,7 +17,7 @@ $(function() {
                 return;
             }
 
-            var allTabs = layout_center_tabs.tabs('tabs');
+            var allTabs = $layout_center_tabs.tabs('tabs');
             var closeTabsTitle = [];
 
             $.each(allTabs, function() {
@@ -30,14 +30,14 @@ $(function() {
             });
 
             for ( var i = 0; i < closeTabsTitle.length; i++) {
-                layout_center_tabs.tabs('close', closeTabsTitle[i]);
+                $layout_center_tabs.tabs('close', closeTabsTitle[i]);
             }
         }
     });
 
     //活动中的tip消息
     var activeTip;
-    layout_center_tabs.tabs({
+    $layout_center_tabs.tabs({
         fit : true,
         border : false,
         tools:'#layout_center_tabs_full-tools',
@@ -52,7 +52,7 @@ $(function() {
 //        }],
         onContextMenu : function(e, title,index) {
             e.preventDefault();
-            layout_center_tabsMenu.menu('show', {
+            $layout_center_tabsMenu.menu('show', {
                 left : e.pageX,
                 top : e.pageY
             }).data('tabTitle', title);
@@ -75,7 +75,7 @@ $(function() {
     });
 
     var indexTitle = "首页";
-    layout_center_tabs.tabs('add',{
+    $layout_center_tabs.tabs('add',{
         title:indexTitle,
         iconCls:'eu-icon-application',
         closable:false,
@@ -83,7 +83,7 @@ $(function() {
     });
 
     //首页tip标题提示
-    layout_center_tabs.tabs('getTab',indexTitle).panel('options').tab.unbind('mouseenter').bind('mouseenter',function(e){
+    $layout_center_tabs.tabs('getTab',indexTitle).panel('options').tab.unbind('mouseenter').bind('mouseenter',function(e){
         $(this).tooltip({
             position: 'top',
             content: indexTitle
@@ -96,19 +96,19 @@ function refresh(selectedTab){
     if(selectedTab){
         tab = selectedTab;
     }else{
-        tab = layout_center_tabs.tabs('getSelected');
+        tab = $layout_center_tabs.tabs('getSelected');
     }
     if(tab == undefined){//未添加任何tab
         return;
     }
     var href = tab.panel('options').href;
     if (href) {/*说明tab是以href方式引入的目标页面*/
-        var index = layout_center_tabs.tabs('getTabIndex', tab);
-        layout_center_tabs.tabs('getTab', index).panel('refresh');
+        var index = $layout_center_tabs.tabs('getTabIndex', tab);
+        $layout_center_tabs.tabs('getTab', index).panel('refresh');
     } else {/*说明tab是以content方式引入的目标页面*/
         var panel = tab.panel('panel');
         var iframe = panel.find('iframe');
-        layout_center_tabs.tabs('updateIframeTab',{
+        $layout_center_tabs.tabs('updateIframeTab',{
             which:tab.panel('options').title,
             iframe:{src:iframe[0].src}
         });
@@ -116,13 +116,13 @@ function refresh(selectedTab){
 }
 //关闭
 function cancel(){
-    var index = layout_center_tabs.tabs('getTabIndex', layout_center_tabs.tabs('getSelected'));
-    var tab = layout_center_tabs.tabs('getTab', index);
+    var index = $layout_center_tabs.tabs('getTabIndex', $layout_center_tabs.tabs('getSelected'));
+    var tab = $layout_center_tabs.tabs('getTab', index);
     if(tab == undefined){//未添加任何tab
         return;
     }
     if (tab.panel('options').closable) {
-        layout_center_tabs.tabs('close', index);
+        $layout_center_tabs.tabs('close', index);
     } else {
         eu.showAlertMsg('[' + tab.panel('options').title + ']不可以被关闭.', 'error');
     }
@@ -135,7 +135,7 @@ function screenToggle(flag){
     var tools ;
     $(".easyui-tooltip").tooltip("hide","click");//  点击图标 隐藏tooltip提示
     //选中的tab页 防止 全屏导致的自动选择第一个tab
-    var selectedTab = layout_center_tabs.tabs("getSelected");
+    var selectedTab = $layout_center_tabs.tabs("getSelected");
     var selectedTab_Title = undefined;
     if(selectedTab){
         selectedTab_Title = selectedTab.panel("options").title;
@@ -149,9 +149,9 @@ function screenToggle(flag){
         tools = "#layout_center_tabs_full-tools";
         parent.indexLayout.layout("unFullCenter");
     }
-    layout_center_tabs.tabs({tools:tools});
+    $layout_center_tabs.tabs({tools:tools});
     if(selectedTab_Title){
-        layout_center_tabs.tabs("select",selectedTab_Title);
+        $layout_center_tabs.tabs("select",selectedTab_Title);
     }
 }
 

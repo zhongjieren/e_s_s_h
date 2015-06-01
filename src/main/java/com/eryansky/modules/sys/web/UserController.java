@@ -49,6 +49,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -299,6 +300,33 @@ public class UserController extends BaseController<User,Long> {
         userManager.saveEntity(user);
         result = Result.successResult();
         logger.debug(result.toString());
+        return result;
+    }
+
+    /**
+     * 修改用户信息.
+     */
+    @RequestMapping("userInfoInput")
+    public ModelAndView userInfoInput() {
+        ModelAndView modelAndView = new ModelAndView("layout/north-userInfoInput");
+        SessionInfo sessionInfo = SecurityUtils.getCurrentSessionInfo();
+        User user = userManager.loadById(sessionInfo.getUserId());
+        JsonMapper jsonMapper = JsonMapper.getInstance();
+//        解决hibernate延时加载设置
+        jsonMapper.registerHibernate4Module();
+        modelAndView.addObject("userJson",jsonMapper.toJson(user));
+        return modelAndView;
+    }
+
+    /**
+     * 保存用户信息.
+     */
+    @RequestMapping("saveUserinfo")
+    @ResponseBody
+    public Result saveUserinfo(@ModelAttribute("model")User model) throws Exception {
+        Result result = null;
+        userManager.saveEntity(model);
+        result = Result.successResult();
         return result;
     }
 

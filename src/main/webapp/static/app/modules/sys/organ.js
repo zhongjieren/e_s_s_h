@@ -1,13 +1,13 @@
-var organ_treegrid;
-var organ_form;
-var organ_user_form;
-var organ_dialog;
-var organ_user_dialog;
-var organ_search_form;
+var $organ_treegrid;
+var $organ_form;
+var $organ_user_form;
+var $organ_dialog;
+var $organ_user_dialog;
+var $organ_search_form;
 var organ_Id;
 $(function() {
     //数据列表
-    organ_treegrid = $('#organ_treegrid').treegrid({
+    $organ_treegrid = $('#organ_treegrid').treegrid({
         url:ctxAdmin+'/sys/organ/treegrid',
         fit:true,
         fitColumns:false,//自适应列宽
@@ -72,7 +72,7 @@ $(function() {
 });
 
 function formInit(){
-    organ_form = $('#organ_form').form({
+    $organ_form = $('#organ_form').form({
         url: ctxAdmin+'/sys/organ/_save',
         onSubmit: function(param){
             $.messager.progress({
@@ -89,8 +89,8 @@ function formInit(){
             $.messager.progress('close');
             var json = $.parseJSON(data);
             if (json.code ==1){
-                organ_dialog.dialog('destroy');//销毁对话框
-                organ_treegrid.treegrid('reload');//重新加载列表数据
+                $organ_dialog.dialog('destroy');//销毁对话框
+                $organ_treegrid.treegrid('reload');//重新加载列表数据
                 eu.showMsg(json.msg);//操作结果提示
             }else if(json.code == 2){
                 $.messager.alert('提示信息！', json.msg, 'warning',function(){
@@ -116,14 +116,14 @@ function showDialog(row){
     if(row != undefined && row.id){
         inputUrl = inputUrl+"?id="+row.id;
     }else{
-        var selectedNode = organ_treegrid.treegrid('getSelected');
+        var selectedNode = $organ_treegrid.treegrid('getSelected');
         if(selectedNode != undefined && selectedNode.type != undefined){
             inputUrl +="?parentOrganType="+selectedNode.type;
         }
     }
 
     //弹出对话窗口
-    organ_dialog = $('<div/>').dialog({
+    $organ_dialog = $('<div/>').dialog({
         title:'机构详细信息',
         top:20,
         width : 500,
@@ -135,27 +135,27 @@ function showDialog(row){
             text : '保存',
             iconCls : 'easyui-icon-save',
             handler : function() {
-                organ_form.submit();
+                $organ_form.submit();
             }
         },{
             text : '关闭',
             iconCls : 'easyui-icon-cancel',
             handler : function() {
-                organ_dialog.dialog('destroy');
+                $organ_dialog.dialog('destroy');
             }
         }],
         onClose : function() {
-            organ_dialog.dialog('destroy');
+            $organ_dialog.dialog('destroy');
         },
         onLoad:function(){
             formInit();
             if(row){
-                organ_form.form('load', row);
+                $organ_form.form('load', row);
             } else{
-                var selectedNode = organ_treegrid.treegrid('getSelected');
+                var selectedNode = $organ_treegrid.treegrid('getSelected');
                 if(selectedNode){
                     var initFormData = {'_parentId':[selectedNode.id],'type':selectedNode.type};
-                    organ_form.form('load',initFormData );
+                    $organ_form.form('load',initFormData );
                 }
             }
         }
@@ -167,7 +167,7 @@ function showDialog(row){
 //编辑
 function edit(row) {
     if (row == undefined) {
-        row = organ_treegrid.treegrid('getSelected');
+        row = $organ_treegrid.treegrid('getSelected');
     }
     if (row != undefined) {
         showDialog(row);
@@ -178,7 +178,7 @@ function edit(row) {
 
 //初始化机构用户表单
 function initOrganUserForm(){
-    organ_user_form = $('#organ_user_form').form({
+    $organ_user_form = $('#organ_user_form').form({
         url: ctxAdmin+'/sys/organ/updateOrganUser',
         onSubmit: function(param){
             $.messager.progress({
@@ -195,8 +195,8 @@ function initOrganUserForm(){
             $.messager.progress('close');
             var json = $.parseJSON(data);
             if (json.code == 1){
-                organ_user_dialog.dialog('destroy');//销毁对话框
-                organ_treegrid.treegrid('reload');	// reload the organ data
+                $organ_user_dialog.dialog('destroy');//销毁对话框
+                $organ_treegrid.treegrid('reload');	// reload the organ data
                 eu.showMsg(json.msg);//操作结果提示
             }else {
                 eu.showAlertMsg(json.msg,'error');
@@ -207,14 +207,14 @@ function initOrganUserForm(){
 //修改机构用户
 function editOrganUser(){
     //选中的行（第一条）
-    var row = organ_treegrid.treegrid('getSelected');
+    var row = $organ_treegrid.treegrid('getSelected');
     if (row){
         var userUrl = ctxAdmin+"/sys/organ/user";
         if(row != undefined && row.id){
             userUrl = userUrl+"?id="+row.id;
         }
         //弹出对话窗口
-        organ_user_dialog = $('<div/>').dialog({
+        $organ_user_dialog = $('<div/>').dialog({
             title:'机构用户信息',
             top:20,
             height : 200,
@@ -226,21 +226,21 @@ function editOrganUser(){
                 text : '保存',
                 iconCls : 'easyui-icon-save',
                 handler : function() {
-                    organ_user_form.submit();
+                    $organ_user_form.submit();
                 }
             },{
                 text : '关闭',
                 iconCls : 'easyui-icon-cancel',
                 handler : function() {
-                    organ_user_dialog.dialog('destroy');
+                    $organ_user_dialog.dialog('destroy');
                 }
             }],
             onClose : function() {
-                organ_user_dialog.dialog('destroy');
+                $organ_user_dialog.dialog('destroy');
             },
             onLoad:function(){
                 initOrganUserForm();
-                organ_user_form.form('load', row);
+                $organ_user_form.form('load', row);
             }
         });
 
@@ -253,15 +253,15 @@ function editOrganUser(){
 function del(rowIndex){
     var row;
     if (rowIndex == undefined) {
-        row = organ_treegrid.treegrid('getSelected');
+        row = $organ_treegrid.treegrid('getSelected');
     }
     if (row != undefined) {
         $.messager.confirm('确认提示！','您确定要删除(如果存在子节点，子节点也一起会被删除)？',function(r){
             if (r){
                 $.post(ctxAdmin+'/sys/organ/delete/'+row.id,{},function(data){
                     if (data.code==1){
-                        organ_treegrid.treegrid('unselectAll');//取消选择 1.3.6bug
-                        organ_treegrid.treegrid('load');	// reload the user data
+                        $organ_treegrid.treegrid('unselectAll');//取消选择 1.3.6bug
+                        $organ_treegrid.treegrid('load');	// reload the user data
                         eu.showMsg(data.msg);//操作结果提示
                     } else {
                         eu.showAlertMsg(data.msg,'error');

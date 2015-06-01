@@ -27,6 +27,7 @@
     <div data-options="iconCls:'easyui-icon-help'">
         <span>控制面板</span>
         <div style="width:120px;">
+            <div onclick="editLoginUserInfo();" iconCls="easyui-icon-edit">个人信息</div>
             <div onclick="editLoginUserPassword();" iconCls="eu-icon-lock">修改密码</div>
             <div class="menu-sep"></div>
             <div onclick="toApp();">切换到桌面版</div>

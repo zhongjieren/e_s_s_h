@@ -34,30 +34,30 @@ function isOpeated(userId) {
     }
     return true;
 }
-var organ_tree;//组织机树(左边)
-var user_datagrid;
-var user_form;
-var user_password_form;
-var user_role_form;
-var user_resource_form;
-var user_organ_form;
-var user_search_form;
-var user_dialog;
-var user_password_dialog;
-var user_role_dialog;
-var user_resource_dialog;
-var user_organ_dialog;
+var $organ_tree;//组织机树(左边)
+var $user_datagrid;
+var $user_form;
+var $user_password_form;
+var $user_role_form;
+var $user_resource_form;
+var $user_organ_form;
+var $user_search_form;
+var $user_dialog;
+var $user_password_dialog;
+var $user_role_dialog;
+var $user_resource_dialog;
+var $user_organ_dialog;
 
 var $user_post_form;
 var $user_post_dialog;
 
 $(function () {
-    user_search_form = $('#user_search_form').form();
+    $user_search_form = $('#user_search_form').form();
 
 
     //组织机构树
     var selectedNode = null;//存放被选中的节点对象 临时变量
-    organ_tree = $("#organ_tree").tree({
+    $organ_tree = $("#organ_tree").tree({
         url: ctxAdmin + "/sys/organ/tree",
         onClick: function (node) {
             search();
@@ -86,7 +86,7 @@ $(function () {
     });
 
     //数据列表
-    user_datagrid = $('#user_datagrid').datagrid({
+    $user_datagrid = $('#user_datagrid').datagrid({
         url: ctxAdmin + '/sys/user/userDatagrid',
         fit: true,
         pagination: true,//底部分页
@@ -282,22 +282,22 @@ $(function () {
  */
 function move(up){
     //选中的所有行
-    var rows = user_datagrid.datagrid('getSelections');
+    var rows = $user_datagrid.datagrid('getSelections');
     //选中的行（第一次选择的行）
-    var row = user_datagrid.datagrid('getSelected');
+    var row = $user_datagrid.datagrid('getSelected');
     if (row) {
         if (rows.length > 1) {
             row = rows[rows.length - 1];
             eu.showMsg("您选择了多个操作对象，请选择一行数据！");
             return;
         }
-        var rowIndex = user_datagrid.datagrid("getRowIndex",row);
+        var rowIndex = $user_datagrid.datagrid("getRowIndex",row);
         var upUserId,downUserId;
         $.messager.progress({
             title: '提示信息！',
             text: '数据处理中，请稍后....'
         });
-        var datagridData = user_datagrid.datagrid("getData").rows;
+        var datagridData = $user_datagrid.datagrid("getData").rows;
         var moveUp;//是否上移动 是：true 否（下移）：false
         if(up){
             moveUp = true;
@@ -332,7 +332,7 @@ function move(up){
             success: function (data) {
                 $.messager.progress('close');
                 if (data.code == 1) {
-                    user_datagrid.datagrid('reload');	// reload the user data
+                    $user_datagrid.datagrid('reload');	// reload the user data
 //                        eu.showMsg(data.msg);//操作结果提示
                 } else {
                     eu.showAlertMsg(data.msg, 'error');
@@ -347,9 +347,9 @@ function move(up){
 
 function lock(lock){
 //选中的所有行
-    var rows = user_datagrid.datagrid('getSelections');
+    var rows = $user_datagrid.datagrid('getSelections');
     //选中的行（第一次选择的行）
-    var row = user_datagrid.datagrid('getSelected');
+    var row = $user_datagrid.datagrid('getSelected');
     if (row) {
         var userIds = new Array();
         $.each(rows,function(i,r){
@@ -369,7 +369,7 @@ function lock(lock){
             success: function (data) {
                 $.messager.progress('close');
                 if (data.code == 1) {
-                    user_datagrid.datagrid('reload');	// reload the user data
+                    $user_datagrid.datagrid('reload');	// reload the user data
 //                        eu.showMsg(data.msg);//操作结果提示
                 } else {
                     eu.showAlertMsg(data.msg, 'error');
@@ -383,7 +383,7 @@ function lock(lock){
 }
 
 function formInit() {
-    user_form = $('#user_form').form({
+    $user_form = $('#user_form').form({
         url: ctxAdmin + '/sys/user/save',
         onSubmit: function (param) {
             $.messager.progress({
@@ -400,9 +400,9 @@ function formInit() {
             $.messager.progress('close');
             var json = $.parseJSON(data);
             if (json.code == 1) {
-                user_dialog.dialog('destroy');//销毁对话框
-                user_datagrid.datagrid('reload');//重新加载列表数据
-                organ_tree.tree("reload");
+                $user_dialog.dialog('destroy');//销毁对话框
+                $user_datagrid.datagrid('reload');//重新加载列表数据
+                $organ_tree.tree("reload");
                 eu.showMsg(json.msg);//操作结果提示
             } else if (json.code == 2) {
                 $.messager.alert('提示信息！', json.msg, 'warning', function () {
@@ -424,7 +424,7 @@ function showDialog(row) {
     }
 
     //弹出对话窗口
-    user_dialog = $('<div/>').dialog({
+    $user_dialog = $('<div/>').dialog({
         title: '用户详细信息',
         top: 20,
         width: 500,
@@ -437,19 +437,19 @@ function showDialog(row) {
                 text: '保存',
                 iconCls: 'easyui-icon-save',
                 handler: function () {
-                    user_form.submit();
+                    $user_form.submit();
                 }
             },
             {
                 text: '关闭',
                 iconCls: 'easyui-icon-cancel',
                 handler: function () {
-                    user_dialog.dialog('destroy');
+                    $user_dialog.dialog('destroy');
                 }
             }
         ],
         onClose: function () {
-            user_dialog.dialog('destroy');
+            $user_dialog.dialog('destroy');
         },
         onLoad: function () {
             formInit();
@@ -458,9 +458,9 @@ function showDialog(row) {
                 $('#repassword_div').css('display', 'none');
                 $('#password_div input').removeAttr('class');
                 $('#repassword_div input').removeAttr('class');
-                user_form.form('load', row);
+                $user_form.form('load', row);
             } else {
-                var node = organ_tree.tree('getSelected'); //组织机构选中节点
+                var node = $organ_tree.tree('getSelected'); //组织机构选中节点
                 if (node != undefined && node.id != undefined) {
                     //设置组织机构默认值
                     $('#organIds').combogrid("setValue", node.id);
@@ -484,9 +484,9 @@ function edit(rowIndex, rowData) {
         return;
     }
     //选中的所有行
-    var rows = user_datagrid.datagrid('getSelections');
+    var rows = $user_datagrid.datagrid('getSelections');
     //选中的行（第一次选择的行）
-    var row = user_datagrid.datagrid('getSelected');
+    var row = $user_datagrid.datagrid('getSelected');
     if (row) {
         if (rows.length > 1) {
             row = rows[rows.length - 1];
@@ -505,7 +505,7 @@ function edit(rowIndex, rowData) {
 }
 //初始化修改密码表单
 function initPasswordForm() {
-    user_password_form = $('#user_password_form').form({
+    $user_password_form = $('#user_password_form').form({
         url: ctxAdmin + '/sys/user/_updateUserPassword',
         onSubmit: function (param) {
             param.upateOperate = '0';
@@ -517,7 +517,7 @@ function initPasswordForm() {
             if (!isValid) {
                 $.messager.progress('close');
             }else{
-                var rows = user_datagrid.datagrid('getSelections');
+                var rows = $user_datagrid.datagrid('getSelections');
                 var userIds = new Array();
                 $.each(rows,function(i,row){
                     userIds.push(row.id);
@@ -530,9 +530,9 @@ function initPasswordForm() {
             $.messager.progress('close');
             var json = $.parseJSON(data);
             if (json.code == 1) {
-                user_password_dialog.dialog('destroy');//销毁对话框
-                user_datagrid.datagrid('reload');	// reload the user data
-                organ_tree.tree("reload");
+                $user_password_dialog.dialog('destroy');//销毁对话框
+                $user_datagrid.datagrid('reload');	// reload the user data
+                $organ_tree.tree("reload");
                 eu.showMsg(json.msg);//操作结果提示
             } else {
                 eu.showAlertMsg(json.msg, 'error');
@@ -544,9 +544,9 @@ function initPasswordForm() {
 //修改用户密码
 function editPassword() {
     //选中的所有行
-    var rows = user_datagrid.datagrid('getSelections');
+    var rows = $user_datagrid.datagrid('getSelections');
     //选中的行（第一条）
-    var row = user_datagrid.datagrid('getSelected');
+    var row = $user_datagrid.datagrid('getSelected');
     if (row) {
         //判断是否允许操作
         if (isOpeated(row.id) == false) {
@@ -554,7 +554,7 @@ function editPassword() {
             return;
         }
 
-        user_password_dialog = $('<div/>').dialog({
+        $user_password_dialog = $('<div/>').dialog({
             title: '修改用户密码',
             top: 20,
             width: 500,
@@ -567,19 +567,19 @@ function editPassword() {
                     text: '保存',
                     iconCls: 'easyui-icon-save',
                     handler: function () {
-                        user_password_form.submit();
+                        $user_password_form.submit();
                     }
                 },
                 {
                     text: '关闭',
                     iconCls: 'easyui-icon-cancel',
                     handler: function () {
-                        user_password_dialog.dialog('destroy');
+                        $user_password_dialog.dialog('destroy');
                     }
                 }
             ],
             onClose: function () {
-                user_password_dialog.dialog('destroy');
+                $user_password_dialog.dialog('destroy');
             },
             onLoad: function () {
                 initPasswordForm();
@@ -597,7 +597,7 @@ function editPassword() {
 
 //初始化用户角色表单
 function initUserRoleForm() {
-    user_role_form = $('#user_role_form').form({
+    $user_role_form = $('#user_role_form').form({
         url: ctxAdmin + '/sys/user/updateUserRole',
         onSubmit: function (param) {
             $.messager.progress({
@@ -608,7 +608,7 @@ function initUserRoleForm() {
             if (!isValid) {
                 $.messager.progress('close');
             }else{
-                var rows = user_datagrid.datagrid('getSelections');
+                var rows = $user_datagrid.datagrid('getSelections');
                 var userIds = new Array();
                 $.each(rows,function(i,row){
                     userIds.push(row.id);
@@ -621,9 +621,9 @@ function initUserRoleForm() {
             $.messager.progress('close');
             var json = $.parseJSON(data);
             if (json.code == 1) {
-                user_role_dialog.dialog('destroy');//销毁对话框
-                user_datagrid.datagrid('reload');	// reload the user data
-                organ_tree.tree("reload");
+                $user_role_dialog.dialog('destroy');//销毁对话框
+                $user_datagrid.datagrid('reload');	// reload the user data
+                $organ_tree.tree("reload");
                 eu.showMsg(json.msg);//操作结果提示
             } else {
                 eu.showAlertMsg(json.msg, 'error');
@@ -635,9 +635,9 @@ function initUserRoleForm() {
 //修改用户角色
 function editUserRole() {
     //选中的所有行
-    var rows = user_datagrid.datagrid('getSelections');
+    var rows = $user_datagrid.datagrid('getSelections');
     //选中的行（第一条）
-    var row = user_datagrid.datagrid('getSelected');
+    var row = $user_datagrid.datagrid('getSelected');
     if (row) {
         //判断是否允许操作
         if (isOpeated(row.id) == false) {
@@ -655,7 +655,7 @@ function editUserRole() {
             inputUrl = inputUrl + "?id=" + row.id;
         }
         //弹出对话窗口
-        user_role_dialog = $('<div/>').dialog({
+        $user_role_dialog = $('<div/>').dialog({
             title: '用户角色信息',
             top: 20,
             width: 500,
@@ -668,24 +668,24 @@ function editUserRole() {
                     text: '保存',
                     iconCls: 'easyui-icon-save',
                     handler: function () {
-                        user_role_form.submit();
+                        $user_role_form.submit();
                     }
                 },
                 {
                     text: '关闭',
                     iconCls: 'easyui-icon-cancel',
                     handler: function () {
-                        user_role_dialog.dialog('destroy');
+                        $user_role_dialog.dialog('destroy');
                     }
                 }
             ],
             onClose: function () {
-                user_role_dialog.dialog('destroy');
+                $user_role_dialog.dialog('destroy');
             },
             onLoad: function () {
                 initUserRoleForm();
                 if(rows.length ==1) {//选中1个
-                    user_role_form.form('load', row);
+                    $user_role_form.form('load', row);
                 }
             }
         });
@@ -698,7 +698,7 @@ function editUserRole() {
 
 //初始化用户资源表单
 function initUserResourceForm() {
-    user_resource_form = $('#user_resource_form').form({
+    $user_resource_form = $('#user_resource_form').form({
         url: ctxAdmin + '/sys/user/updateUserResource',
         onSubmit: function (param) {
             $.messager.progress({
@@ -709,7 +709,7 @@ function initUserResourceForm() {
             if (!isValid) {
                 $.messager.progress('close');
             }else{
-                var rows = user_datagrid.datagrid('getSelections');
+                var rows = $user_datagrid.datagrid('getSelections');
                 var userIds = new Array();
                 $.each(rows,function(i,row){
                     userIds.push(row.id);
@@ -722,9 +722,9 @@ function initUserResourceForm() {
             $.messager.progress('close');
             var json = $.parseJSON(data);
             if (json.code == 1) {
-                user_resource_dialog.dialog('destroy');//销毁对话框
-                user_datagrid.datagrid('reload');	// reload the user data
-                organ_tree.tree("reload");
+                $user_resource_dialog.dialog('destroy');//销毁对话框
+                $user_datagrid.datagrid('reload');	// reload the user data
+                $organ_tree.tree("reload");
                 eu.showMsg(json.msg);//操作结果提示
             } else {
                 eu.showAlertMsg(json.msg, 'error');
@@ -735,9 +735,9 @@ function initUserResourceForm() {
 //修改用户资源
 function editUserResource() {
     //选中的所有行
-    var rows = user_datagrid.datagrid('getSelections');
+    var rows = $user_datagrid.datagrid('getSelections');
     //选中的行（第一条）
-    var row = user_datagrid.datagrid('getSelected');
+    var row = $user_datagrid.datagrid('getSelected');
     if (row) {
         //判断是否允许操作
         if (isOpeated(row.id) == false) {
@@ -750,7 +750,7 @@ function editUserResource() {
             return;
         }
         //弹出对话窗口
-        user_resource_dialog = $('<div/>').dialog({
+        $user_resource_dialog = $('<div/>').dialog({
             title: '用户资源信息',
             top: 20,
             width: 500,
@@ -763,24 +763,24 @@ function editUserResource() {
                     text: '保存',
                     iconCls: 'easyui-icon-save',
                     handler: function () {
-                        user_resource_form.submit();
+                        $user_resource_form.submit();
                     }
                 },
                 {
                     text: '关闭',
                     iconCls: 'easyui-icon-cancel',
                     handler: function () {
-                        user_resource_dialog.dialog('destroy');
+                        $user_resource_dialog.dialog('destroy');
                     }
                 }
             ],
             onClose: function () {
-                user_resource_dialog.dialog('destroy');
+                $user_resource_dialog.dialog('destroy');
             },
             onLoad: function () {
                 initUserResourceForm();
                 if(rows.length ==1) {//选中1个
-                    user_resource_form.form('load', row);
+                    $user_resource_form.form('load', row);
                 }
             }
         });
@@ -792,7 +792,7 @@ function editUserResource() {
 
 //初始化用户机构表单
 function initUserOrganForm() {
-    user_organ_form = $('#user_organ_form').form({
+    $user_organ_form = $('#user_organ_form').form({
         url: ctxAdmin + '/sys/user/updateUserOrgan',
         onSubmit: function (param) {
             $.messager.progress({
@@ -803,7 +803,7 @@ function initUserOrganForm() {
             if (!isValid) {
                 $.messager.progress('close');
             }else{
-                var rows = user_datagrid.datagrid('getSelections');
+                var rows = $user_datagrid.datagrid('getSelections');
                 var userIds = new Array();
                 $.each(rows,function(i,row){
                     userIds.push(row.id);
@@ -816,9 +816,9 @@ function initUserOrganForm() {
             $.messager.progress('close');
             var json = $.parseJSON(data);
             if (json.code == 1) {
-                user_organ_dialog.dialog('destroy');//销毁对话框
-                user_datagrid.datagrid('reload');	// reload the user data
-                organ_tree.tree("reload");
+                $user_organ_dialog.dialog('destroy');//销毁对话框
+                $user_datagrid.datagrid('reload');	// reload the user data
+                $organ_tree.tree("reload");
                 eu.showMsg(json.msg);//操作结果提示
             } else {
                 eu.showAlertMsg(json.msg, 'error');
@@ -830,9 +830,9 @@ function initUserOrganForm() {
 //设置用户机构
 function editUserOrgan() {
     //选中的所有行
-    var rows = user_datagrid.datagrid('getSelections');
+    var rows = $user_datagrid.datagrid('getSelections');
     //选中的行（第一条）
-    var row = user_datagrid.datagrid('getSelected');
+    var row = $user_datagrid.datagrid('getSelected');
     if (row) {
         //判断是否允许操作
         if (isOpeated(row.id) == false) {
@@ -845,7 +845,7 @@ function editUserOrgan() {
             inputUrl = inputUrl + "?id=" + row.id;
         }
         //弹出对话窗口
-        user_organ_dialog = $('<div/>').dialog({
+        $user_organ_dialog = $('<div/>').dialog({
             title: '用户机构信息',
             top: 20,
             width: 500,
@@ -858,24 +858,24 @@ function editUserOrgan() {
                     text: '保存',
                     iconCls: 'easyui-icon-save',
                     handler: function () {
-                        user_organ_form.submit();
+                        $user_organ_form.submit();
                     }
                 },
                 {
                     text: '关闭',
                     iconCls: 'easyui-icon-cancel',
                     handler: function () {
-                        user_organ_dialog.dialog('destroy');
+                        $user_organ_dialog.dialog('destroy');
                     }
                 }
             ],
             onClose: function () {
-                user_organ_dialog.dialog('destroy');
+                $user_organ_dialog.dialog('destroy');
             },
             onLoad: function () {
                 initUserOrganForm();
                 if(rows.length ==1){//选中1个
-                    user_organ_form.form('load', row);
+                    $user_organ_form.form('load', row);
                 }
             }
         });
@@ -898,7 +898,7 @@ function initUserPostForm() {
             if (!isValid) {
                 $.messager.progress('close');
             }else{
-                var rows = user_datagrid.datagrid('getSelections');
+                var rows = $user_datagrid.datagrid('getSelections');
                 var userIds = new Array();
                 $.each(rows,function(i,row){
                     userIds.push(row.id);
@@ -912,7 +912,7 @@ function initUserPostForm() {
             var json = $.parseJSON(data);
             if (json.code == 1) {
                 $user_post_dialog.dialog('destroy');//销毁对话框
-                user_datagrid.datagrid('reload');	// reload the role data
+                $user_datagrid.datagrid('reload');	// reload the role data
                 eu.showMsg(json.msg);//操作结果提示
             } else {
                 eu.showAlertMsg(json.msg, 'error');
@@ -923,11 +923,11 @@ function initUserPostForm() {
 //修改用户岗位
 function editUserPost() {
     //选中的所有行
-    var rows = user_datagrid.datagrid('getSelections');
+    var rows = $user_datagrid.datagrid('getSelections');
     //选中的行（第一条）
-    var row = user_datagrid.datagrid('getSelected');
+    var row = $user_datagrid.datagrid('getSelected');
     if (row) {
-        var node = organ_tree.tree('getSelected');
+        var node = $organ_tree.tree('getSelected');
 
         if (rows.length > 1 && node == null) {
             eu.showMsg("批量设置岗位，请选中左侧机构树中的一个机构！");
@@ -987,7 +987,7 @@ function editUserPost() {
 
 //删除用户
 function del() {
-    var rows = user_datagrid.datagrid('getSelections');
+    var rows = $user_datagrid.datagrid('getSelections');
 
     if (rows.length > 0) {
         $.messager.confirm('确认提示！', '您确定要删除选中的所有行?', function (r) {
@@ -1004,7 +1004,7 @@ function del() {
                     dataType: 'json',
                     success: function (data) {
                         if (data.code == 1) {
-                            user_datagrid.datagrid('load');	// reload the user data
+                            $user_datagrid.datagrid('load');	// reload the user data
                             eu.showMsg(data.msg);//操作结果提示
                         } else {
                             eu.showAlertMsg(data.msg, 'error');
@@ -1020,7 +1020,7 @@ function del() {
 
 //搜索
 function search() {
-    var node = organ_tree.tree('getSelected');//
+    var node = $organ_tree.tree('getSelected');//
     var organSysCode = '';
     var organId = '';
     if (node != null) {
@@ -1029,8 +1029,8 @@ function search() {
     }
     var queryData = {};
     var organData = {organSysCode: organSysCode, organId: organId};
-    var formData = $.serializeObject(user_search_form);
+    var formData = $.serializeObject($user_search_form);
     queryData = $.extend(queryData, organData, formData);//合并对象
 
-    user_datagrid.datagrid('load', queryData);
+    $user_datagrid.datagrid('load', queryData);
 }

@@ -66,7 +66,6 @@ public class Log extends BaseEntity implements Serializable {
     public Log() {
     }
 
-    @Column(name = "TYPE")
     public Integer getType() {
         return type;
     }
@@ -93,7 +92,7 @@ public class Log extends BaseEntity implements Serializable {
      *
      * @return
      */
-    @Column(name = "LOGIN_NAME", length = 36)
+    @Column(length = 36)
     public String getLoginName() {
         return loginName;
     }
@@ -102,7 +101,6 @@ public class Log extends BaseEntity implements Serializable {
         this.loginName = loginName;
     }
 
-    @Column(name = "OPER_TIME")
     @JsonFormat(pattern = DATE_TIME_FORMAT, timezone = TIMEZONE)
     @Temporal(TemporalType.TIMESTAMP)
     public Date getOperTime() {
@@ -113,7 +111,7 @@ public class Log extends BaseEntity implements Serializable {
         this.operTime = operTime;
     }
 
-    @Column(name = "MODULE", length = 36)
+    @Column(length = 36)
     public String getModule() {
         return module;
     }
@@ -122,7 +120,7 @@ public class Log extends BaseEntity implements Serializable {
         this.module = module;
     }
 
-    @Column(name = "ACTION", length = 255)
+    @Column(length = 255)
     public String getAction() {
         return action;
     }
@@ -131,7 +129,7 @@ public class Log extends BaseEntity implements Serializable {
         this.action = action;
     }
 
-    @Column(name = "ACTION_TIME", length = 20)
+    @Column(length = 20)
     public String getActionTime() {
         return actionTime;
     }
@@ -140,7 +138,7 @@ public class Log extends BaseEntity implements Serializable {
         this.actionTime = actionTime;
     }
 
-    @Column(name = "IP", length = 64)
+    @Column(length = 64)
     public String getIp() {
         return ip;
     }
@@ -149,7 +147,7 @@ public class Log extends BaseEntity implements Serializable {
         this.ip = ip;
     }
 
-    @Column(name = "BROWSER_TYPE")
+    @Column(length = 64)
     public String getBrowserType() {
         return browserType;
     }
@@ -158,7 +156,7 @@ public class Log extends BaseEntity implements Serializable {
         this.browserType = browserType;
     }
 
-    @Column(name = "REMARK", length = 4096)
+    @Column(length = 8192)
     public String getRemark() {
         return remark;
     }

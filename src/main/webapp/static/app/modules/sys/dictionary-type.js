@@ -1,10 +1,10 @@
-var dictionaryType_treegrid;
-var dictionaryType_form;
-var dictionaryType_dialog;
-var dictionaryType_search_form;
+var $dictionaryType_treegrid;
+var $dictionaryType_form;
+var $dictionaryType_dialog;
+var $dictionaryType_search_form;
 $(function() {
     //数据列表
-    dictionaryType_treegrid = $('#dictionaryType_treegrid').treegrid({
+    $dictionaryType_treegrid = $('#dictionaryType_treegrid').treegrid({
         url:ctxAdmin+'/sys/dictionary-type/treegrid',
         fit:true,
         fitColumns:false,//自适应列宽
@@ -76,7 +76,7 @@ function setSortValue() {
 }
 
 function formInit(){
-    dictionaryType_form = $('#dictionaryType_form').form({
+    $dictionaryType_form = $('#dictionaryType_form').form({
         url: ctxAdmin+'/sys/dictionary-type/save',
         onSubmit: function(param){
             $.messager.progress({
@@ -93,8 +93,8 @@ function formInit(){
             $.messager.progress('close');
             var json = $.parseJSON(data);
             if (json.code ==1){
-                dictionaryType_dialog.dialog('destroy');//销毁对话框
-                dictionaryType_treegrid.treegrid('reload');//重新加载列表数据
+                $dictionaryType_dialog.dialog('destroy');//销毁对话框
+                $dictionaryType_treegrid.treegrid('reload');//重新加载列表数据
                 eu.showMsg(json.msg);//操作结果提示
             }else if(json.code == 2){
                 $.messager.alert('提示信息！', json.msg, 'warning',function(){
@@ -127,7 +127,7 @@ function showDialog(row){
     }
 
     //弹出对话窗口
-    dictionaryType_dialog = $('<div/>').dialog({
+    $dictionaryType_dialog = $('<div/>').dialog({
         title:'字典类型详细信息',
         top:20,
         width : 500,
@@ -139,34 +139,34 @@ function showDialog(row){
             text : '保存',
             iconCls : 'easyui-icon-save',
             handler : function() {
-                dictionaryType_form.submit();
+                $dictionaryType_form.submit();
             }
         },{
             text : '关闭',
             iconCls : 'easyui-icon-cancel',
             handler : function() {
-                dictionaryType_dialog.dialog('destroy');
+                $dictionaryType_dialog.dialog('destroy');
             }
         }],
         onClose : function() {
-            dictionaryType_dialog.dialog('destroy');
+            $dictionaryType_dialog.dialog('destroy');
         },
         onLoad:function(){
             formInit();
             if(row){
-                dictionaryType_form.form('load', row);
+                $dictionaryType_form.form('load', row);
             } else{
                 setSortValue();
-                var selectedNode = dictionaryType_treegrid.treegrid('getSelected');
+                var selectedNode = $dictionaryType_treegrid.treegrid('getSelected');
                 if(selectedNode){
                     var initFormData = {};
                     if(selectedNode._parentId){  //选中子项点击新增
-                        var groupNode = dictionaryType_treegrid.treegrid('getParent',selectedNode.code);
+                        var groupNode = $dictionaryType_treegrid.treegrid('getParent',selectedNode.code);
                         initFormData = {'groupDictionaryTypeCode':[selectedNode._parentId],'code':groupNode.code};
                     }else{   //选分组点击新增
                         initFormData = {'groupDictionaryTypeCode':[selectedNode.code],'code':selectedNode.code};
                     }
-                    dictionaryType_form.form('load',initFormData );
+                    $dictionaryType_form.form('load',initFormData );
                 }
             }
         }
@@ -181,9 +181,9 @@ function edit(row){
         return;
     }
     //选中的所有行
-    var rows = dictionaryType_treegrid.treegrid('getSelections');
+    var rows = $dictionaryType_treegrid.treegrid('getSelections');
     //选中的行（第一次选择的行）
-    var row = dictionaryType_treegrid.treegrid('getSelected');
+    var row = $dictionaryType_treegrid.treegrid('getSelected');
     if (row){
         if(rows.length>1){
             row = rows[rows.length-1];
@@ -197,7 +197,7 @@ function edit(row){
 
 //删除
 function del(){
-    var rows = dictionaryType_treegrid.treegrid('getSelections');
+    var rows = $dictionaryType_treegrid.treegrid('getSelections');
 
     if(rows.length >0){
         $.messager.confirm('确认提示！','您确定要删除选中的所有行(如果存在子节点，子节点也一起会被删除)？',function(r){
@@ -214,7 +214,7 @@ function del(){
                     dataType:'json',
                     success:function(data) {
                         if (data.code==1){
-                            dictionaryType_treegrid.treegrid('load');	// reload the user data
+                            $dictionaryType_treegrid.treegrid('load');	// reload the user data
                             eu.showMsg(data.msg);//操作结果提示
                         } else {
                             eu.showAlertMsg(data.msg,'error');

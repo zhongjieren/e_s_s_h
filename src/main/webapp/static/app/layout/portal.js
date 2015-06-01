@@ -12,7 +12,7 @@ $(function() {
             iconCls:'eu-icon-more',
             handler:function(){
                 var url = ctxAdmin + '/notice/notice';
-                eu.addTab(window.parent.layout_center_tabs,protal_titles[0],url,true,"eu-icon-notice_user_comment");
+                eu.addTab(window.parent.$layout_center_tabs,protal_titles[0],url,true,"eu-icon-notice_user_comment");
             }
         }]
     }, {

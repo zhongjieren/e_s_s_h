@@ -10,8 +10,8 @@ function initMenu(){
     $.post(ctxAdmin+"/index/navTree", function(data) {
         $.each(data, function(i, n) {
             var menulist = "<div class='easyui-panel' data-options='fit:true,border:false' style='overflow-y:auto;overflow-X: hidden;'><ul>";
-            $.each(n.children, function(j, o) {//依赖于center界面选项卡layout_center_tabs对象
-                menulist += "<li><div><strong><a onClick='javascript:eu.addTab(layout_center_tabs,\""
+            $.each(n.children, function(j, o) {//依赖于center界面选项卡$layout_center_tabs对象
+                menulist += "<li><div><strong><a onClick='javascript:eu.addTab($layout_center_tabs,\""
                     + o.text+"\",\"" + ctxAdmin + o.attributes.url+ "\",true,\""+o.iconCls+"\")' style='font-size:14px;' > <span class='tree-icon tree-file "+o.iconCls+"'></span>" + o.text + "</a></strong></div></li> ";
             });
             menulist += '</ul></div>';
@@ -53,7 +53,7 @@ function initMenuTree(){
                 }else{
                     url = ctxAdmin+'/' + url;
                 }
-                eu.addTab(layout_center_tabs,node.text,url,true,node.iconCls);
+                eu.addTab($layout_center_tabs,node.text,url,true,node.iconCls);
             }
         }
     });

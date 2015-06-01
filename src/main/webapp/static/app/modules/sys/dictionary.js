@@ -1,13 +1,13 @@
-var dictionary_datagrid;
+var $dictionary_datagrid;
 var editRow = undefined;
 var editRowData = undefined;
-var dictionary_search_form;
+var $dictionary_search_form;
 var dictionaryTypeCode = undefined;
 var dictionary_filter_EQS_dictionaryType__code;
 $(function() {
-    dictionary_search_form = $('#dictionary_search_form').form();
+    $dictionary_search_form = $('#dictionary_search_form').form();
     //数据列表
-    dictionary_datagrid = $('#dictionary_datagrid').datagrid({
+    $dictionary_datagrid = $('#dictionary_datagrid').datagrid({
         url:ctxAdmin+'/sys/dictionary/datagrid',
         fit:true,
         pagination:true,//底部分页
@@ -42,10 +42,10 @@ $(function() {
                         groupField:'group',
                         onSelect:function(record){
                             dictionaryTypeCode = record.value;
-                            var dictionaryTypeEditor = dictionary_datagrid.datagrid('getEditor',{index:editRow,field:'parentDictionaryCode'});
+                            var dictionaryTypeEditor = $dictionary_datagrid.datagrid('getEditor',{index:editRow,field:'parentDictionaryCode'});
                             $(dictionaryTypeEditor.target).combotree('clear').combotree('reload');
-                            var codeEditor = dictionary_datagrid.datagrid('getEditor',{index:editRow,field:'code'});
-                            var vallueEditor = dictionary_datagrid.datagrid('getEditor',{index:editRow,field:'value'})
+                            var codeEditor = $dictionary_datagrid.datagrid('getEditor',{index:editRow,field:'code'});
+                            var vallueEditor = $dictionary_datagrid.datagrid('getEditor',{index:editRow,field:'value'})
                             $(codeEditor.target).textbox("setValue",dictionaryTypeCode);
                             $(vallueEditor.target).textbox("setValue",dictionaryTypeCode);
                         }
@@ -177,8 +177,8 @@ $(function() {
                 title : '提示信息！',
                 text : '数据处理中，请稍后....'
             });
-            var inserted = dictionary_datagrid.datagrid('getChanges', 'inserted');
-            var updated = dictionary_datagrid.datagrid('getChanges', 'updated');
+            var inserted = $dictionary_datagrid.datagrid('getChanges', 'inserted');
+            var updated = $dictionary_datagrid.datagrid('getChanges', 'updated');
             if (inserted.length < 1 && updated.length < 1) {
                 editRow = undefined;
                 editRowData = undefined;
@@ -191,15 +191,15 @@ $(function() {
                 function(data) {
                     $.messager.progress('close');
                     if (data.code == 1) {
-                        dictionary_datagrid.datagrid('acceptChanges');
+                        $dictionary_datagrid.datagrid('acceptChanges');
                         cancelSelect();
-                        dictionary_datagrid.datagrid('reload');
+                        $dictionary_datagrid.datagrid('reload');
                         eu.showMsg(data.msg);
                     }else{// 警告信息
                         $.messager.alert('提示信息！', data.msg, 'warning',function(){
-                            dictionary_datagrid.datagrid('beginEdit', editRow);
+                            $dictionary_datagrid.datagrid('beginEdit', editRow);
                             if(data.obj){//校验失败字段 获取焦点
-                                var validateEdit = dictionary_datagrid.datagrid('getEditor',{index:rowIndex,field:data.obj});
+                                var validateEdit = $dictionary_datagrid.datagrid('getEditor',{index:rowIndex,field:data.obj});
                                 $(validateEdit.target).focus();
                             }
                         });
@@ -238,16 +238,16 @@ $(function() {
 //字典编码 editor绑定change事件
 function bindCodeEvent(rowIndex){
     // 绑定事件监听
-    var codeEditor = dictionary_datagrid.datagrid('getEditor', {index:rowIndex,field:'code'});
-    var valueEditor =  dictionary_datagrid.datagrid('getEditor', {index:rowIndex,field:'value'});
+    var codeEditor = $dictionary_datagrid.datagrid('getEditor', {index:rowIndex,field:'code'});
+    var valueEditor =  $dictionary_datagrid.datagrid('getEditor', {index:rowIndex,field:'value'});
     codeEditor.target.bind('change', function(){
         $(valueEditor.target).val($(this).val())
     });
 }
 //字典类型管理
 function dictionaryType(){
-    //parent.layout_center_tabs 指向父级layout_center_tabs选项卡(center.jsp)
-    eu.addTab(parent.layout_center_tabs,"字典类型管理",ctxAdmin+"/sys/dictionary-type",true,"easyui-icon-folder");
+    //widow.parent.$layout_center_tabs 指向父级$layout_center_tabs选项卡(center.jsp)
+    eu.addTab(window.parent.$layout_center_tabs,"字典类型管理",ctxAdmin+"/sys/dictionary-type",true,"easyui-icon-folder");
 }
 
 //设置排序默认值
@@ -269,12 +269,12 @@ function add() {
     }else{
         cancelSelect();
         var row = {id : ''};
-        dictionary_datagrid.datagrid('appendRow', row);
-        editRow = dictionary_datagrid.datagrid('getRows').length - 1;
-        dictionary_datagrid.datagrid('selectRow', editRow);
-        dictionary_datagrid.datagrid('beginEdit', editRow);
-        var rowIndex = dictionary_datagrid.datagrid('getRowIndex',row);//返回指定行的索引
-        var sortEdit = dictionary_datagrid.datagrid('getEditor',{index:rowIndex,field:'orderNo'});
+        $dictionary_datagrid.datagrid('appendRow', row);
+        editRow = $dictionary_datagrid.datagrid('getRows').length - 1;
+        $dictionary_datagrid.datagrid('selectRow', editRow);
+        $dictionary_datagrid.datagrid('beginEdit', editRow);
+        var rowIndex = $dictionary_datagrid.datagrid('getRowIndex',row);//返回指定行的索引
+        var sortEdit = $dictionary_datagrid.datagrid('getEditor',{index:rowIndex,field:'orderNo'});
         setSortValue(sortEdit.target);
         bindCodeEvent(rowIndex);
     }
@@ -283,9 +283,9 @@ function add() {
 //编辑
 function edit() {
     //选中的所有行
-    var rows = dictionary_datagrid.datagrid('getSelections');
+    var rows = $dictionary_datagrid.datagrid('getSelections');
     //选中的行（第一次选择的行）
-    var row = dictionary_datagrid.datagrid('getSelected');
+    var row = $dictionary_datagrid.datagrid('getSelected');
     if (row){
         if(rows.length>1){
             row = rows[rows.length-1];
@@ -296,8 +296,8 @@ function edit() {
             //结束编辑 自动保存
             //dictionary_datagrid.datagrid('endEdit', editRow);
         }else{
-            editRow = dictionary_datagrid.datagrid('getRowIndex', row);
-            dictionary_datagrid.datagrid('beginEdit', editRow);
+            editRow = $dictionary_datagrid.datagrid('getRowIndex', row);
+            $dictionary_datagrid.datagrid('beginEdit', editRow);
             cancelSelect();
             bindCodeEvent(editRow);
         }
@@ -313,7 +313,7 @@ function edit() {
 //保存
 function save(rowData) {
     if (editRow != undefined) {
-        dictionary_datagrid.datagrid('endEdit', editRow);
+        $dictionary_datagrid.datagrid('endEdit', editRow);
     } else {
         eu.showMsg("您未选择任何操作对象，请选择一行数据！");
     }
@@ -322,19 +322,19 @@ function save(rowData) {
 //取消编辑
 function cancelEdit() {
     cancelSelect();
-    dictionary_datagrid.datagrid('rejectChanges');
+    $dictionary_datagrid.datagrid('rejectChanges');
     editRow = undefined;
     editRowData = undefined;
     dictionaryTypeCode = undefined;
 }
 //取消选择
 function cancelSelect() {
-    dictionary_datagrid.datagrid('unselectAll');
+    $dictionary_datagrid.datagrid('unselectAll');
 }
 
 //删除
 function del() {
-    var rows = dictionary_datagrid.datagrid('getSelections');
+    var rows = $dictionary_datagrid.datagrid('getSelections');
     if (rows.length > 0) {
         if(editRow != undefined){
             eu.showMsg("请先保存正在编辑的数据！");
@@ -354,8 +354,8 @@ function del() {
                     dataType:'json',
                     success:function(data) {
                         if (data.code==1){
-                            dictionary_datagrid.datagrid('clearSelections');//取消所有的已选择项
-                            dictionary_datagrid.datagrid('load');//重新加载列表数据
+                            $dictionary_datagrid.datagrid('clearSelections');//取消所有的已选择项
+                            $dictionary_datagrid.datagrid('load');//重新加载列表数据
                             eu.showMsg(data.msg);//操作结果提示
                         } else {
                             eu.showAlertMsg(data.msg,'error');
@@ -371,5 +371,5 @@ function del() {
 
 //搜索
 function search() {
-    dictionary_datagrid.datagrid('load',$.serializeObject(dictionary_search_form));
+    $dictionary_datagrid.datagrid('load',$.serializeObject($dictionary_search_form));
 }

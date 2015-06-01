@@ -1,11 +1,9 @@
-var resource_treegrid;
-var resource_form;
-var resource_dialog;
-var resource_search_form;
-var resource_Id;
+var $resource_treegrid;
+var $resource_form;
+var $resource_dialog;
 $(function() {
     //数据列表
-    resource_treegrid = $('#resource_treegrid').treegrid({
+    $resource_treegrid = $('#resource_treegrid').treegrid({
         url:ctxAdmin+'/sys/resource/treegrid',
         fit:true,
         fitColumns:false,//自适应列宽
@@ -62,7 +60,7 @@ $(function() {
 });
 
 function formInit(){
-    resource_form = $('#resource_form').form({
+    $resource_form = $('#resource_form').form({
         url: ctxAdmin+'/sys/resource/_save',
         onSubmit: function(param){
             $.messager.progress({
@@ -79,8 +77,8 @@ function formInit(){
             $.messager.progress('close');
             var json = $.parseJSON(data);
             if (json.code ==1){
-                resource_dialog.dialog('destroy');//销毁对话框
-                resource_treegrid.treegrid('reload');//重新加载列表数据
+                $resource_dialog.dialog('destroy');//销毁对话框
+                $resource_treegrid.treegrid('reload');//重新加载列表数据
                 eu.showMsg(json.msg);//操作结果提示
             }else if(json.code == 2){
                 $.messager.alert('提示信息！', json.msg, 'warning',function(){
@@ -106,14 +104,14 @@ function showDialog(row){
     if(row != undefined && row.id){
         inputUrl = inputUrl+"?id="+row.id;
     }else{
-        var selectedNode = resource_treegrid.treegrid('getSelected');
+        var selectedNode = $resource_treegrid.treegrid('getSelected');
         if(selectedNode != undefined && selectedNode.type != undefined){
             inputUrl +="?parentType="+selectedNode.type;
         }
     }
 
     //弹出对话窗口
-    resource_dialog = $('<div/>').dialog({
+    $resource_dialog = $('<div/>').dialog({
         title:'资源详细信息',
         top:20,
         width : 500,
@@ -126,27 +124,27 @@ function showDialog(row){
             text : '保存',
             iconCls : 'easyui-icon-save',
             handler : function() {
-                resource_form.submit();
+                $resource_form.submit();
             }
         },{
             text : '关闭',
             iconCls : 'easyui-icon-cancel',
             handler : function() {
-                resource_dialog.dialog('destroy');
+                $resource_dialog.dialog('destroy');
             }
         }],
         onClose : function() {
-            resource_dialog.dialog('destroy');
+            $resource_dialog.dialog('destroy');
         },
         onLoad:function(){
             formInit();
             if(row){
-                resource_form.form('load', row);
+                $resource_form.form('load', row);
             } else{
-                var selectedNode = resource_treegrid.treegrid('getSelected');
+                var selectedNode = $resource_treegrid.treegrid('getSelected');
                 if(selectedNode){
                     var initFormData = {'_parentId':[selectedNode.id],'type':selectedNode.type};
-                    resource_form.form('load',initFormData );
+                    $resource_form.form('load',initFormData );
                 }
             }
         }
@@ -157,7 +155,7 @@ function showDialog(row){
 //编辑
 function edit(row) {
     if (row == undefined) {
-        row = resource_treegrid.treegrid('getSelected');
+        row = $resource_treegrid.treegrid('getSelected');
     }
     if (row != undefined) {
         showDialog(row);
@@ -170,15 +168,15 @@ function edit(row) {
 function del(rowIndex){
     var row;
     if (rowIndex == undefined) {
-        row = resource_treegrid.treegrid('getSelected');
+        row = $resource_treegrid.treegrid('getSelected');
     }
     if (row != undefined) {
         $.messager.confirm('确认提示！','您确定要删除(如果存在子节点，子节点也一起会被删除)？',function(r){
             if (r){
                 $.post(ctxAdmin+'/sys/resource/_delete/'+row.id,{},function(data){
                     if (data.code==1){
-                        resource_treegrid.treegrid('unselectAll');//取消选择 1.3.6bug
-                        resource_treegrid.treegrid('load');	// reload the user data
+                        $resource_treegrid.treegrid('unselectAll');//取消选择 1.3.6bug
+                        $resource_treegrid.treegrid('load');	// reload the user data
                         eu.showMsg(data.msg);//操作结果提示
                     } else {
                         eu.showAlertMsg(data.msg,'error');
