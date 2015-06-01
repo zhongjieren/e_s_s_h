@@ -1,12 +1,20 @@
 var $layout_portal_portal;
-var protal_titles = ['&nbsp;内部通知','&nbsp;技术架构'];
+var protal_titles = ['&nbsp;我的通知','&nbsp;技术架构'];
 $(function() {
     panels = [ {
         id : 'p1',
+        href:ctxAdmin+'/portal/notice',
         title : protal_titles[0],
-        height : 360,
+        iconCls:'eu-icon-notice_user_comment',
+        height : 300,
         collapsible : true,
-        href:ctxAdmin+'/portal/bug'
+        tools:[{
+            iconCls:'eu-icon-more',
+            handler:function(){
+                var url = ctxAdmin + '/notice/notice';
+                eu.addTab(window.parent.layout_center_tabs,protal_titles[0],url,true,"eu-icon-notice_user_comment");
+            }
+        }]
     }, {
         id : 'p2',
         title : protal_titles[1],
@@ -30,6 +38,11 @@ $(function() {
     }
     addPortalPanels(state);
     $('#layout_portal_portal').portal('resize');
+
+    initMedia();
+
+    mymessages(false,true);
+    window.setInterval('mymessages(true,true)',5*60*1000);
 
 });
 
@@ -69,4 +82,82 @@ function addPortalPanels(portalState) {
             }
         }
     }
+}
+
+
+/**
+ * 初始化声音提醒
+ */
+function initMedia(){
+    $jplayer = $("#jplayer").jPlayer({
+        swfPath: ctxStatic+"/js/jquery/jplayer/Jplayer.swf",
+        ready: function () {
+            $(this).jPlayer("setMedia", {
+                mp3: ctxStatic+"/js/jquery/jplayer/tip_new_msg.mp3"
+            });
+        },
+        supplied: "mp3"
+    });
+}
+/**
+ * 声音提示
+ */
+function tipMsg(){
+    var tipMessage = $.cookie('portal-tipMessage') == "false" ? false:true;
+    if(tipMessage){
+        $jplayer.jPlayer('play');
+    }
+    var tipMessageHtml = "<span>您有新的消息，请注意查收！</span>";
+    tipMessageHtml +="<div style='margin-top: 10px;'><label><input id='tip_checkbox' type='checkbox' onclick='javascript:setTipMessage(this.checked);' ";
+    if(tipMessage){
+        tipMessageHtml += " checked ";
+    }
+    tipMessageHtml += "/> 提示声音</label></div>";
+    $.messager.show({
+        title: '<span class="tree-icon tree-file easyui-icon-tip easyui-tooltip"></span><span style="color: red;"> 提示信息！</span>',
+        msg: tipMessageHtml,
+        height: 110,
+        timeout: 5000,
+        showType: 'slide' //null,slide,fade,show.
+    });
+}
+
+function setTipMessage(tipMessage){
+    $.cookie('portal-tipMessage', tipMessage, {expires : 7});
+}
+/**
+ * 更新portal消息
+ * @param refreshPanel 是否需要刷新Panel
+ * @param tipMessage 是否提示声音
+ */
+function mymessages(refreshPanel,tipMessage){
+    $.ajax({
+        url:ctxAdmin + '/portal/mymessages',
+        type:'get',
+        dataType:'json',
+        success:function(data) {
+            if (data.code==1){
+                if(refreshPanel){
+                    $("#p1").panel("refresh");
+                }
+
+                var hashNewMessage = false;//是否提示声音
+                var obj = data.obj;
+                var messagesHtml = undefined;
+                if(obj["noticeScopes"]>0){
+                    hashNewMessage = true;
+                    messagesHtml ="&nbsp;"+"<span  style='color: #FE6600;font-size: 16px;'>"+obj["noticeScopes"]+"</span>&nbsp条";
+                }else{
+                    messagesHtml ="&nbsp;"+"<span>"+obj["noticeScopes"]+"</span>&nbsp;条";
+                }
+                $("#p1").panel("setTitle",protal_titles[0]+messagesHtml);
+
+                if(tipMessage){
+                    tipMsg();
+                }
+
+            } else {
+            }
+        }
+    });
 }
