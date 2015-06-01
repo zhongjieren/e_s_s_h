@@ -36,7 +36,7 @@
         <velocity.version>1.6.4</velocity.version>
         <quartz.version>1.8.6</quartz.version>
         <aspectj.version>1.7.4</aspectj.version>
-        <essh.version>2.0.140827</essh.version>
+        <essh.version>2.0.150522</essh.version>
 
         <!-- jdbc driver setting -->
         <mysql.driver.version>5.1.31</mysql.driver.version>
@@ -131,7 +131,7 @@
             <!--<artifactId>essh-common</artifactId>-->
             <!--<version>${essh.version}</version>-->
             <!--<scope>system</scope>-->
-            <!--<systemPath>${project.basedir}/src/main/doc/essh-common-2.0.140827.jar</systemPath>-->
+            <!--<systemPath>${project.basedir}/src/main/doc/essh-common-2.0.150522.jar</systemPath>-->
         <!--</dependency>-->
 
         <dependency>
