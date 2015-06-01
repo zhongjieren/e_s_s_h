@@ -152,7 +152,7 @@ function mymessages(refreshPanel,tipMessage){
                 }
                 $("#p1").panel("setTitle",protal_titles[0]+messagesHtml);
 
-                if(tipMessage){
+                if(hashNewMessage){
                     tipMsg();
                 }
 

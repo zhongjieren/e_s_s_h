@@ -5,7 +5,7 @@
 </h3>
 <ul>
 	<li>essh是一个EasyUI整站示例系统.</li><br />
-	<li>前台由EasyUI1.4编写，后台是Java编写，应用框架SpringMVC+spring3+hibernate4+ehcache.</li><br />
+	<li>前台由EasyUI1.4.2编写，后台是Java编写，应用框架SpringMVC+spring3+hibernate4+ehcache.</li><br />
 </ul> 
 
 <h3 style="margin-left: 12px;">
