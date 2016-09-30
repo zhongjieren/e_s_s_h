@@ -2,7 +2,8 @@
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="ehcache.xsd"  updateCheck="false" name="hibernateCache">
 
-	<diskStore path="java.io.tmpdir/ehcache-hibernate" />
+<!-- 	<diskStore path="java.io.tmpdir/ehcache-hibernate" /> -->
+	<diskStore path="E:\workspace_tmp\essh\ehcache\ehcache-hibernate" />
 
 	<!--
 		DefaultCache setting.

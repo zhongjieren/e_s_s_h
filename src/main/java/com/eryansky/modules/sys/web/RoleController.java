@@ -6,13 +6,19 @@
 package com.eryansky.modules.sys.web;
 
 import com.eryansky.common.model.Combobox;
+import com.eryansky.common.model.Datagrid;
 import com.eryansky.common.model.Result;
 import com.eryansky.common.model.TreeNode;
+import com.eryansky.common.orm.Page;
+import com.eryansky.common.orm.PropertyFilter;
 import com.eryansky.common.orm.hibernate.EntityManager;
+import com.eryansky.common.orm.hibernate.HibernateWebUtils;
 import com.eryansky.common.utils.StringUtils;
 import com.eryansky.common.utils.collections.Collections3;
 import com.eryansky.common.utils.mapper.JsonMapper;
 import com.eryansky.common.web.springmvc.BaseController;
+import com.eryansky.common.web.springmvc.SpringMVCHolder;
+import com.eryansky.modules.sys.entity.Dictionary;
 import com.eryansky.modules.sys.entity.Resource;
 import com.eryansky.modules.sys.entity.Role;
 import com.eryansky.modules.sys.entity.User;
@@ -21,6 +27,7 @@ import com.eryansky.modules.sys.service.RoleManager;
 import com.eryansky.modules.sys.service.UserManager;
 import com.eryansky.utils.SelectType;
 import com.google.common.collect.Lists;
+
 import org.apache.commons.collections.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -61,6 +68,17 @@ public class RoleController extends BaseController<Role,Long> {
         return "modules/sys/role";
     }
 
+    @Override
+    public Datagrid<Role> datagrid() {
+        Page<Role> page = new Page<Role>(SpringMVCHolder.getRequest());
+        // 自动构造属性过滤器
+        List<PropertyFilter> filters = HibernateWebUtils.buildPropertyFilters(SpringMVCHolder.getRequest(), HibernateWebUtils.FILTERPREFIX, false);
+        page = getEntityManager().findPage(page,filters);
+        Datagrid<Role> datagrid = new Datagrid<Role>(page.getTotalCount(), page.getResult());
+        return datagrid;
+    }
+
+    
     /**
      * @param role
      * @return

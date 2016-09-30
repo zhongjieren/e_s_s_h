@@ -71,7 +71,8 @@ public class LoginController extends SimpleController {
                         String theme, HttpServletRequest request) {
         Result result = null;
         String msg = null;
-        // 获取用户信息
+        // 获取用户信息 admin,admin|21232f297a57a5a743894a0e4a801fc3
+        logger.info("用户{}登录系统,password:{},Encrypt password:{}.", loginName, password,Encrypt.e(password));
         User user = userManager.getUserByLNP(loginName, Encrypt.e(password));
         if (user == null) {
             msg = "用户名或密码不正确!";

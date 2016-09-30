@@ -17,7 +17,8 @@ import java.io.Serializable;
  */
 public class Column implements Serializable{
 
-    //对齐方式
+	private static final long serialVersionUID = 4295290499300695621L;
+	//对齐方式
     public static final String ALIGN_LEFT = "left";
     public static final String ALIGN_CENTER = "center";
     public static final String ALIGN_RIGHT = "right";

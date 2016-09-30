@@ -7,8 +7,8 @@ $(function () {
 //        taskBlankPos:'north',
 //        wallpaper:ctx+'/img/top_bg.png',
         loadUrl : { //远程数据加载路径
-            app : ctxAdmin+'/login/apps', //app数据
-            startMenu : ctxAdmin+'/login/startMenu'//, //开始菜单数据
+            app : ctxAdmin+'/index/apps', //app数据
+            startMenu : ctxAdmin+'/index/startMenu'//, //开始菜单数据
 //            widget : ctxStatic+'/js/jquery/easyui-1.4/extent/app/widget.json'
         },
         otherStartMenus:[{

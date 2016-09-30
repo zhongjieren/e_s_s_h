@@ -294,7 +294,8 @@ public class SecurityUtils {
         }
 
         boolean isAdmin = false;
-        if (userManager.isSuperUser(_userId) || SecurityUtils.isPermittedRole(AppConstants.ROLE_SYSTEM_MANAGER) || SecurityUtils.isPermittedRole(AppConstants.ROLE_DISK_MANAGER)) {//系统管理员 + 网盘管理员
+        if (userManager.isSuperUser(_userId) || SecurityUtils.isPermittedRole(AppConstants.ROLE_SYSTEM_MANAGER) || SecurityUtils.isPermittedRole(AppConstants.ROLE_DISK_MANAGER)) {
+        	//系统管理员 + 网盘管理员
             isAdmin = true;
         }
         return isAdmin;

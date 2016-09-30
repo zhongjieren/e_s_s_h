@@ -5,16 +5,16 @@
  */
 package com.eryansky.modules.sys.entity;
 
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import com.eryansky.common.excel.annotation.Excel;
 import com.eryansky.common.orm.entity.BaseEntity;
-import com.eryansky.common.utils.io.ClobUtil;
-import com.eryansky.common.utils.jackson.ClobSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-import javax.persistence.*;
-import java.io.Serializable;
-import java.sql.Clob;
 
 /**
  * BUG内容 PO

@@ -28,18 +28,18 @@ public class SystemInitListener extends DefaultSystemInitListener{
 	public SystemInitListener() {
 	}
 
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-        super.contextInitialized(sce);
-        //WebService发布
+	@Override
+	public void contextInitialized(ServletContextEvent sce) {
+		super.contextInitialized(sce);
+		//WebService发布
 //        if(StringUtils.isNotBlank(AppConstants.getWebServiceUrl())){
 //            logger.info("WebService发布...");
 //            Endpoint.publish(AppConstants.getWebServiceUrl(), new UserWebServiceImpl());
 //            logger.info("WebService[{}]发布成功。",AppConstants.getWebServiceUrl());
 //        }
-    }
-
-    /**
+	}
+	
+	/**
 	 * session销毁
 	 */
 	public void sessionDestroyed(HttpSessionEvent evt) {

@@ -13,7 +13,7 @@ public class CodeGenMain {
     public static final String DRIVER = "com.mysql.jdbc.Driver";
     public static final String URL = "jdbc:mysql://localhost:3306/essh_v2.0?useUnicode=true&characterEncoding=UTF-8"; // 数据库访问串
     public static final String USERNAME = "root";
-    public static final String PASSWORD = "password";
+    public static final String PASSWORD = "root";
     public static final String SCHEMA = "";
 
 

@@ -563,7 +563,7 @@ CREATE TABLE `t_sys_user` (
 -- ----------------------------
 -- Records of t_sys_user
 -- ----------------------------
-INSERT INTO `t_sys_user` VALUES ('1', null, null, '0', '2015-05-31 09:42:32', 'admin', '8', '', '', 'admin', '', '管理员', '5f4dcc3b5aa765d61d8327deb882cf99', '2', '', '1', null, null, '', '');
+INSERT INTO `t_sys_user` VALUES ('1', null, null, '0', '2015-05-31 09:42:32', 'admin', '8', '', '', 'admin', '', '管理员', '21232f297a57a5a743894a0e4a801fc3', '2', '', '1', null, null, '', '');
 
 -- ----------------------------
 -- Table structure for t_sys_user_organ

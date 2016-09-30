@@ -5,13 +5,13 @@
  */
 package test.eryansky.service;
 
-import com.eryansky.modules.sys.service.BugManager;
-import com.eryansky.modules.sys.service.DictionaryManager;
-import com.eryansky.modules.sys.service.DictionaryTypeManager;
+import javax.annotation.Resource;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import javax.annotation.Resource;
+import com.eryansky.modules.sys.service.BugManager;
+import com.eryansky.modules.sys.service.DictionaryManager;
+import com.eryansky.modules.sys.service.DictionaryTypeManager;
 
 /**
  * @author : 尔演&Eryan eryanwcp@gmail.com
@@ -53,7 +55,12 @@ public class ManagerTest {
         SessionFactoryUtils.closeSession(holder.getSession());
         TransactionSynchronizationManager.unbindResource(sessionFactory);
     }
-
+    
+    @Test
+    public void test() {
+    	
+    }
+    
     @Before
     public void init() {
         Session s = sessionFactory.openSession();
