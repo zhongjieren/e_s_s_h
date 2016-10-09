@@ -46,11 +46,11 @@ public final class ExcelUtil {
 	 */
 	public static void main(String[] args) throws Exception {
 		// ------------------------------------------------------------
-		// List<String[]> list = new ArrayList<String[]>();
-		// list.add(VALUE_LIST);
-		// list.add(VALUE_LIST);
-		// list.add(VALUE_LIST);
-		// createExcel(outputFile, HEAD_LIST, list);
+//		 List<String[]> list = new ArrayList<String[]>();
+//		 list.add(VALUE_LIST);
+//		 list.add(VALUE_LIST);
+//		 list.add(VALUE_LIST);
+//		 createExcel(outputFile, HEAD_LIST, list);
 
 		// ------------------------------------------------------------
 		// List<Map<String, Object>> dataList = new ArrayList<Map<String,
@@ -476,8 +476,7 @@ public final class ExcelUtil {
 		// 结果集
 		List<List<Object>> list = new ArrayList<List<Object>>();
 
-		HSSFWorkbook hssfworkbook = new HSSFWorkbook(new FileInputStream(
-				excel_name));
+		HSSFWorkbook hssfworkbook = new HSSFWorkbook(new FileInputStream(excel_name));
 
 		// 遍历该表格中所有的工作表，i表示工作表的数量 getNumberOfSheets表示工作表的总数
 		HSSFSheet hssfsheet = hssfworkbook.getSheetAt(0);
@@ -494,8 +493,7 @@ public final class ExcelUtil {
 					if (cell == null) {
 						arrayString.add("");
 					} else if (cell.getCellType() == 0) {
-						arrayString.add(new Double(cell.getNumericCellValue())
-								.toString());
+						arrayString.add(new Double(cell.getNumericCellValue()).toString());
 					} else {// 如果EXCEL表格中的数据类型为字符串型
 						arrayString.add(cell.getStringCellValue().trim());
 					}

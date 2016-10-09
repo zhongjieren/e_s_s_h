@@ -51,7 +51,7 @@ public class UserWebServiceImpl implements UserWebService {
 		try {
 
 			SessionInfo sessionInfo = userManager.getUser(loginName);
-
+			
 			GetUserResult result = new GetUserResult();
 			result.setUser(sessionInfo);
 

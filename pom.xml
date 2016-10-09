@@ -49,7 +49,7 @@
 		<downloadSources>false</downloadSources>
 		
 		<!-- activiti setting -->
-		<activiti.version>5.15.1</activiti.version>
+		<activiti.version>5.21.0</activiti.version>
 	</properties>
 
 

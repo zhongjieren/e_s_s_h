@@ -11,17 +11,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.PARAMETER, ElementType.METHOD})
+@Target({ ElementType.PARAMETER, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface SecureModelAttribute {
 
-    String value() default "";
+	String value() default "";
 
-    String[] allowedField() default "*";
+	String[] allowedField() default "*";
 
-    String[] deniedField() default "";
+	String[] deniedField() default "";
 
-    String[] clearFiled() default "";
+	String[] clearFiled() default "";
 
 }

@@ -25,8 +25,7 @@ import java.util.Properties;
 public class DefaultSystemInitListener implements ServletContextListener,
 		HttpSessionListener, HttpSessionAttributeListener {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(DefaultSystemInitListener.class);
+	private static final Logger logger = LoggerFactory.getLogger(DefaultSystemInitListener.class);
 
 	public DefaultSystemInitListener() {
 	}

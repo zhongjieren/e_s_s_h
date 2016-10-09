@@ -49,6 +49,7 @@ public class ExportExcel<T> {
 		// 使用userModel模式实现的，当excel文档出现10万级别的大数据文件可能导致OOM内存溢出
 		exportExcelInUserModel(title, pojoClass, dataSet, out);
 		// 使用eventModel实现，可以一边读一边处理，效率较高，但是实现复杂，暂时未实现
+		
 	}
 
 	private void exportExcelInUserModel(String title, Class<T> pojoClass,
