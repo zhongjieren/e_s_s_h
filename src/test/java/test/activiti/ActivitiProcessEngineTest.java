@@ -19,17 +19,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.eryansky.modules.sys.service.BugManager;
-import com.eryansky.modules.sys.service.DictionaryTypeManager;
-
 /**
  * @author : 尔演&Eryan eryanwcp@gmail.com
  * @date : 2014-07-07 20:30
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContext.xml",
-        "classpath:applicationContext-activiti.xml",
-        "classpath:applicationContext-ehcache.xml" })
+        "classpath:applicationContext-activiti.xml"  })
 public class ActivitiProcessEngineTest {
 
     private static Logger logger = LoggerFactory.getLogger(ActivitiProcessEngineTest.class);
@@ -38,10 +34,6 @@ public class ActivitiProcessEngineTest {
     private ProcessEngineConfiguration processEngineConfiguration;
 //    @Autowired
 //    private ProcessEngine processEngine ;
-    @Autowired
-    private DictionaryTypeManager dictionaryTypeManager;
-    @Autowired
-    private BugManager bugManager;
 
     @Resource(name = "sessionFactory")
     private SessionFactory sessionFactory;
@@ -77,12 +69,12 @@ public class ActivitiProcessEngineTest {
          * DB_SCHEMA_UPDATE_FALSE：如果不存在表就抛出异常
          * DB_SCHEMA_UPDATE_CREATE_DROP：每次都先删除表，再创建新的表
          */
-    	processEngineConfiguration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP);
-
-        // 3.使用配置对象创建流程引擎实例（检查数据库连接等环境信息是否正确）
-        ProcessEngine processEngine = processEngineConfiguration.buildProcessEngine();
-
-        System.out.println(processEngine);
+//    	processEngineConfiguration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP);
+//
+//        // 3.使用配置对象创建流程引擎实例（检查数据库连接等环境信息是否正确）
+//        ProcessEngine processEngine = processEngineConfiguration.buildProcessEngine();
+//
+//        System.out.println(processEngine);
     }
     
     @Before
