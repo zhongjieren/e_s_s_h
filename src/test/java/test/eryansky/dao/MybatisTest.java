@@ -49,4 +49,5 @@ public class MybatisTest {
 //        System.out.println(dictionaryList.size());
 //        System.out.println(JsonMapper.getInstance().toJson(dictionaryList));
     }
+    
 }

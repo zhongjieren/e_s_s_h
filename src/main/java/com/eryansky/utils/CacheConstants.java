@@ -57,5 +57,14 @@ public class CacheConstants {
 
     public static final String ORGAN_USER_TREE_CACHE = "organ_user_tree_cache";
 
+    
+    /**
+     * 流程分类
+     */
+    public static final String ACT_TYPE_ALL_CACHE = "act_process_type_all_cache";
+    public static final String ACT_TYPE_GROUPS_CACHE = "act_process_type_groups_cache";
+   
+    
+    
 	
 }
