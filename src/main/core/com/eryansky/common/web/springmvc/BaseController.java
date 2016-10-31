@@ -41,6 +41,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public abstract class BaseController<T, PK extends Serializable> extends SimpleController {
 	
 	protected static String modules = "modules";
+	
     protected Class<T> entityClass;
 
     protected BaseController() {

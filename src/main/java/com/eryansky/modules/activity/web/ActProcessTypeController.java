@@ -28,28 +28,26 @@ import com.google.common.collect.Lists;
 /**
  * 流程分类类型ActProcessType管理 Controller层.
  */
-@SuppressWarnings("serial")
 @Controller
 @RequestMapping(value = "${adminPath}/act/actprocesstype")
-public class ActProcessTypeController
-        extends BaseController<ActProcessType,Long> {
+public class ActProcessTypeController extends BaseController<ActProcessType,Long> {
 	
     @Autowired
-    private ActProcessTypeManager ActProcessTypeManager;
+    private ActProcessTypeManager actProcessTypeManager;
 
     @Override
     public EntityManager<ActProcessType, Long> getEntityManager() {
-        return ActProcessTypeManager;
+        return actProcessTypeManager;
     }
     
     @RequestMapping(value = {""})
     public String list() {
-        return this.modules+"/act/actprocesstype";
+        return modules+"/act/actprocesstype";
     }
     
     @RequestMapping(value = {"input"})
     public String input(@ModelAttribute("model")ActProcessType ActProcessType) {
-        return this.modules+"/act/actprocesstype-input";
+        return modules+"/act/actprocesstype-input";
     }
 
 
@@ -59,11 +57,11 @@ public class ActProcessTypeController
         getEntityManager().evict(ActProcessType);
         Result result = null;
         ActProcessType.setGroupActProcessType(null);
-        ActProcessType groupActProcessType = ActProcessTypeManager.getByCode(ActProcessType.getGroupActProcessTypeCode());
+        ActProcessType groupActProcessType = actProcessTypeManager.getByCode(ActProcessType.getGroupActProcessTypeCode());
         ActProcessType.setGroupActProcessType(groupActProcessType);
 
         // 名称是否重复校验
-        ActProcessType checkActProcessType1 = ActProcessTypeManager
+        ActProcessType checkActProcessType1 = actProcessTypeManager
                 .getByGroupCode_Name(ActProcessType.getGroupActProcessTypeCode(), ActProcessType.getName());
         if (checkActProcessType1 != null
                 && !checkActProcessType1.getId().equals(ActProcessType.getId())) {
@@ -73,7 +71,7 @@ public class ActProcessTypeController
         }
 
         // 编码是否重复校验
-        ActProcessType checkActProcessType3 = ActProcessTypeManager.getByCode(ActProcessType.getCode());
+        ActProcessType checkActProcessType3 = actProcessTypeManager.getByCode(ActProcessType.getCode());
         if (checkActProcessType3 != null
                 && !checkActProcessType3.getId().equals(ActProcessType.getId())) {
             result = new Result(Result.WARN, "编码为["
@@ -91,7 +89,7 @@ public class ActProcessTypeController
             }
         }
 
-        ActProcessTypeManager.saveEntity(ActProcessType);
+        actProcessTypeManager.saveEntity(ActProcessType);
         result = Result.successResult();
         logger.debug(result.toString());
         return result;
@@ -104,7 +102,7 @@ public class ActProcessTypeController
     @RequestMapping(value = {"combobox"})
     @ResponseBody
     public List<Combobox> combobox(String selectType) throws Exception {
-        List<ActProcessType> list = ActProcessTypeManager.getGroupActProcessTypes();
+        List<ActProcessType> list = actProcessTypeManager.getGroupActProcessTypes();
         List<Combobox> cList = Lists.newArrayList();
 
         //为combobox添加  "---全部---"、"---请选择---"
@@ -132,7 +130,7 @@ public class ActProcessTypeController
     @RequestMapping(value = {"group_combobox"})
     @ResponseBody
     public List<Combobox> group_combobox(String selectType) throws Exception {
-        List<ActProcessType> list = ActProcessTypeManager.getGroupActProcessTypes();
+        List<ActProcessType> list = actProcessTypeManager.getGroupActProcessTypes();
         List<Combobox> cList = Lists.newArrayList();
 
         //为combobox添加  "---全部---"、"---请选择---"
@@ -156,7 +154,7 @@ public class ActProcessTypeController
     @RequestMapping(value = {"maxSort"})
     @ResponseBody
     public Result maxSort() throws Exception {
-        Integer maxSort = ActProcessTypeManager.getMaxSort();
+        Integer maxSort = actProcessTypeManager.getMaxSort();
         Result result = new Result(Result.SUCCESS, null, maxSort);
         return result;
     }

@@ -24,13 +24,13 @@ import java.util.List;
  */
 
 @Entity
-@Table(name = "T_ACT_ActProcessType")
+@Table(name = "T_ACT_ACTPROCESSTYPE")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @JsonIgnoreProperties(value = { "hibernateLazyInitializer" , "handler","fieldHandler",
         "groupActProcessType","subActProcessTypes" })
 @SuppressWarnings("serial")
 public class ActProcessType extends BaseEntity {
-
+	
 	/**
 	 * 类型名称
 	 */

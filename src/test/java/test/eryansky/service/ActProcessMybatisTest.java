@@ -39,6 +39,13 @@ public class ActProcessMybatisTest {
     @Resource(name = "sessionFactory")
     private SessionFactory sessionFactory;
 
+    @Before
+    public void init() {
+        Session s = sessionFactory.openSession();
+        TransactionSynchronizationManager.bindResource(sessionFactory,
+                new SessionHolder(s));
+    }
+    
     @After
     public void close() {
         SessionHolder holder = (SessionHolder) TransactionSynchronizationManager
@@ -60,7 +67,7 @@ public class ActProcessMybatisTest {
     	actProcessType.setCreateTime(new Date());
     	actProcessTypeManager.saveOrUpdate(actProcessType);
     	
-    	 actProcessType = new ActProcessType();
+    	actProcessType = new ActProcessType();
     	actProcessType.setId(new Long(2));
     	actProcessType.setName("行政管理类");
     	actProcessType.setCode("ExecActProcessType");
@@ -69,6 +76,7 @@ public class ActProcessMybatisTest {
     	actProcessType.setCreateUser("admin");
     	actProcessType.setCreateTime(new Date());
     	actProcessTypeManager.saveOrUpdate(actProcessType);
+    	
     	 actProcessType = new ActProcessType();
     	actProcessType.setId(new Long(3));
     	actProcessType.setName("业务管理类");
@@ -78,33 +86,30 @@ public class ActProcessMybatisTest {
     	actProcessType.setCreateUser("admin");
     	actProcessType.setCreateTime(new Date());
     	actProcessTypeManager.saveOrUpdate(actProcessType);
+    	
     	 actProcessType = new ActProcessType();
     	actProcessType.setId(new Long(4));
     	actProcessType.setName("仓管类别");
     	actProcessType.setCode("WareHouseActProcessType");
-    	actProcessType.setOrderNo(3);
+    	actProcessType.setOrderNo(4);
     	actProcessType.setStatus(1);
     	actProcessType.setCreateUser("admin");
     	actProcessType.setCreateTime(new Date());
     	actProcessTypeManager.saveOrUpdate(actProcessType);
-    	 actProcessType = new ActProcessType();
+    	
+    	actProcessType = new ActProcessType();
     	actProcessType.setId(new Long(5));
     	actProcessType.setName("其他类别");
     	actProcessType.setCode("OtherActProcessType");
-    	actProcessType.setOrderNo(4);
+    	actProcessType.setOrderNo(5);
     	actProcessType.setStatus(1);
     	actProcessType.setCreateUser("admin");
     	actProcessType.setCreateTime(new Date());
     	actProcessTypeManager.saveOrUpdate(actProcessType);
     }
     
-    @Before
-    public void init() {
-        Session s = sessionFactory.openSession();
-        TransactionSynchronizationManager.bindResource(sessionFactory,
-                new SessionHolder(s));
-    }
-    @Test
+   
+//    @Test
     public void initParActProcessType() {
     }
     
