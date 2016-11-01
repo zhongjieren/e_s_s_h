@@ -5,10 +5,6 @@
  */
 package com.eryansky.modules.activity.service;
 
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.repository.ProcessDefinitionQuery;
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,10 +22,10 @@ public class ActDeployManager extends EntityManager<ActProcessType, Long> {
 
 	private HibernateDao<ActProcessType, Long> ActProcessTypeDao;
 	
-	@Autowired
-	private RepositoryService repositoryService;
-	@Autowired
-	private RuntimeService runtimeService;
+//	@Autowired
+//	private RepositoryService repositoryService;
+//	@Autowired
+//	private RuntimeService runtimeService;
 
 	
 	@Autowired

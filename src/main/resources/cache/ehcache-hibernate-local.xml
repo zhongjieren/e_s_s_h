@@ -90,5 +90,11 @@
     <cache name="com.eryansky.entity.sys.DictionaryType"
 		maxElementsInMemory="1000" memoryStoreEvictionPolicy="LRU" eternal="true"
 		diskPersistent="false" overflowToDisk="true" maxElementsOnDisk="100000" />
-
+		
+		
+	<!--activi-->
+	<cache name="com.eryansky.modules.activity.entity.ActProcessType" maxElementsInMemory="1000"
+        memoryStoreEvictionPolicy="LRU" eternal="true" diskPersistent="false"
+        overflowToDisk="true" maxElementsOnDisk="100000" />
+	
 </ehcache>

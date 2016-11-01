@@ -26,13 +26,13 @@
 
 </script>
 <div>
-	<form id="dictionaryType_form" class="dialog-form" method="post">
+	<form id="actProcessType_form" class="dialog-form" method="post">
 		<input type="hidden" id="id" name="id" />
         <!-- 用户版本控制字段 version -->
         <input type="hidden" id="version" name="version" />
 	    <div>
 			<label>分组类型:</label>
-			<input id="_parentId" name="groupDictionaryTypeCode" />
+			<input id="_parentId" name="groupActProcessTypeCode" />
 		</div>
 		<div>
 			<label>类型名称:</label>

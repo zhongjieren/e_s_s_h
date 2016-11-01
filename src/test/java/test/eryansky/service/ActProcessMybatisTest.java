@@ -56,61 +56,71 @@ public class ActProcessMybatisTest {
     
     @Test
     public void test() { 
-//    	actProcessTypeManager.deleteById(new Long(1));
-    	ActProcessType actProcessType = new ActProcessType();
-    	actProcessType.setId(new Long(1));
-    	actProcessType.setName("财务管理类");
-    	actProcessType.setCode("FinaceActProcessType");
-    	actProcessType.setOrderNo(1);
-    	actProcessType.setStatus(1);
-    	actProcessType.setCreateUser("admin");
-    	actProcessType.setCreateTime(new Date());
-    	actProcessTypeManager.saveOrUpdate(actProcessType);
     	
-    	actProcessType = new ActProcessType();
-    	actProcessType.setId(new Long(2));
-    	actProcessType.setName("行政管理类");
-    	actProcessType.setCode("ExecActProcessType");
-    	actProcessType.setOrderNo(2);
-    	actProcessType.setStatus(1);
-    	actProcessType.setCreateUser("admin");
-    	actProcessType.setCreateTime(new Date());
-    	actProcessTypeManager.saveOrUpdate(actProcessType);
+    	ActProcessType actProcessType = actProcessTypeManager.getById(new Long(1));
+    	if(actProcessType ==null){
+    		actProcessType = new ActProcessType();
+    		actProcessType.setId(new Long(1));
+        	actProcessType.setName("财务管理类");
+        	actProcessType.setCode("FinaceActProcessType");
+        	actProcessType.setOrderNo(1);
+        	actProcessType.setStatus(1);
+        	actProcessType.setCreateUser("admin");
+        	actProcessType.setCreateTime(new Date());
+        	actProcessTypeManager.saveOrUpdate(actProcessType);
+    	}
     	
-    	 actProcessType = new ActProcessType();
-    	actProcessType.setId(new Long(3));
-    	actProcessType.setName("业务管理类");
-    	actProcessType.setCode("BusActProcessType");
-    	actProcessType.setOrderNo(3);
-    	actProcessType.setStatus(1);
-    	actProcessType.setCreateUser("admin");
-    	actProcessType.setCreateTime(new Date());
-    	actProcessTypeManager.saveOrUpdate(actProcessType);
+    	actProcessType = actProcessTypeManager.getById(new Long(2));
+    	if(actProcessType ==null){
+    		actProcessType = new ActProcessType();
+        	actProcessType.setId(new Long(2));
+        	actProcessType.setName("行政管理类");
+        	actProcessType.setCode("ExecActProcessType");
+        	actProcessType.setOrderNo(2);
+        	actProcessType.setStatus(1);
+        	actProcessType.setCreateUser("admin");
+        	actProcessType.setCreateTime(new Date());
+        	actProcessTypeManager.saveOrUpdate(actProcessType);
+    	}
     	
-    	 actProcessType = new ActProcessType();
-    	actProcessType.setId(new Long(4));
-    	actProcessType.setName("仓管类别");
-    	actProcessType.setCode("WareHouseActProcessType");
-    	actProcessType.setOrderNo(4);
-    	actProcessType.setStatus(1);
-    	actProcessType.setCreateUser("admin");
-    	actProcessType.setCreateTime(new Date());
-    	actProcessTypeManager.saveOrUpdate(actProcessType);
+    	actProcessType = actProcessTypeManager.getById(new Long(3));
+    	if(actProcessType ==null){
+    		actProcessType = new ActProcessType();
+        	actProcessType.setId(new Long(3));
+        	actProcessType.setName("业务管理类");
+        	actProcessType.setCode("BusActProcessType");
+        	actProcessType.setOrderNo(3);
+        	actProcessType.setStatus(1);
+        	actProcessType.setCreateUser("admin");
+        	actProcessType.setCreateTime(new Date());
+        	actProcessTypeManager.saveOrUpdate(actProcessType);
+    	}
     	
-    	actProcessType = new ActProcessType();
-    	actProcessType.setId(new Long(5));
-    	actProcessType.setName("其他类别");
-    	actProcessType.setCode("OtherActProcessType");
-    	actProcessType.setOrderNo(5);
-    	actProcessType.setStatus(1);
-    	actProcessType.setCreateUser("admin");
-    	actProcessType.setCreateTime(new Date());
-    	actProcessTypeManager.saveOrUpdate(actProcessType);
+    	actProcessType = actProcessTypeManager.getById(new Long(4));
+    	if(actProcessType ==null){
+    		actProcessType = new ActProcessType();
+        	actProcessType.setId(new Long(4));
+        	actProcessType.setName("仓管类别");
+        	actProcessType.setCode("WareHouseActProcessType");
+        	actProcessType.setOrderNo(4);
+        	actProcessType.setStatus(1);
+        	actProcessType.setCreateUser("admin");
+        	actProcessType.setCreateTime(new Date());
+        	actProcessTypeManager.saveOrUpdate(actProcessType);
+    	} 
+    	
+    	actProcessType = actProcessTypeManager.getById(new Long(5));
+    	if(actProcessType ==null){
+    		actProcessType = new ActProcessType();
+        	actProcessType.setId(new Long(5));
+        	actProcessType.setName("其他类别");
+        	actProcessType.setCode("OtherActProcessType");
+        	actProcessType.setOrderNo(5);
+        	actProcessType.setStatus(1);
+        	actProcessType.setCreateUser("admin");
+        	actProcessType.setCreateTime(new Date());
+        	actProcessTypeManager.saveOrUpdate(actProcessType);
+    	}
     }
-    
-   
-//    @Test
-    public void initParActProcessType() {
-    }
-    
+
 }

@@ -49,7 +49,8 @@
 
     <bean id="dataSource2" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${jdbc.driverClassName}" />
-        <property name="url" value="jdbc:mysql://localhost:3306/ncs_mis?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true" />
+<!--         <property name="url" value="jdbc:mysql://localhost:3306/ncs_mis?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true" /> -->
+        <property name="url" value="${jdbc.url}" />
         <property name="username" value="${jdbc.username}" />
         <property name="password" value="${jdbc.password}" />
 
@@ -72,7 +73,8 @@
             <map>
                 <!-- 注意这里的value是和上面的DataSource的id对应，key要和下面的DataSourceContextHolder中的常量对应 -->
                 <entry value-ref="dataSource" key="dataSource"/>
-                <entry value-ref="dataSource2" key="dataSource2"/>
+<!--                 <entry value-ref="dataSource2" key="dataSource2"/> -->
+<!--                 <entry value-ref="dataSource2" key="dataSource"/> -->
             </map>
         </property>
     </bean>

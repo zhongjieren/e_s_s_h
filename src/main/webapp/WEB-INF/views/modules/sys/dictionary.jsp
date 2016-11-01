@@ -16,7 +16,7 @@
         <span style="display: none;">&nbsp;</span><%--兼容IE8--%>
         <form id="dictionary_search_form" style="padding: 5px;">
             &nbsp;字典分组:<input id="filter_EQS_dictionaryType__code" name="filter_EQS_dictionaryType__code" />
-            名称或编码: <input type="text" id="filter_LIKES_name_OR_code" name="filter_LIKES_name_OR_code" placeholder="请输入名称或编码..."
+			名称或编码: <input type="text" id="filter_LIKES_name_OR_code" name="filter_LIKES_name_OR_code" placeholder="请输入名称或编码..."
                           class="easyui-validatebox textbox eu-input"
                           onkeydown="if(event.keyCode==13)search()" maxLength="25" style="width: 160px"/>
             &nbsp;<a class="easyui-linkbutton" href="#" data-options="iconCls:'easyui-icon-search',width:100,height:28,onClick:search">查询</a>
