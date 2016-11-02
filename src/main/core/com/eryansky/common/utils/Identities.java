@@ -19,7 +19,7 @@ public class Identities {
 
 	private Identities() {
 	}
-
+	
 	/**
 	 * 封装JDK自带的UUID, 通过Random数字生成,中间有-分割
 	 */

@@ -16,7 +16,7 @@
 		<!-- 配置数据源,和系统使用同一个数据源 -->
 		<property name="dataSource" ref="dataSource" />
 		<!-- 设置建表策略，如果没有表，自动创建表 -->
-		<property name="databaseSchemaUpdate" value="true" />
+		<property name="databaseSchemaUpdate" value="create-drop" />
 		<!-- 是否启动jobExecutor -->
 		<property name="jobExecutorActivate" value="false" />
 		<!-- 统一的事务管理 -->

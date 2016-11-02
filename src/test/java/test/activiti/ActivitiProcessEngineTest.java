@@ -61,7 +61,7 @@ public class ActivitiProcessEngineTest {
         // 用户名
 //        processEngineConfiguration.setJdbcUsername("root");
         // 密码
-//        processEngineConfiguration.setJdbcPassword("");
+//        processEngineConfiguration.setJdbcPassword("root");
 
         // 设置数据库建表策略
         /**
@@ -69,10 +69,10 @@ public class ActivitiProcessEngineTest {
          * DB_SCHEMA_UPDATE_FALSE：如果不存在表就抛出异常
          * DB_SCHEMA_UPDATE_CREATE_DROP：每次都先删除表，再创建新的表
          */
+//    	processEngineConfiguration.setDaCtabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP);
 //    	processEngineConfiguration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP);
-//
 //        // 3.使用配置对象创建流程引擎实例（检查数据库连接等环境信息是否正确）
-//        ProcessEngine processEngine = processEngineConfiguration.buildProcessEngine();
+        ProcessEngine processEngine = processEngineConfiguration.buildProcessEngine();
 //
 //        System.out.println(processEngine);
     }

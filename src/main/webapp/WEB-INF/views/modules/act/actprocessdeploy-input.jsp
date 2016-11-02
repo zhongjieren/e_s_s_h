@@ -7,7 +7,7 @@
 	//加载分组
 	function loadGroup(){
         $('#category').combobox({
-            url:'${ctxAdmin}/act/actprocesstype/group_combobox?selectType=select',
+            url:'${ctxAdmin}/act/actprocesstype/combobox?selectType=select',
             multiple:false,//是否可多选
             editable:false,//是否可编辑
             height:28,
@@ -37,9 +37,9 @@
 		</div>
 		<div>
 			<label>流程文件:</label> 
-			<input type="file" id="file" name="file"  maxLength="20"
+			<input  id="file" name="file" style="width:300px"
 				class="easyui-filebox"   placeholder="请选择文件..."
-				data-options="required:true,missingMessage:'请选择文件,支持文件格式:zip、bar、bpmn、bpmn20.xml.'" />
+				data-options="prompt:'选择文件',buttonText:'&nbsp;选&nbsp;择&nbsp;',required:true,missingMessage:'请选择文件,支持文件格式:zip、bar、bpmn、bpmn20.xml.'" />
 		</div> 
 	</form>
 </div>

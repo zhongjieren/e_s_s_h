@@ -140,6 +140,7 @@ public class ActDeployController  extends BaseController<ActProcessType,Long> {
 		} catch (Exception e) {
 			message = "部署失败！"; 
 			result = new Result(Result.WARN,message, "name");
+			logger.info(message+":"+e.getStackTrace());
 			logger.debug(result.toString());
 			return result;
 		} 
