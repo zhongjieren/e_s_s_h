@@ -29,6 +29,8 @@ import com.eryansky.common.orm.Page;
 import com.eryansky.common.orm.PropertyFilter;
 import com.eryansky.common.orm.hibernate.EntityManager;
 import com.eryansky.common.orm.hibernate.HibernateWebUtils;
+import com.eryansky.common.utils.encode.Encrypt;
+import com.eryansky.common.utils.jackson.JsonUtil;
 import com.eryansky.common.web.springmvc.BaseController;
 import com.eryansky.common.web.springmvc.SpringMVCHolder;
 import com.eryansky.modules.activity.entity.ActProcessType;
@@ -78,14 +80,17 @@ public class ActDeployController  extends BaseController<ActProcessType,Long> {
 	    if (StringUtils.isNotEmpty(category)){
 	    	processDefinitionQuery.processDefinitionCategory(category);
 		}
+	    logger.info(" treegrid b:{}.",JsonUtil.getJson(p) ); 
 	    p.setTotalCount(processDefinitionQuery.count());
-	    List<ProcessDefinition> processDefinitionList = processDefinitionQuery.listPage(p.getFirst(), p.getMaxResults());
+	    logger.info(" treegrid a:{}.",JsonUtil.getJson(p) ); 
+	    List<ProcessDefinition> processDefinitionList = processDefinitionQuery.listPage(p.getFirst()-1, p.getMaxResults());
 	    
 	    for (ProcessDefinition processDefinition : processDefinitionList) {
 	      String deploymentId = processDefinition.getDeploymentId();
 	      Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
 	      p.getResult().add(new Object[]{processDefinition, deployment});
 	    } 
+	    logger.info(" treegrid:{}.",JsonUtil.getJson(p) ); 
         Datagrid<Object[]> dg = new Datagrid<Object[]>(p.getTotalCount(), p.getResult());
         return dg;
     } 

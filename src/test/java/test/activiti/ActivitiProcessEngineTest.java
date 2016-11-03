@@ -1,9 +1,15 @@
 package test.activiti;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.After;
@@ -18,6 +24,11 @@ import org.springframework.orm.hibernate4.SessionHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+
+import com.eryansky.common.model.Datagrid;
+import com.eryansky.common.orm.Page;
+import com.eryansky.common.utils.jackson.JsonUtil;
+import com.eryansky.common.web.springmvc.SpringMVCHolder;
 
 /**
  * @author : 尔演&Eryan eryanwcp@gmail.com
@@ -38,6 +49,10 @@ public class ActivitiProcessEngineTest {
     @Resource(name = "sessionFactory")
     private SessionFactory sessionFactory;
 
+    @Autowired
+	protected RepositoryService repositoryService;
+	
+    
     @After
     public void close() {
         SessionHolder holder = (SessionHolder) TransactionSynchronizationManager
@@ -72,9 +87,36 @@ public class ActivitiProcessEngineTest {
 //    	processEngineConfiguration.setDaCtabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP);
 //    	processEngineConfiguration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP);
 //        // 3.使用配置对象创建流程引擎实例（检查数据库连接等环境信息是否正确）
-        ProcessEngine processEngine = processEngineConfiguration.buildProcessEngine();
+//        ProcessEngine processEngine = processEngineConfiguration.buildProcessEngine();
 //
 //        System.out.println(processEngine);
+    }
+    
+    @Test
+    public void queryDeployList() {
+    	System.out.println(" queryDeployList Start.");    
+    	Page<Object[]> p = new Page<Object[]>();
+    	ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery()
+ 	    		.latestVersion()
+ 	    		.orderByProcessDefinitionKey().asc();
+    	 p.setTotalCount(processDefinitionQuery.count()); 
+    	 System.out.println(" queryDeployList Param:"+JsonUtil.getJson(p) );
+//         List<ProcessDefinition> processDefinitionList = processDefinitionQuery.list();
+//         List<ProcessDefinition> processDefinitionList = processDefinitionQuery.listPage(0,15); 
+    	 List<ProcessDefinition> processDefinitionList = processDefinitionQuery.listPage(p.getFirst()-1,15); // p.getMaxResults());
+         
+//         System.out.println(" queryDeployList End1:"+JsonUtil.getJson(processDefinitionList) ); 
+         
+         for (ProcessDefinition processDefinition : processDefinitionList) {
+        	 System.out.println(" queryDeployList processDefinition:"+processDefinition.getName() ); 
+   	      String deploymentId = processDefinition.getDeploymentId();
+   	      Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
+   	      p.getResult().add(new Object[]{processDefinition, deployment});
+   	    } 
+//         System.out.println(" queryDeployList End2:"+JsonUtil.getJson(p) ); 
+//   	    logger.info(" treegrid:{}.",JsonUtil.getJson(p) ); 
+           Datagrid<Object[]> dg = new Datagrid<Object[]>(p.getTotalCount(), p.getResult());
+//           System.out.println(" queryDeployList End3:"+JsonUtil.getJson(dg) ); 
     }
     
     @Before
