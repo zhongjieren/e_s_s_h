@@ -25,9 +25,14 @@ $(function() {
         ]],
         columns:[ [
             {field : 'id',title : '主键',hidden : true,sortable:true,align : 'right',width : 80},
-            {field : 'name',title : '类型编码',width : 100,sortable:true},
-            {field : 'key',title : '排序',align : 'right',width : 80,sortable:true } ,
-            {field : 'description', title : '备注',width : 200}
+            {field : 'name',title : '流程名称',width : 200,sortable:true},
+            {field : 'key',title : '流程主键',align : 'right',width : 80,sortable:true } ,
+            {field : 'category',title : '流程分类',align : 'right',width : 80,sortable:true } ,
+            {field : 'deploymentTime',title : '部署时间',align : 'right',width : 80,sortable:true } ,
+            {field : 'description', title : '备注',width : 100 },
+            { field :'resourceName',title : '操作',width : 100, formatter:function(value, row, index){
+            	return '<a href="_black" onclick="edit('+row+')" >编辑</a>';
+        	}}
         ] ],
         toolbar:[{
             text:'流程部署',
@@ -151,6 +156,15 @@ function showDialog(row){
         }
     });
 }
+
+//编辑
+function editButton(row){
+	if(row == undefined){ 
+        return "";
+    }
+	return '<a href="javasrcipt:void(0);" onclick="edit('+row+')" >编辑</a>';
+}
+
 
 //编辑
 function edit(row){

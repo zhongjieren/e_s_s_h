@@ -33,6 +33,7 @@ import com.eryansky.common.utils.encode.Encrypt;
 import com.eryansky.common.utils.jackson.JsonUtil;
 import com.eryansky.common.web.springmvc.BaseController;
 import com.eryansky.common.web.springmvc.SpringMVCHolder;
+import com.eryansky.modules.activity.dto.ProcessDefinitionDto;
 import com.eryansky.modules.activity.entity.ActProcessType;
 import com.eryansky.modules.activity.service.ActDeployManager;
 
@@ -73,7 +74,7 @@ public class ActDeployController  extends BaseController<ActProcessType,Long> {
     public Datagrid treegrid(String sort, String order) throws Exception {
     	 // 自动构造属性过滤器
         List<PropertyFilter> filters = HibernateWebUtils.buildPropertyFilters(SpringMVCHolder.getRequest());
-        Page<Object[]> p = new Page<Object[]>(SpringMVCHolder.getRequest());
+        Page<ProcessDefinitionDto> p = new Page<ProcessDefinitionDto>(SpringMVCHolder.getRequest());
         ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery()
 	    		.latestVersion().orderByProcessDefinitionKey().asc();
 	    String category="";
@@ -85,13 +86,25 @@ public class ActDeployController  extends BaseController<ActProcessType,Long> {
 	    logger.info(" treegrid a:{}.",JsonUtil.getJson(p) ); 
 	    List<ProcessDefinition> processDefinitionList = processDefinitionQuery.listPage(p.getFirst()-1, p.getMaxResults());
 	    
-	    for (ProcessDefinition processDefinition : processDefinitionList) {
-	      String deploymentId = processDefinition.getDeploymentId();
-	      Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
-	      p.getResult().add(new Object[]{processDefinition, deployment});
+	    for (ProcessDefinition processDefinition : processDefinitionList) { 
+    		String deploymentId = processDefinition.getDeploymentId();
+			Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
+			
+			ProcessDefinitionDto processDefinitionDto = new ProcessDefinitionDto();
+			processDefinitionDto.setCategory(processDefinition.getCategory());
+			processDefinitionDto.setKey(processDefinition.getKey());
+			processDefinitionDto.setDeploymentId(processDefinition.getDeploymentId());
+			processDefinitionDto.setDescription(processDefinition.getDescription());
+			processDefinitionDto.setResourceName(processDefinition.getResourceName());
+			processDefinitionDto.setTenantId(processDefinition.getTenantId());
+			processDefinitionDto.setVersion(processDefinition.getVersion());
+			processDefinitionDto.setName(processDefinition.getName());
+			processDefinitionDto.setDeploymentTime(deployment.getDeploymentTime());
+			p.getResult().add(processDefinitionDto);
+//	      p.getResult().add(new Object[]{processDefinition, deployment});
 	    } 
-	    logger.info(" treegrid:{}.",JsonUtil.getJson(p) ); 
-        Datagrid<Object[]> dg = new Datagrid<Object[]>(p.getTotalCount(), p.getResult());
+//	    logger.info(" treegrid:{}.",JsonUtil.getJson(p) ); 
+        Datagrid<ProcessDefinitionDto> dg = new Datagrid<ProcessDefinitionDto>(p.getTotalCount(), p.getResult());
         return dg;
     } 
     

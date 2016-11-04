@@ -4,9 +4,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
@@ -28,7 +29,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import com.eryansky.common.model.Datagrid;
 import com.eryansky.common.orm.Page;
 import com.eryansky.common.utils.jackson.JsonUtil;
-import com.eryansky.common.web.springmvc.SpringMVCHolder;
+import com.eryansky.modules.activity.dto.ProcessDefinitionDto;
 
 /**
  * @author : 尔演&Eryan eryanwcp@gmail.com
@@ -94,28 +95,69 @@ public class ActivitiProcessEngineTest {
     
     @Test
     public void queryDeployList() {
+//    	System.out.println(" queryDeployList Start.");    
+//    	Page<Object[]> p = new Page<Object[]>();
+//    	ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery()
+// 	    		.latestVersion()
+// 	    		.orderByProcessDefinitionKey().asc();
+//    	 p.setTotalCount(processDefinitionQuery.count()); 
+//    	 System.out.println(" queryDeployList Param:"+JsonUtil.getJson(p) );
+//         List<ProcessDefinition> processDefinitionList = processDefinitionQuery.list();
+//         for (ProcessDefinition processDefinition : processDefinitionList) {
+//        	System.out.println(" queryDeployList processDefinition:"+processDefinition.getName() );
+//        	ProcessDefinitionEntity processDefinitionDB= (ProcessDefinitionEntity)  repositoryService.getProcessDefinition(processDefinition.getId());
+//        	logger.info(" processDefinitionDB:{}.",JsonUtil.getJson(processDefinitionDB) ); 
+//   	      	String deploymentId = processDefinition.getDeploymentId();
+//   	      	DeploymentEntity deploymentDB = (DeploymentEntity)repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
+//   	      	logger.info(" deploymentDB:{}.",JsonUtil.getJson(deploymentDB) ); 
+//   	      p.getResult().add(new Object[]{processDefinitionDB, deploymentDB});
+//   	    } 
+//         System.out.println(" queryDeployList End2:"+JsonUtil.getJson(p) ); 
+//           Datagrid<Object[]> dg = new Datagrid<Object[]>(p.getTotalCount(), p.getResult());
+    }
+    
+    @Test
+    public void queryDeployListbak() {
     	System.out.println(" queryDeployList Start.");    
-    	Page<Object[]> p = new Page<Object[]>();
+    	Page<ProcessDefinitionDto> p = new Page<ProcessDefinitionDto>();
     	ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery()
  	    		.latestVersion()
  	    		.orderByProcessDefinitionKey().asc();
     	 p.setTotalCount(processDefinitionQuery.count()); 
     	 System.out.println(" queryDeployList Param:"+JsonUtil.getJson(p) );
-//         List<ProcessDefinition> processDefinitionList = processDefinitionQuery.list();
+         List<ProcessDefinition> processDefinitionList = processDefinitionQuery.list();
 //         List<ProcessDefinition> processDefinitionList = processDefinitionQuery.listPage(0,15); 
-    	 List<ProcessDefinition> processDefinitionList = processDefinitionQuery.listPage(p.getFirst()-1,15); // p.getMaxResults());
+//    	 List<ProcessDefinition> processDefinitionList = processDefinitionQuery.listPage(p.getFirst()-1,15); // p.getMaxResults());
          
 //         System.out.println(" queryDeployList End1:"+JsonUtil.getJson(processDefinitionList) ); 
          
          for (ProcessDefinition processDefinition : processDefinitionList) {
-        	 System.out.println(" queryDeployList processDefinition:"+processDefinition.getName() ); 
-   	      String deploymentId = processDefinition.getDeploymentId();
-   	      Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
-   	      p.getResult().add(new Object[]{processDefinition, deployment});
+        	System.out.println(" queryDeployList processDefinition:"+processDefinition.getName() );
+        	String deploymentId = processDefinition.getDeploymentId();
+   	      	Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
+   	      	
+   	      	ProcessDefinitionDto processDefinitionDto = new ProcessDefinitionDto();
+	     	processDefinitionDto.setCategory(processDefinition.getCategory());
+	     	processDefinitionDto.setKey(processDefinition.getKey());
+	     	processDefinitionDto.setDeploymentId(processDefinition.getDeploymentId());
+	     	processDefinitionDto.setDescription(processDefinition.getDescription());
+	     	processDefinitionDto.setResourceName(processDefinition.getResourceName());
+	     	processDefinitionDto.setTenantId(processDefinition.getTenantId());
+	     	processDefinitionDto.setVersion(processDefinition.getVersion());
+	     	processDefinitionDto.setName(processDefinition.getName());
+	     	processDefinitionDto.setDeploymentTime(deployment.getDeploymentTime());
+	     	System.out.println(" processDefinitionDto Json:"+JsonUtil.getJson(processDefinitionDto) );
+        	 p.getResult().add(processDefinitionDto);
+//   	      	DeploymentEntity deploymentDB = (DeploymentEntity)repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
+//   	      	logger.info(" deploymentDB:{}.",JsonUtil.getJson(deploymentDB) ); 
+//   	      DeploymentEntity deploymentDB =  (DeploymentEntity)deployment;
+//   	      p.getResult().add(new Object[]{processDefinitionDB, deploymentDB});
    	    } 
 //         System.out.println(" queryDeployList End2:"+JsonUtil.getJson(p) ); 
-//   	    logger.info(" treegrid:{}.",JsonUtil.getJson(p) ); 
-           Datagrid<Object[]> dg = new Datagrid<Object[]>(p.getTotalCount(), p.getResult());
+         System.out.println(" treegrid Json:"+JsonUtil.getJson(p) );
+ 	
+           Datagrid<ProcessDefinitionDto> dg = new Datagrid<ProcessDefinitionDto>(p.getTotalCount(), p.getResult());
+           System.out.println(" Datagrid Json:"+JsonUtil.getJson(dg) );
 //           System.out.println(" queryDeployList End3:"+JsonUtil.getJson(dg) ); 
     }
     
