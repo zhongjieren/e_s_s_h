@@ -120,6 +120,7 @@ public class ActDeployController  extends BaseController<ActProcessType,Long> {
     public Result upload(String category, MultipartFile file) { 
         Result result = null;
         String message = "";
+        logger.info("requestParam category:"+category);
 		String fileName = file.getOriginalFilename();
 		try {
 			InputStream fileInputStream = file.getInputStream();
