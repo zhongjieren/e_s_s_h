@@ -19,7 +19,7 @@ $(function() {
         sortName:'key',//默认排序字段
         sortOrder:'asc',//默认排序方式 'desc' 'asc'
         idField : 'id',
-        treeField:"name",
+//        treeField:"name",
         frozenColumns:[[
             {field:'name',title:'流程名称',width:200}
         ]],
